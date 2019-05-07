@@ -1,0 +1,17 @@
+For plotting the results of the \multiexec\ tool a Python script is used, which 
+uses matplotlib to display the results. 
+In order to work with the script the \file{results.csv} file has to be 
+converted into an \file{evaluation.csv} file, where only the aggregated results 
+are contained. 
+
+Currently, this conversion step is performed manually. 
+The steps which have to be made are described in the \file{README} file. 
+Of course, future versions of the plotting script should be able to automate 
+this process.
+
+Since more than 20 metrics are supported, and result files can easily contain 
+more than 20 different configurations, the script offers the possibility to 
+filter for certain metrics and configurations. 
+Otherwise, the plots would be too overloaded.
+For information on how to filter for specific metrics and configurations, 
+please refer to the \file{README}.

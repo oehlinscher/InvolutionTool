@@ -1,0 +1,48 @@
+\begin{tikzpicture}[
+	>=latex,
+	chain/.style={rounded corners=1.5pt, minimum width=7cm, minimum height=0.8cm, draw},
+	node distance=1cm and 5mm,
+	every path/.style={thick},
+	text opacity=1,
+%	fill opacity=0.6
+]
+
+\def\y{-1.1}
+
+	\begin{scope}[fill opacity=0.6]
+	\path (0,0) node[chain, fill=color3] (WG) {Waveform Generation}
+		++(0,\y)  node[chain, fill=color2] (AS) {Analog Simulation}
+		+(-2,\y*1.3) node[chain, minimum width=3cm, fill=color3] (CR) {$\vth$ Crossings}
+		++(0,\y*2.3) node[chain, minimum width=4.5cm, fill=color2] (DS) {Digital Simulation}
+		++(0,\y) node[chain, minimum width=2.5cm, fill=color5] (VS) {vcd2saif}
+		++(0.75,\y) node[chain, minimum width=4cm, fill=color5] (PE) {Power Estimation}
+		++(0.2,\y) node[chain,minimum width=5.18cm, fill=color3] (VE) {Evaluation}
+		+(-3.55,0) node[chain, minimum width=1.7cm, fill=color3] (PL) {Plotting}
+		+(-0.92,\y) node[chain, fill=color3] (RE) {Reporting};
+	\end{scope}
+
+	\draw[line width=1.2pt, dash pattern={on 7pt off 3pt}]
+		($(RE.south west) +(-0.5,-0.6)$) node[anchor=south west] {Digital Domain} 
+		rectangle ($(AS.south east) +(0.5,-0.32)$)
+		;
+
+	\draw[line width=1.2pt, dash pattern={on 7pt off 3pt}]
+		($(AS.south west) +(-0.5,-0.2)$) rectangle ($(WG.north east) +(0.5,0.6)$)
+		node[anchor=north east] {Analog Domain};
+
+	\draw[->] (WG) -- (AS);
+	\draw[->] (AS.south -| CR) -- (CR);
+	\draw[->] (CR.south -| DS.160) -- (DS.160);
+	\draw[->] (DS) -- (VS);
+	\draw[->] (VS) -- (PE.north -| VS);
+	\draw[->] (DS.south -| PE.25) -- (PE.25);
+	\draw[->] (DS.south -| VE.170) -- (VE.170);
+	\draw[->] (AS.south -| PE.14) -- (PE.14);
+	\draw[->] (PE) -- (VE.north -| PE);
+	\draw[->] (AS.south -| VE.11) -- (VE.11);
+	\draw[->] (PL) -- (RE.north -| PL);
+	\draw[->] (VE) -- (RE.north -| VE);
+	\draw[->] (CR.south -| PL.120) -- (PL.120);
+	\draw[->] (DS.south -| PL.34) -- (PL.34);
+
+\end{tikzpicture}

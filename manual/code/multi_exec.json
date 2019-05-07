@@ -1,0 +1,42 @@
+{
+	"N": 2, 
+	"keep_waveform" : true,
+	"gate_generation": {
+		"t_p_list": [
+			0.8, 
+			1.2
+		],
+		"channel_location_list": [
+			"INPUT",
+			"OUTPUT"
+		],
+		"channel_type_list": [
+			{
+				"channel_type" : "EXP_CHANNEL",
+				"channel_parameters" : {
+				}
+			},
+			{
+				"channel_type" : "HILL_CHANNEL",
+				"channel_parameters" : {
+					"N_UP" : 1.0,
+					"N_DO" : 1.0
+				}
+			}
+		],
+	}, 
+	"waveform_generation": [
+		{
+			"calc_next_transition_mode": "GLOBAL", 
+			"groups": [
+			], 
+			"mue": 0.029, 
+			"sigma": 0.01
+		},
+		{
+			"calc_next_transition_mode": "LOCAL", 
+			"mue": 0.029, 
+			"sigma": 0.02
+		}
+	]
+}

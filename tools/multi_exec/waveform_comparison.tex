@@ -1,0 +1,10 @@
+\begin{longtable}[hbt]{ l *{8}{|S[table-column-width=1cm]}} 
+  \multirow{2}{*}{name} &
+  \multicolumn{4}{c}{Modelsim} &
+  \multicolumn{4}{c}{Involution} \\
+  &{rel [\si{\percent}]} & {abs} & {sum} & {glitches} &{rel [\si{\percent}]} & {abs} & {sum} & {glitches}  \\
+  \hline	
+  %##LINES##%								
+  \hline  
+\caption{Waveform comparison. Shows the maximum relative (rel) and the maximum absolute (abs) error for each simulation. Also shows the sum of the deviation of all signals (sum) to the reference waveform. The glitches column shows the total number of glitches of all signals in the circuit. The first value shows the number of glitches in the SPICE signal (pulse in SPICE but not in discrete delay model). The second value shows the number of glitches in the discrete delay model.}
+\end{longtable}

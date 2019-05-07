@@ -1,0 +1,66 @@
+\usepackage{mathptmx}
+\usepackage{tikz}
+\usepackage{color}
+\usepackage{marvosym}
+\usepackage{siunitx}
+\usepackage{ifthen}
+\usepackage{tikz-timing}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.13}
+\usepgfplotslibrary{units}
+\usetikzlibrary{intersections}	
+
+\usepackage{fp}
+\usepackage{circuitikz}
+\usetikzlibrary{automata}
+\usetikzlibrary{arrows,shapes.gates.logic.US,shapes.gates.logic.IEC,calc}
+\usetikzlibrary{shapes,snakes}
+\usetikzlibrary{calc}
+\usetikzlibrary{matrix}
+\usetikzlibrary{positioning,calc}
+\usetikzlibrary{through}
+\usetikzlibrary{spy, fit}
+%\usetikzlibrary{datavisualization}
+%\usetikzlibrary{datavisualization.formats.functions}
+
+\input{common.text}
+
+\definecolor{myBlue}{HTML}{4DB8FF}
+\definecolor{myBlueFill}{HTML}{CDE8FF}
+\definecolor{myBlueWrite}{HTML}{1D78FF}
+\definecolor{myGreen}{HTML}{5CD65C}
+\definecolor{myGreenFill}{HTML}{CCFFCC}
+\definecolor{myGreenWrite}{HTML}{2CA62C}
+\definecolor{myYellow}{HTML}{F5C134}
+\definecolor{myYellowFill}{HTML}{FFDD99}
+\definecolor{myYellowWrite}{HTML}{B37700}
+
+%\definecolor{color1}{HTML}{D7191C}
+%\definecolor{color2}{HTML}{FDAE61}
+%\definecolor{color3}{HTML}{FFFFBF}
+%\definecolor{color4}{HTML}{A6D96A}
+%\definecolor{color5}{HTML}{1A9641}
+
+\definecolor{color1}{HTML}{E41A1C}
+\definecolor{color2}{HTML}{377EB8}
+\definecolor{color3}{HTML}{4DAF4A}
+\definecolor{color4}{HTML}{984EA3}
+\definecolor{color5}{HTML}{FF7F00}
+
+\tikzstyle{signal}=[line width=1.6pt, color=color1]
+
+\tikzstyle{state}=[draw, circle, minimum width=1cm, outer sep=0,
+  align=center]
+%\newcommand{\picState}[5]{\node[state, line width=2pt] (#1) at (#2) {\textbf{\large
+%      \pmos: #5}\\ \textbf{\large \nmos: #4}}}
+\newcommand{\picState}[5]{\node[state, line width=2pt, minimum width=5.2em] (#1) at (#2) {\textbf{\large
+      #5}\\ \textbf{\large #4}}}      
+\tikzstyle{stateConn}=[line width=2pt]
+
+\pgfplotsset{
+	cycle list={
+	      {color2}, {color3}, {color5}, {color1}, {color4}},
+}
+
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}

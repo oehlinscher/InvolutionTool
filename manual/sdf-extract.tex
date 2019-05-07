@@ -1,0 +1,43 @@
+During the evaluation of the sample circuits, inaccuracies in the \sdffile\ 
+files have been encountered. 
+Therefore Python scripts have been created which can create custom \sdffile\ 
+files. 
+Moreover, the tool can not incorporate INTERCONNECT delays yet, and therefore 
+\sdffile\ files containing such delay need to be adapted.
+
+The process consists of two scripts:
+\begin{enumerate}
+	\item \file{generateDependencies.py}: The \emph{dependency tree} of the 
+	circuit has to be extracted. 
+	This is done by reading the standard \sdffile\ file, and extracting all 
+	INTERCONNECTs. 
+	This yields all output to input connections. 
+	Based on these results the output to output connections are generated. 
+	These results are stored in a dictionary, where for each gate instance the 
+	name of the previous output and its own output are stored.
+	\item \file{extractSdf.py}: In the second step the result (\vcdfile\ file) 
+	of a \spice\ simulation is used to generate the custom \sdffile\ file. 
+	The simulation should have sufficient transitions with long pauses during 
+	each transition so that for each gate instance and each input the falling 
+	and rising time can be extracted from the \vcdfile\ file. 
+	If there are more delay values for one value in the \sdffile, the average 
+	of these delay values is used.
+	
+	The final step of the script is that the values in the standard \sdffile\ 
+	file are overwritten with the generated values. 
+\end{enumerate}
+
+Requirements:
+\begin{itemize}
+	\item standard \sdffile\ file.
+	\item \vcdfile\ file which contains the \spice\ simulation results.
+\end{itemize}
+
+Note that the delay for an instance is always calculated from the output of the 
+previous instance to the output of this instance. Of course, one could also 
+calculate the delay from the input of the current gate to the next gate, but 
+then there are multiple possibilities, since the gate could drive several other 
+gates.
+
+Note that the scripts are tailored for the sample circuits, and that they need 
+to be generalized so that they can be used for all circuits.

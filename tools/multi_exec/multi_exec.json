@@ -1,0 +1,63 @@
+{
+  "N": 1, 
+  "keep_waveform" : true,
+  "gate_generation": {
+    "t_p_list": [
+		0.25,
+		0.50,
+		1.00,
+		1.50,
+		2.00
+    ],
+	"channel_type_list": [
+	  {
+		"channel_type" : "EXP_CHANNEL",
+		"channel_parameters" : {
+		}
+	  },
+	  {
+		"channel_type" : "HILL_CHANNEL",
+		"channel_parameters" : {
+			"N_UP" : 1.0,
+			"N_DO" : 1.0
+		}
+	  },
+	  {
+		"channel_type" : "HILL_CHANNEL",
+		"channel_parameters" : {
+			"N_UP" : 1.5,
+			"N_DO" : 1.0
+		}
+	  },
+	  {
+		"channel_type" : "HILL_CHANNEL",
+		"channel_parameters" : {
+			"N_UP" : 1.0,
+			"N_DO" : 1.5
+		}
+	  }
+	]
+  },
+  "waveform_generation": [
+    {
+      "calc_next_transition_mode": "GLOBAL", 
+      "mue": 0.029, 
+      "sigma": 0.01
+    },	
+    {
+      "calc_next_transition_mode": "LOCAL", 
+      "mue": 0.029, 
+      "sigma": 0.01
+    },
+    {
+      "calc_next_transition_mode": "LOCAL", 
+      "mue": 0.050, 
+      "sigma": 0.01
+    },
+    {
+      "calc_next_transition_mode": "LOCAL", 
+      "mue": 0.100, 
+      "sigma": 0.01
+    }
+  ]
+}

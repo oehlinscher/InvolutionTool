@@ -1,0 +1,165 @@
+
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{siunitx} % Required for alignment
+\usepackage{placeins}
+\usepackage{subfig} 
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{longtable}
+\newcommand{\pagecheck}[1]% #1 = legnth to end of page
+{\ifvmode\vspace{-\parskip}\else\newline\fi% check for blank line between items
+\rule{0pt}{#1}\vspace{-#1}}
+
+\sisetup{
+  round-mode          	= figures, % Rounds numbers
+  round-precision     	= 4, % to x places
+  exponent-product    	= \cdot,
+  scientific-notation 	= false
+}
+
+%##VARIABLES##%
+%\input{variables}
+
+
+
+\begin{document}
+
+
+\title{Report for \spicedcdesign}
+\author{Involution Tool}
+
+\maketitle
+
+
+\section{Basic information}
+%##BASIC##%
+%\input{basic}
+
+
+\section{Configurations}
+%##CONFIGURATION##%
+%\input{configurations}
+
+\section{Power consumption}
+
+\begin{table}[hbt]
+\begin{tabular}{ l *{4}{|S[table-column-width=1.8cm]}} 
+  & {SPICE} & {DC} & {PT Avg} & {PT Time} \\
+  \hline			
+  SPICE & \num{\memultiavgvaluespicepwravg} & \num{\memultiavgvaluespicedctotaltotal} & \num{\memultiavgvaluespiceptavgtotalpower} & \num{\memultiavgvaluespicepttimtotalpower}\\
+  MODELSIM & {-} & \num{\memultiavgvaluemodelsimdctotaltotal} & \num{\memultiavgvaluemodelsimptavgtotalpower}& \num{\memultiavgvaluemodelsimpttimtotalpower}\\
+  INVOLUTION & {-} & \num{\memultiavgvalueinvolutiondctotaltotal} & \num{\memultiavgvalueinvolutionptavgtotalpower}& \num{\memultiavgvalueinvolutionpttimtotalpower}\\
+  \hline  
+\end{tabular}
+\caption{Average power consumption (in \si{\envdynamicpowerunitsiprefix\watt})}
+\end{table}
+
+\begin{table}[hbt]
+\begin{tabular}{ l *{3}{|S[table-column-width=1.44cm]}} 
+  {Reference} & {DC} & {PT Avg} & {PT Time} \\
+  \hline			
+  {SPICE/SPICE vs. SPICE/column} & 
+  \num{\memultiavgvalueabsavgperspicespicespicedc} & 
+  \num{\memultiavgvalueabsavgperspicespicespiceptavg} & 
+  \num{\memultiavgvalueabsavgperspicespicespicepttim} \\
+  \hline	
+  {SPICE/SPICE vs. Modelsim} & 
+  \num{\memultiavgvalueabsavgperspicespicemodelsimdc} & 
+  \num{\memultiavgvalueabsavgperspicespicemodelsimptavg} & 
+  \num{\memultiavgvalueabsavgperspicespicemodelsimpttim}\\
+  {SPICE/column vs. Modelsim} & \num{\memultiavgvalueabsavgperspicecolumnmodelsimdc} & \num{\memultiavgvalueabsavgperspicecolumnmodelsimptavg} & \num{\memultiavgvalueabsavgperspicecolumnmodelsimpttim}\\
+  \hline	
+  {SPICE/SPICE vs. Involution} & 
+  \num{\memultiavgvalueabsavgperspicespiceinvolutiondc} & 
+  \num{\memultiavgvalueabsavgperspicespiceinvolutionptavg} & 
+  \num{\memultiavgvalueabsavgperspicespiceinvolutionpttim}\\
+  {SPICE/column vs. Involution} & \num{\memultiavgvalueabsavgperspicecolumninvolutiondc} & \num{\memultiavgvalueabsavgperspicecolumninvolutionptavg} & \num{\memultiavgvalueabsavgperspicecolumninvolutionpttim}\\
+  \hline	
+\end{tabular}
+\caption{Deviation average power consumption. Absolute percent values are used from the single reports, so that positive and negative deviations do not compensate each other) (in \si{\percent})}
+\end{table}
+
+\begin{table}[hbt]
+\begin{tabular}{ l *{3}{|S[table-column-width=1.44cm]}} 
+  {Reference} & {DC} & {PT Avg} & {PT Time} \\
+  \hline			
+  {SPICE/SPICE vs. SPICE/column} & 
+  \num{\memultiminvalueabsavgperspicespicespicedc} 
+  {(\ref{\memultiminvalueabsrefavgperspicespicespicedc})} & 
+  \num{\memultiminvalueabsavgperspicespicespiceptavg} 
+  {(\ref{\memultiminvalueabsrefavgperspicespicespiceptavg})} & 
+  \num{\memultiminvalueabsavgperspicespicespicepttim} 
+  {(\ref{\memultiminvalueabsrefavgperspicespicespicepttim})}\\
+  \hline	
+  {SPICE/SPICE vs. Modelsim} & 
+  \num{\memultiminvalueabsavgperspicespicemodelsimdc} 
+  {(\ref{\memultiminvalueabsrefavgperspicespicemodelsimdc})}& 
+  \num{\memultiminvalueabsavgperspicespicemodelsimptavg} 
+  {(\ref{\memultiminvalueabsrefavgperspicespicemodelsimptavg})}& 
+  \num{\memultiminvalueabsavgperspicespicemodelsimpttim} 
+  {(\ref{\memultiminvalueabsrefavgperspicespicemodelsimpttim})}\\
+  {SPICE/column vs. Modelsim} & \num{\memultiminvalueabsavgperspicecolumnmodelsimdc} {(\ref{\memultiminvalueabsrefavgperspicecolumnmodelsimdc})}& \num{\memultiminvalueabsavgperspicecolumnmodelsimptavg} {(\ref{\memultiminvalueabsrefavgperspicecolumnmodelsimptavg})}& \num{\memultiminvalueabsavgperspicecolumnmodelsimpttim} {(\ref{\memultiminvalueabsrefavgperspicecolumnmodelsimpttim})}\\
+  \hline	
+  {SPICE/SPICE vs. Involution} & 
+  \num{\memultiminvalueabsavgperspicespiceinvolutiondc} 
+  {(\ref{\memultiminvalueabsrefavgperspicespiceinvolutiondc})}& 
+  \num{\memultiminvalueabsavgperspicespiceinvolutionptavg} 
+  {(\ref{\memultiminvalueabsrefavgperspicespiceinvolutionptavg})}& 
+  \num{\memultiminvalueabsavgperspicespiceinvolutionpttim} 
+  {(\ref{\memultiminvalueabsrefavgperspicespiceinvolutionpttim})}\\
+  {SPICE/column vs. Involution} & \num{\memultiminvalueabsavgperspicecolumninvolutiondc} {(\ref{\memultiminvalueabsrefavgperspicecolumninvolutiondc})}& \num{\memultiminvalueabsavgperspicecolumninvolutionptavg} {(\ref{\memultiminvalueabsrefavgperspicecolumninvolutionptavg})}& \num{\memultiminvalueabsavgperspicecolumninvolutionpttim} {(\ref{\memultiminvalueabsrefavgperspicecolumninvolutionpttim})}\\
+  \hline	
+\end{tabular}
+\caption{Minimum absolute deviation power consumption (in \si{\percent})}
+\end{table}
+
+\begin{table}[hbt]
+\begin{tabular}{ l *{3}{|S[table-column-width=1.44cm]}} 
+  {Reference} & {DC} & {PT Avg} & {PT Time} \\
+  \hline			
+  {SPICE/SPICE vs. SPICE/column} & 
+  \num{\memultimaxvalueabsavgperspicespicespicedc} 
+  {(\ref{\memultimaxvalueabsrefavgperspicespicespicedc})} & 
+  \num{\memultimaxvalueabsavgperspicespicespiceptavg} 
+  {(\ref{\memultimaxvalueabsrefavgperspicespicespiceptavg})} & 
+  \num{\memultimaxvalueabsavgperspicespicespicepttim} 
+  {(\ref{\memultimaxvalueabsrefavgperspicespicespicepttim})}\\
+  \hline	
+  {SPICE/SPICE vs. Modelsim} & 
+  \num{\memultimaxvalueabsavgperspicespicemodelsimdc} 
+  {(\ref{\memultimaxvalueabsrefavgperspicespicemodelsimdc})}& 
+  \num{\memultimaxvalueabsavgperspicespicemodelsimptavg} 
+  {(\ref{\memultimaxvalueabsrefavgperspicespicemodelsimptavg})}& 
+  \num{\memultimaxvalueabsavgperspicespicemodelsimpttim} 
+  {(\ref{\memultimaxvalueabsrefavgperspicespicemodelsimpttim})}\\
+  {SPICE/column vs. Modelsim} & \num{\memultimaxvalueabsavgperspicecolumnmodelsimdc} {(\ref{\memultimaxvalueabsrefavgperspicecolumnmodelsimdc})}& \num{\memultimaxvalueabsavgperspicecolumnmodelsimptavg} {(\ref{\memultimaxvalueabsrefavgperspicecolumnmodelsimptavg})}& \num{\memultimaxvalueabsavgperspicecolumnmodelsimpttim} {(\ref{\memultimaxvalueabsrefavgperspicecolumnmodelsimpttim})}\\
+  \hline	
+  {SPICE/SPICE vs. Involution} & 
+  \num{\memultimaxvalueabsavgperspicespiceinvolutiondc} 
+  {(\ref{\memultimaxvalueabsrefavgperspicespiceinvolutiondc})}& 
+  \num{\memultimaxvalueabsavgperspicespiceinvolutionptavg} 
+  {(\ref{\memultimaxvalueabsrefavgperspicespiceinvolutionptavg})}& 
+  \num{\memultimaxvalueabsavgperspicespiceinvolutionpttim} 
+  {(\ref{\memultimaxvalueabsrefavgperspicespiceinvolutionpttim})}\\
+  {SPICE/column vs. Involution} & \num{\memultimaxvalueabsavgperspicecolumninvolutiondc} {(\ref{\memultimaxvalueabsrefavgperspicecolumninvolutiondc})}& \num{\memultimaxvalueabsavgperspicecolumninvolutionptavg} {(\ref{\memultimaxvalueabsrefavgperspicecolumninvolutionptavg})}& \num{\memultimaxvalueabsavgperspicecolumninvolutionpttim} {(\ref{\memultimaxvalueabsrefavgperspicecolumninvolutionpttim})}\\
+  \hline	
+\end{tabular}
+\caption{Maximum absolute deviation power consumption (in \si{\percent})}
+\end{table}
+
+
+
+\FloatBarrier
+\section{Waveform comparison}
+%##WAVEFORM##%
+
+\FloatBarrier
+%##RANKING##%
+
+\pagebreak
+\FloatBarrier
+%##SCHEMATIC##%
+
+\end{document}

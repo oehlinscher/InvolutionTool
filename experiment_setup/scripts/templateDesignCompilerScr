@@ -1,0 +1,43 @@
+###############################################################################
+#
+#	Involution Tool
+#	File: templateDesignCompilerScr
+#	
+#   Copyright (C) 2018-2019  Daniel OEHLINGER <d.oehlinger@outlook.com>
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+###############################################################################
+
+read_file -format verilog ##topDir####verilogFileName##
+
+set search_path ##simSearchPath##
+set link_path "* ##simLinkPath##"
+read_db "##simDBName##"
+
+
+# set a high clock period (10000000ns)
+create_clock -name my_virtual_fake_clock -period 10000000
+
+if {[info exists ::env(SPEF_FILE_NAME)]} {
+    read_parasitics ##topDir####spefFileName##
+}
+
+
+set power_preserve_rtl_hier_names "true"
+set find_ignore_case "true"
+read_saif -input ##inputFileName## -instance_name "##circuitName##" -verbose
+set find_ignore_case "false" 
+report_power -analysis_effort high
+quit

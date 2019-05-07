@@ -1,0 +1,69 @@
+Listing~\ref{lst:generate} shows an example configuration for the waveform
+generation:
+
+\myinputminted[linenos,tabsize=2,breaklines,frame=single]{js}{Example configuration for waveform generation.}{generate}{code/generate.json}
+
+\subsubsection{Parameters}\label{sec:man-wave-param}
+
+\begin{itemize}
+\item
+  N: the overall number of input transitions to generate. Default value: 
+  \SI{100} transitions.
+\item
+  calc\_next\_transition\_mode:
+
+  \begin{itemize}
+  \item
+    LOCAL: The randomly generated transition time is added to the time
+    of the last transition on the current signal.
+  \item
+    GLOBAL: The randomly generated transition time is added to the time
+    of the last transition on any input signal. This is the default value.
+  \end{itemize}
+\item
+  mue / sigma: Used for parametrizing the normal distribution, which is
+  responsible for generation of the time for the next transition (delta time
+  since the last transition). The values are in \si{\ns}, default values: 
+  \SI{0.029}{\ns} / \SI{0.010}{\ns}.
+\item
+  signals: A list of signals for which input waveforms should be
+  generated.
+  
+\item rise\_time: Specifies the rise and fall time of the generated transitions 
+in \si{\ns}. Default value: \SI{0.001}{\ns}. Increasing this value can be 
+useful if the \spice\ simulation tool encounters numerical issues. 
+  
+\item
+  groups: Groups can be used for specifying correlations between two or
+  more signals. Groups can be useful for example, if two input signals are applied
+  at the inputs of a gate. Since we want to generate short pulses, it
+  can be useful to generate transitions at these input signals which are
+  somehow correlated.
+
+  \begin{itemize}
+  \item
+    mue / sigma: These two values are used for parametrizing the random
+    number generation, which is used for calculating the transition time
+    of the following transition. The random numbers are distributed
+    according to a normal distribution. Values are in \si{\ns}, default values: 
+    \SI{0.010}{\ns} / \SI{0.030}{\ns}.
+  \item
+    signals: Contains a list of two or more signals. If a transition
+    happens on any signal in the list, each other signal in the list is
+    checked if a following transition should be generated.
+  \item
+    correlation\_possibility: This parameter specifies the possibility
+    that a \emph{causing} transition causes a \emph{following} transition on
+    any of the other signals. This value is used for randomly deciding
+    for each signal if a following transition should be generated. Default 
+    value: 0.5.
+  \item
+    one\_way: If only signal A should cause transitions on the signals
+    B, C, \ldots{} but not vice versa, this option can be set to true.
+    In general, this option can be useful if one input signal (A) is
+    delayed (maybe because A is first inverted), and the other input
+    signal (B) is not delayed, and these two signals are applied at a
+    gate. Then it can be useful that only transitions on signal A cause
+    transitions on signal B. Default value: False.
+  \end{itemize}
+\end{itemize}

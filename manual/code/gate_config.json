@@ -1,0 +1,18 @@
+"ND2M1N": {
+	"T_P": 1, 
+	"channel_type" : "HILL_CHANNEL",
+	"channel_location" : "INPUT",
+	"channel_parameters" : {
+		"N_UP" : 1.0,
+		"N_DO" : 1.0
+	},
+	"entity_name": "ND2M1N", 
+	"function": "nand", 
+	"inputs": [
+		"A", 
+		"B"
+	], 
+	"outputs": [
+		"Z"
+	]
+}

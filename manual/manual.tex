@@ -1,0 +1,193 @@
+\documentclass[a4,12pt,hidelinks]{article}
+\usepackage{tabularx} % extra features for tabular environment
+\usepackage{amsmath}  % improve math presentation
+\usepackage{graphicx} % takes care of graphic including machinery
+\usepackage{cite} % takes care of citations
+\usepackage{subcaption} % Allows the use of subfigures and enables their referencing.
+\usepackage[minted,breakable,skins]{tcolorbox}
+\usepackage{minted}
+\makeatletter
+\AtBeginEnvironment{myminted}{\dontdofcolorbox}
+\def\dontdofcolorbox{\renewcommand\fcolorbox[4][]{##4}}
+\makeatother
+
+\newtcblisting{myminted}[4][]{
+  blanker,bottom=0.9\baselineskip,
+  breakable,listing only,
+  before skip=0.5\baselineskip,
+  after skip=0.9\baselineskip,,
+  minted options={#1},
+  minted language={#2},
+  attach boxed title to bottom center,
+  minipage boxed title,
+  boxed title style={blanker},
+  title={{\captionof{listing}{#3\label{lst:#4}}}},
+  enlargepage flexible=3\baselineskip% <--- may be reduced to 2\baselineskip or be deleted
+}
+
+\newtcbinputlisting{\myinputminted}[5][]{%
+  blanker,bottom=0.9\baselineskip,
+  breakable,listing only,
+  before skip=0.5\baselineskip,
+  after skip=0.9\baselineskip,,
+  minted options={#1},
+  minted language={#2},
+  attach boxed title to bottom center,
+  minipage boxed title,
+  boxed title style={blanker},
+  title={{\captionof{listing}{#3\label{lst:#4}}}},
+  listing file={#5},
+  enlargepage flexible=3\baselineskip% <--- may be reduced to 2\baselineskip or be deleted
+}
+
+
+\usepackage{dirtree}
+\usepackage{todonotes}
+\usepackage{siunitx}
+\usepackage{listings}
+
+\usepackage[final]{hyperref} % adds hyper links inside the generated pdf file
+%\hypersetup{
+%	colorlinks=true,       % false: boxed links; true: colored links
+%	linkcolor=blue,        % color of internal links
+%	citecolor=blue,        % color of links to bibliography
+%	filecolor=magenta,     % color of file links
+%	urlcolor=blue         
+%}
+
+
+\input{common.tex}
+% Circuit names
+\newcommand{\invtree}{\emph{inv\_tree}}
+\newcommand{\invtreenm}[1]{\emph{inv\_tree\_#1nm}}
+\newcommand{\cslack}{\emph{c17\_slack}}
+\newcommand{\cslacknm}[1]{\emph{c17\_slack\_#1nm}}
+\newcommand{\mipsclock}{\emph{mips\_clock}}
+\newcommand{\mipsclocknm}[1]{\emph{mips\_clock\_#1nm}}
+
+% File
+%% File names
+\newcommand{\shapingnm}[1]{\file{shaping\_#1nm.sp}}
+\newcommand{\configcfg}{\file{config.cfg}}
+\newcommand{\configcfgnm}[1]{\file{config\_#1nm.cfg}}
+\newcommand{\mainnewexp}{\file{main\_new\_exp.sp}}
+\newcommand{\crossingsjson}{\file{crossings.json}}
+\newcommand{\resultsjson}{\file{results.json}}
+\newcommand{\gateconfigjson}{\file{gate\_config.json}}
+
+%% File extensions
+\newcommand{\texfile}{\file{*.tex}}
+\newcommand{\csvfile}{\file{*.csv}}
+\newcommand{\vcdfile}{\file{*.vcd}}
+\newcommand{\trfile}{\file{*.tr0}}
+\newcommand{\jsonfile}{\file{*.json}}
+\newcommand{\spfile}{\file{*.sp}}
+\newcommand{\rawfile}{\file{*.raw}}
+\newcommand{\saiffile}{\file{*.saif}}
+\newcommand{\sdffile}{\file{*.sdf}}
+\newcommand{\dofile}{\file{*.do}}
+
+%% Base style
+\newcommand{\file}[1]{\emph{#1}}
+
+% Tool names 
+\newcommand{\multiexec}{multi\_exec}
+
+% Language names
+\newcommand{\vhdl}{VHDL}
+\newcommand{\verilog}{Verilog}
+
+% Channels
+\newcommand{\expchannel}{exp-channel}
+\newcommand{\hillchannel}{Hill-channel}
+
+
+\begin{document}
+
+\title{Involution Tool Manual}
+\author{Daniel \"Ohlinger}
+\date{\today}
+\maketitle
+
+\tableofcontents 
+
+\section*{Version history}
+\label{sec:man-version-history}
+\input{version-history}
+
+\section{Introduction}
+\label{sec:man-introduction}
+\input{introduction}
+
+\section{General}
+In this Section, the overall structure of the Involution Tool (\invt) is 
+presented and the workflow is explained. It is explained how the parts of the 
+\invt\ interact with each other.
+
+\label{sec:man-general}
+\subsection{Structure of the Involution Tool}
+\label{sec:man-general-structure}
+\input{structure-of-the-involution-tool}
+
+\subsection{Workflow of the Involution Tool}
+\label{sec:man-general-workflow}
+\input{workflow-of-the-involution-tool}
+
+\section{Configuration}
+\label{sec:man-configuration}
+
+\subsection{Waveform generation}
+\label{sec:man-configuration-waveform}
+\input{waveform-generation}
+
+\subsection{Gate generation}
+\label{sec:man-configuration-gate}
+\input{gate-generation}
+
+\subsection{Report generation}
+\label{sec:man-configuration-report}
+\input{report-generation}
+
+\section{How-To}
+\label{sec:man-howto}
+
+\subsection{Add a new circuit}
+\label{sec:man-howto-circuit}
+\input{how-to-add-a-new-circuit}
+
+\subsection{Generate schematic}
+\label{sec:man-howto-schematic}
+\input{how-to-generate-schematic}
+
+\section{Tools}
+\label{sec:man-tools}
+
+\subsection{Multi execution tool (\multiexec)}
+\label{sec:man-tools-multiexec}
+\input{multi-exec}
+
+\subsection{Plots}
+\label{sec:man-plots}
+\input{plots}
+
+\subsection{SDF Extract}
+\label{sec:man-sdf-extract}
+\input{sdf-extract}
+
+\subsection{Generate Matching}
+\label{sec:man-generate-matching}
+\input{generate-matching}
+
+\section{Evaluation}
+\label{sec:man-evaluation}
+\input{evaluation}
+
+\section{Future development}
+\label{sec:man-future-development}
+\input{future-developments}
+
+\bibliographystyle{IEEEtran}
+\bibliography{mybib}
+
+
+\end{document}

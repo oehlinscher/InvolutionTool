@@ -1,0 +1,10 @@
+{
+  "N": 500, 
+  "calc_next_transition_mode": "GLOBAL", 
+  "groups": [], 
+  "mue": 0.029, 
+  "sigma": 0.01, 
+  "signals": [
+    "din"
+  ]
+}

@@ -1,0 +1,28 @@
+\begin{tikztimingtable}
+[
+    timing/slope=0.0,       % no slope
+    xscale=5.0,yscale=1.5,  % scale diagrams    
+    semithick,               % set line width
+    timing/metachar={{K}[2]{#1l !{++(0,+.5\yunit)} 
+    N[rectangle,scale=.5]{\shortstack{#2}} 
+    !{++(0,-.5\yunit)} #1l}},
+    timing/metachar={{J}[2]{#1h !{++(0,-.5\yunit)} 
+    N[rectangle,scale=.5]{\shortstack{#2}} !{++(0,+.5\yunit)} 
+    #1h}},
+]
+  Trace A          & 0.5L 0.4H 0.5L 0.4J{o.s} 0.5L 0.3J{i.s} 0.4L 0.5H 
+  0.3K{i.s} 1H\\
+  Trace B          & 0.7L 0.4H 1.1L 0.5H 0.4L 0.3J{i.i} 0.5L 0.2J{i.i} 
+  0.3K{o.i} 0.3H\\ 
+  Deviation Trace  & 0.5L 0.2H 0.2L 0.2H 0.3L 0.4H 0.4L 0.1H 0.3L 0.1H 0.3L 
+  0.1H 0.3L 0.1H 0.3L 0.1H 0.2L 0.3H 0.3L\\
+   \extracode
+   \begin{pgfonlayer}{background}
+   % Add labels
+   %\node [anchor=south east,inner sep=0pt] at (1.40,1.20) {\circled{1}};
+   %\node [anchor=south east,inner sep=0pt] at (2.75,1.20) {\circled{2}};
+   %\node [anchor=south east,inner sep=0pt] at (4.15,1.20) {\circled{3}};
+   %\node [anchor=south east,inner sep=0pt] at (5.45,1.20) {\circled{4}};
+   \end{pgfonlayer}
+   \tablegrid[black!25,step=1.0]
+\end{tikztimingtable}

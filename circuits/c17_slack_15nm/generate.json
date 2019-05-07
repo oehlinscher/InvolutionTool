@@ -1,0 +1,14 @@
+{
+  "N": 500, 
+  "calc_next_transition_mode": "GLOBAL", 
+  "groups": [], 
+  "mue": 0.1, 
+  "sigma": 0.01, 
+  "signals": [
+    "nx1", 
+    "nx7", 
+    "nx3", 
+    "nx2", 
+    "nx6"
+  ]
+}

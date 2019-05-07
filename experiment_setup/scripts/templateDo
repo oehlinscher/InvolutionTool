@@ -1,0 +1,88 @@
+###############################################################################
+#
+#	Involution Tool
+#	File: templateDo
+#	
+#   Copyright (C) 2018-2019  Daniel OEHLINGER <d.oehlinger@outlook.com>
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+###############################################################################
+
+if {[file isdirectory work]} {file delete -force work};
+vlib work
+
+set mode ##name##
+
+vcom -work work -2008 -novopt ./vhdl/p_exp_channel.vhd
+vcom -work work -2008 -novopt ./vhdl/ea_exp_channel.vhd
+vcom -work work -2008 -novopt ./vhdl/p_hill_channel.vhd
+vcom -work work -2008 -novopt ./vhdl/ea_hill_channel.vhd
+
+if {$mode eq {involution}} {
+	vcom -work work -2008 -novopt ##gateDirs##
+} else {
+	vlog -work work -novopt -stats=none ##simLibraryVerilog##
+}
+
+# define which type to use, VHDL causes no SDF annotation problems,
+# but for large design converting is not feasible
+if {{##circuitFileType##} eq {verilog}} {
+	vlog -work work -novopt -stats=none ##topDir####circuitFile##
+} else {
+	vcom -work work -2008 -novopt ##topDir####circuitFile##
+}
+
+
+if {$mode eq {involution}} {
+	vcom -work work -2008 -novopt ##circuitDir##circuit_involution.vhd
+} else {
+	vcom -work work -2008 -novopt ##circuitDir##circuit_modelsim.vhd
+}
+
+#project open IT
+#project compileorder
+#project compileall
+#project calculateorder
+#project compileoutofdate
+
+# Experimented with $sdf_annotate task to fix the warning "Invalid ports for INTERCONNECT." --> did not  work
+#vsim work.circuit_TB -t fs -novopt +mindelays -sdfnoerror -GVectorsDir=##vectorsDir## 
+
+if {$mode eq {involution}} {
+	# circuit_config is the name of the configuratin that should be used (configuration is placed in the circuit.vhd (testbench))
+	#vsim work.circuit_TB -t fs -novopt -sdfnoerror -sdfmin ##unitName##=##topDir####sdfFile## -GVectorsDir=##vectorsDir## -GV_DD=##channelVDD## -GV_TH=##channelVTH## circuit_config
+	vsim work.circuit_TB -t fs -novopt -sdfnoerror -sdfmin ##unitName##=##topDir####sdfFile## -GVectorsDir=##vectorsDir## -GV_DD=##channelVDD## -GV_TH=##channelVTH##
+} else {
+	vsim work.circuit_TB -t fs -novopt -sdfnoerror -sdfmin ##unitName##=##topDir####sdfFile## -GVectorsDir=##vectorsDir##
+}
+#vsim work.circuit_TB -t fs -voptargs=+acc=full -sdfnoerror -sdfmax ##unitName##=##topDir####sdfFile##
+
+# uncomment this if run in ModelSim
+#add wave /circuit_tb/input
+#add wave /circuit_tb/out1
+#add wave /circuit_tb/out2
+#add wave /circuit_tb/out3
+#add wave /circuit_tb/out4
+#
+#wave zoom range {0 ps} {4200 ps}
+
+vcd file ##name##.vcd
+##vcdAdd##
+
+run -all
+
+# comment this if run in ModelSim
+quit -sim
+quit -f

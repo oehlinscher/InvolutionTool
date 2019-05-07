@@ -1,0 +1,153 @@
+The report generation of the \invt\ attempts to be very
+flexible. The main parts of the report generation are: 
+\begin{itemize}
+\item Scripts for extracting data from the reports of the various tools 
+(\hspice, \spectre, \dc, \primetime). 
+\item \LaTeX\ templates for displaying the data in a customer-defined way. 
+\item Scripts for generating \texfile\ files, based on \LaTeX\ templates. 
+Especially important for data that is depending on the configuration of the 
+circuit and the circuit itself and has no fixed length and is recurring. 
+\item Plots
+\end{itemize}
+
+\subsubsection{Scripts for extracting data}
+\label{sec:man-report-scripts-for-extracting-data}
+
+With various scripts, the data of the simulation is extracted from the
+reports of the tools (\hspice, \spectre, \dc, \primetime,) and
+stored in a dictionary. Unfortunately, some of the tools do not print
+the data in a parser-friendly way. Therefore it is quite difficult to
+write stable, version independent parsers for the reports. It can
+happen, that the user has to adapt these scripts, for different versions
+of the tools, especially the output format for the \dc\ and \primetime\ report 
+are difficult to parse. For each file, a prefix is specified per default. 
+This avoids conflicts in the dictionary containing all the parsed information. 
+It also helps the user to find out how certain information from the tool report 
+is named in the data
+dictionary from the \invt. The extracted data is saved in the
+results folder of the specific circuit in the file \resultsjson.
+This file is then converted to a file called \emph{variables.tex}, which
+is included by the top level report file. All the specified variables
+can be used in the report files.
+
+\subsubsection{Latex templates}
+\label{sec:man-report-latex-templates}
+
+The \invt\ supplies basic latex templates, which can be easily
+adapted to fit the users needs. The templates are located in the
+experiment\_setup/tex/.
+
+\begin{itemize}
+\item
+  \file{report\_single.tex}: top level file which includes all the
+  generated \file{*.tex} files. Basic information which needs no additional
+  processing can also be included in this file. There are some
+  placeholders which can be used for specifying that a certain file
+  should be included here.
+
+  \begin{itemize}
+  \item
+  	\lstinline|%##VARIABLES##%|
+  \item
+  \lstinline|%##CWG##%|
+  \item
+  \lstinline|%##PLOT##%|
+  \item
+  \lstinline|%##WAVEFORM##%|
+  \item
+  \lstinline|%##SCHEMATIC##%|
+  \end{itemize}
+\item
+  \emph{cwg.tex} / \emph{cwg\_group.tex}: These two files are used as template 
+  for
+  displaying information about the waveform generation (see Section~\ref{sec:man-configuration-waveform}).
+  \emph{cwg.tex} contains general information and can use variables from
+  the data dictionary. The placeholder \emph{\%\#\#GROUPS\#\#\%} can be
+  used for specifying that the information about the group configuration
+  should be inserted here. The configuration for one single group is in
+  the file \emph{cwg\_group.tex}. There are some placeholders which can
+  be used in this file:
+
+  \begin{itemize}
+  \item
+  	\lstinline|%##SIGNALS##%|: displays the signals which are in this group.
+  \item
+    \lstinline|%##SIGMA##%|, \lstinline|%##MUE##%|: The parameters used for 
+    randomly calculating the delay for a following transition that is     
+    caused by the initial transition on one of the signals of the group.
+  \item
+    \lstinline|%##ONEWAY##%|: displays a plain bool value if the group is a
+    one-way group or not.
+  \item
+    \lstinline|%##ONEWAYCHECKBOX##%|: create a checked or unchecked checkbox
+    which indicates if the group is a one-way group or not.
+  \end{itemize}
+\item
+  \file{figure\_group\_template.tex} / \file{figure\_template.tex}: These two 
+  files   specify how the defined figures in the config file should be
+  displayed. \file{figure\_group\_template.tex} contains the layout for
+  one row of figures. It can be useful to place multiple figures in
+  one row, and this file specifies how this is done. The placeholder
+  \lstinline|%##FIGURE##%| indicates that the \LaTeX\ code for one figure is
+  inserted here. The placeholder \lstinline|%##GROUPCAPTION##%| can be used
+  for adding captions to the row. If there are multiple rows, all rows
+  except the last one get a \emph{phantomcaption}. After the last row of
+  figures the caption of all rows is inserted. We use phantomcaption
+  here, because we only want one caption after all specified figures,
+  and this package ensures that the numbering of the figures is correct.
+\item
+  \file{waveform.tex}: Template for the table that shows the transition count
+  of the different simulations for each signal. \lstinline|%##LINES##%| can be 
+  used for indicating that the rows of the table should be inserted here.
+\item
+  \file{schematic.tex}: Specifies how the schematic of the circuit is
+  displayed. The placeholder \lstinline|%##SCHEMATIC_PATH##%| can be used to
+  specify the path to the image of the schematic.
+\end{itemize}
+
+\subsubsection{Report config file}\label{sec:man-report-report-config-file}
+
+The \emph{report.cfg} shown in Listing~\ref{lst:report} file has to be placed 
+in the top level of each circuit. The following code snippet shows an example 
+configuration:
+
+\myinputminted[linenos,tabsize=2,breaklines,frame=single]{bash}{Configuration for the reporting.}{report}{code/report.cfg}
+
+Since the different tools report the power consumption in different
+power units, it can be specified how the information should be displayed
+in the report. The power unit in which the data is displayed in the
+reports is parsed, and the extracted power information is converted to the
+specified power unit. With \lstinline|FIGURES|, the figures which should be
+displayed can be specified. If a schematic for the circuit should be
+added to the report, the path to the schematic can be specified with
+\lstinline|SCHEMATIC_PATH|. For more information on how to create the
+schematic of a circuit, see Section~\ref{sec:man-howto-schematic}.
+
+\subsubsection{Plots}\label{sec:man-report-plots}
+
+During the report generation a number of plots is generated, based on
+the result traces of \spice\ and \modelsim. In the \configcfg\ (either in
+the general, or in the circuit specific config file) a number of
+parameters can be set. An example is shown in Listing~\ref{lst:plots}:
+
+\myinputminted[linenos,tabsize=2,breaklines,frame=single]{bash}{Figure plotting configuration.}{plots}{code/plots.cfg}
+
+\begin{itemize}
+\item
+  \lstinline|REPORT_CONFIG|: Path to the \file{report.cfg} file.
+\item
+  \lstinline|FIGURE_ZOOM_NUMBER|: Configures the number of zoom plots that 
+  should be generated. If the number specified is smaller than two, no zoom
+  plots are generated.
+\item
+  \lstinline|FIGURE_ZOOM_OVERLAPPING|: Configures how much two adjacent zoom 
+  plots should overlap.
+\end{itemize}
+
+The following two environment variables, shown in Listing~\ref{lst:devexport} 
+specify, whether a \csvfile\ file with information about the deviation trace 
+should be generated during the figure generation process. These files can be 
+useful when analyzing the deviation trace in detail. The \csvfile\ files can be 
+found in the same folder as the figures.
+
+\myinputminted[linenos,tabsize=2,breaklines,frame=single]{bash}{Deviation trace export configuration.}{devexport}{code/devexport.cfg}

@@ -1,0 +1,36 @@
+{
+  "N": 500, 
+  "calc_next_transition_mode": "GLOBAL",
+  "mue": 0.029, 
+  "sigma": 0.01, 
+  "rise_time": 0.002,
+  "signals": [
+    "nx1", 
+    "nx7", 
+    "nx3", 
+    "nx2", 
+    "nx6"
+  ],
+  "groups": [
+    {
+      "correlation_possibility" : 0.4,
+      "mue": 0.0025, 
+      "oneway": false, 
+      "sigma": 0.0085, 
+      "signals": [
+        "nx3", 
+        "nx6"
+      ]
+    }, 
+    {
+      "correlation_possibility" : 0.6,
+      "mue": 0.01, 
+      "oneway": false, 
+      "sigma": 0.03, 
+      "signals": [
+        "nx1", 
+        "nx3"
+      ]
+    }
+  ]
+}

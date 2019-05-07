@@ -1,0 +1,131 @@
+The basic structure of the involution tool is split into the following parts: 
+
+\dirtree{%
+.1 circuits/.
+.2 c17\_slack\_15nm/.
+.2 c17\_slack\_65nm/.
+.2 inv\_tree\_15nm/.
+.2 inv\_tree\_65nm/.
+.2 mips\_clock\_15nm/.
+.2 config.cfg.
+.2 config\_15nm.cfg.
+.2 config\_65nm.cfg.
+.2 gate\_config.json.
+.1 experiments\_setup/.
+.2 python/.
+.2 scripts/.
+.2 spice/.
+.2 tex/.
+.2 vhdl/.
+.2 Makefile.
+.1 manual/.
+%.1 manuals/.
+.1 tools/.
+.2 multi\_exec/.
+.2 plots/.
+.2 sdf\_extract/.
+}
+
+\subsubsection{Circuits}\label{sec:man-struc-circuits}
+
+This is the folder where new circuits should be added. \cslacknm{15}, 
+\cslacknm{65}, \invtreenm{15}, \invtreenm{65},  and \mipsclocknm{15} are 
+five basic circuits which can be used as \emph{template} for new circuits. The 
+\configcfg\ file contains variables which are used during the simulation 
+process, and are used per default by all circuits, independent of the 
+technology. 
+These variables can be overridden in the \configcfg\ file of each circuit, 
+which also includes the default \configcfgnm{xx} file, depending on the used 
+technology.
+More information can be found in Section~\ref{sec:man-howto-circuit}. Most of 
+the variables in the \emph{config\*.cfg} files are used for defining the folder 
+structure of a specific circuit and the libraries to use.
+
+The recommended (and default) structure for a circuit is:
+
+\begin{itemize}
+\item input: contains \mainnewexp, a \spice\ file where the placeholders (for 
+example for the input traces) are already replaced, and the generated waveform 
+saved in a \jsonfile\ file. 
+\item spice: contains the trace and logfiles of the \spice\ simulation. 
+\item crossings: contains a \jsonfile\ file with all the extracted 
+crossings from either the \hspice\ trace (\trfile) file or the value change 
+dump (\vcdfile) file obtained with \spectre.
+\item vectors: contains the prepared input trace for each input port. This 
+trace is extracted from the \crossingsjson\ file and converted into a \vhdl\ 
+readable version. 
+\item modelsim: contains the log files, and especially the \vcdfile\ files, 
+which are later used for power estimation and plotting.
+\item power: contains the log files from the power estimation tools and the
+generated reports. Also contains the scripts (with replaced placeholders) which 
+are executed by the power estimation tools.
+\item results: contains the reports for each simulation in a subfolder. Such a
+subfolder contains all generated figures (showing and comparing the different 
+traces and their deviation to the \spice\ reference trace), \LaTeX\ files and 
+results extracted from the various result files. In case of using the 
+multi\_execution tool, the reports can also be found in this directory. The 
+waveform uses as input is also saved, together with the used configurations, so 
+that the results can be reproduced.
+\item gates: simple gates can be created automatically (more information in 
+Section~\ref{sec:man-configuration-gate}). The resulting \file{*.vhd} files 
+are saved in this folder.
+\end{itemize}
+
+The described folders contain the results of the different steps of the
+simulation process. More information on the files required for adding a
+new circuit can be found in Section~\ref{sec:man-howto-circuit}.
+
+\subsubsection{Experiment setup:}
+\label{sec:man-stuc-experiment-setup}
+
+This folder contains a set of scripts and templates which are used
+during the default simulation process. Each element of the toolchain can
+be adapted to the needs of the user (by changing the Makefile of the
+specific circuit, and overriding the parts of the toolchain that should
+be handled differently for the circuit). The Makfile calls these scripts
+in several steps. More information on the Makefile and the workflow can
+be found \ref{sec:man-general-workflow}.
+
+\begin{itemize}
+\item
+  python: contains python scripts used for various steps throughout the
+  whole workflow (generating waveforms, parsing trace files, plotting
+  figures and preparing latex reports).
+\item
+  scripts: scripts and templates which are used for preparing the actual
+  scripts used by ModelSim and the power estimation tools.
+\item
+  tex: contains templates for the automatic report generation, more
+  information in Section~\ref{sec:man-configuration-report}.
+\item
+  spice: contains useful snippets which can be added to the \spfile\ file of 
+  the circuit. Currently only contains files for shaping for the \SI{15}{\nm} 
+  (\shapingnm{15}) and \SI{65}{\nm} (\shapingnm{65}) technology can be used for 
+  adding an inverter chain at each input.
+\item
+  vhdl: contains the involution delay channel implementations (\expchannel, 
+  \hillchannel), templates for the testbench generation and a folder called 
+  \emph{gates}, where  more complicated gates, which can not be automatically 
+  generated, can be added. It also contains an implementation for a pure delay 
+  channel, which is currently not used.
+\end{itemize}
+
+\begin{comment}
+\subsubsection{Manuals}
+\label{sec:man-stuc-experiment-manuals}
+
+Most of the manuals in this folder are for HSPICE. Unfortunately there
+are no real manuals for Design Compiler and PrimeTime, so the user has to stick 
+with the man pages.
+\end{comment}
+
+\subsubsection{Manual}
+\label{sec:man-stuc-experiment-manual}
+Contains the \LaTeX\ sources for this manual, and also the 
+resulting manual.pdf.
+
+\subsubsection{Tools}
+\label{sec:man-stuc-experiment-tools}
+
+This folder contains tools which can be used in combination with the
+Involution Tool. More information in Section~\ref{sec:man-tools}.

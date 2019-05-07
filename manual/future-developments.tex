@@ -1,0 +1,52 @@
+During the development and especially during the usage of the \invt\, we came 
+up with ideas for useful improvements. 
+The following is a list of open tasks, each with a short description, which 
+would further increase the usability and / or the performance
+
+\begin{itemize}
+	\item When \hspice\ is used, the \crossingsjson\ file is 
+	generated from the \trfile\ file. \hspice\ automatically supports the 
+	generation of a \vcdfile\ file, which is already the digitized version of 
+	the trace. Using the \vcdfile\ for the generation of the \crossingsjson\ 
+	would increase the performance. (PERFORMANCE).
+	
+	\item Manually implemented gates cannot be used in combination with the 
+	\multiexec\ tool. The idea is to implement different architectures for 
+	each combination of channel type and channel location and set the 
+	different architectures during the simulations. The configuration for 
+	setting the different architectures is not working yet. This has to be 
+	implemented as soon as manually implemented gates are used. (FEATURE).
+	
+	\item When using multiple gates, the report generation for the gate 
+	configuration section is not working yet. The configuration is only 
+	displayed for one gate. (USABILITY).
+	
+	\item In \file{makeVCD.py} the symbol pool is currently fixed to a specific 
+	amount of signals. For larger circuits, this has to be adapted to generate 
+	allowed symbol out of a pool of valid characters. (FEATURES).
+	
+	\item The tool uses Python2.6 and Python3.6 (only for the \file{make.vcd}, 
+	which uses \file{rawread.py}). Either change \file{rawread.py} so that it 
+	can be run by Python2.6, or update all the other scripts so that they are 
+	running with Python3.6 (preferred). (USABILITY).
+	
+	\item The name of the Makefile recipe for the simulation with the digital 
+	delay model is currently named \emph{modelsim}. Since the \invt\ is not 
+	only limited to \modelsim as digital simulation tool, this recipe and the 
+	output folder should be renamed to something more general (\emph{make 
+	digital}?). (CONSISTENCY).
+	
+	\item The file (\file{evaluation.csv}) that is used by the plotting tool 
+	(Section~\ref{sec:man-plots}) is currently prepared manually out of the 
+	\file{results.csv}. This process should be automated in the future with a 
+	Python script (group data, add additional information, calculate metrics). 
+	(FEATURE).
+	
+	\item Rethink the naming conventions for the extracted values out of the 
+	different files of the tools. Especially important if different tools than 
+	the standard tools are used. (USABILITY).
+	
+	\item The tools described in Section~\ref{sec:man-sdf-extract} and 
+	Section~\ref{sec:man-generate-matching} need to be generalized, so that 
+	they work for multiple circuits. (FEATURE).
+\end{itemize}
