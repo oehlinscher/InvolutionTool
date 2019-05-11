@@ -34,7 +34,7 @@ Otherwise the workflow has to be adapted to the used tools and the libraries. Se
 In this tutorial, the toolchain is executed step by step, so that the user gains insights into the workflow. An overview can also be seen in the figure below. 
 
 1. Adapt the path to the libraries in [config_15nm.cfg](circuits/config_15nm.cfg).
-2. cd into the folder for the [inv_tree_15nm](circuits/inv_tree_15nm/) circuit.
+2. cd into the folder for the [mips_clock_15nm](circuits/mips_clock_15nm/) circuit.
 3. `make generate` / Waveform Generation: The main\_new.sp file is the main spice file, which contains placeholders for VDD, temperature and the input waveform. In this step, the placeholders are filled with the specified values and the randomly generated input waveform. The resulting file is saved in the input folder.
 4. `make spice` / Analog Simulation: Spectre executes the simulation and stores the results in the spice folder. Besides the resulting traces, this folder also contains a file with the power meassurement results.
 5. `make crossings` / V<sub>th</sub> Crossings: The traces are digitized and copied into the crossings folder. These traces are the foundation of the digital simulation.
