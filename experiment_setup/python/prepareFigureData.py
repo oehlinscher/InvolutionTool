@@ -54,12 +54,8 @@ def prepareFigureData(start_out_name, crossings_file, involution_vcd, modelsim_v
 	# check if output folder exists
 	if not os.path.exists(fig_folder):
 		os.makedirs(fig_folder)
-
-	with open(matching_file, 'r') as f:
-		for line in f.readlines():
-			parts = line.strip(' \t\n\r').split(' ')
-			MATCHING.append([parts[0],parts[1]])
-			
+		
+	MATCHING = matching_file_to_list(matching_file)			
 			
 	if "VDD" in os.environ:
 		vdd = float(os.environ["VDD"])
@@ -144,6 +140,7 @@ def prepareFigureData(start_out_name, crossings_file, involution_vcd, modelsim_v
 	x_last = sys.float_info.min	
 	overlapping = 0.1
 	zoom_number = 3	
+	export_signal_result = False
 	
 	if "FIGURE_ZOOM_NUMBER" in os.environ:
 		zoom_number = int(os.environ["FIGURE_ZOOM_NUMBER"])
@@ -158,6 +155,10 @@ def prepareFigureData(start_out_name, crossings_file, involution_vcd, modelsim_v
 	msim_export_dev_trace_inf = True
 	if "FIGURE_MSIM_EXPORT_DEV_TRACE_INFO" in os.environ:
 		msim_export_dev_trace_inf = to_bool(os.environ["FIGURE_MSIM_EXPORT_DEV_TRACE_INFO"]) 
+		
+	if "EXPORT_SIGNAL_RESULT" in os.environ:
+		export_signal_result = to_bool(os.environ["EXPORT_SIGNAL_RESULT"]) 
+	
 	
 	round_digits = -1 # next 10e-1, e.g. 0.17 = 0.2, 0.13 = 0.1
 		
@@ -245,44 +246,61 @@ def prepareFigureData(start_out_name, crossings_file, involution_vcd, modelsim_v
 		.replace("%##GLITCHES_INVERTED_MSIM##%", str(dev_trace_msim_results["inverted_glitches_tr1"])) \
 		+ "\n"				
 		
-		# calculate overall values for results.json file				
-		max_values_dict["total_sum_error_inv"] += dev_trace_inv_results["total_area_under_dev_trace"]
-		max_values_dict["total_pos_area_under_dev_trace_inv"] += dev_trace_inv_results["pos_area_under_dev_trace"]
-		max_values_dict["total_neg_area_under_dev_trace_inv"] += dev_trace_inv_results["neg_area_under_dev_trace"]
+		# store the signal value into a dict	
+		signal_values_dict = dict()
 		
-		max_values_dict["total_pos_area_under_dev_trace_inv_wo_glitches"] += dev_trace_inv_results["pos_area_under_dev_trace_wo_glitches"]
-		max_values_dict["total_neg_area_under_dev_trace_inv_wo_glitches"] += dev_trace_inv_results["neg_area_under_dev_trace_wo_glitches"]
-		max_values_dict["total_pos_area_under_dev_trace_inv_transitions"] += dev_trace_inv_results["pos_area_under_dev_trace_transitions"]
-		max_values_dict["total_neg_area_under_dev_trace_inv_transitions"] += dev_trace_inv_results["neg_area_under_dev_trace_transitions"]
-		max_values_dict["total_pos_area_under_dev_trace_inv_transitions_wo_glitches"] += dev_trace_inv_results["pos_area_under_dev_trace_transitions_wo_glitches"]
-		max_values_dict["total_neg_area_under_dev_trace_inv_transitions_wo_glitches"] += dev_trace_inv_results["neg_area_under_dev_trace_transitions_wo_glitches"]	
+		signal_values_dict["total_sum_error_inv"] = dev_trace_inv_results["total_area_under_dev_trace"]
+		signal_values_dict["total_pos_area_under_dev_trace_inv"] = dev_trace_inv_results["pos_area_under_dev_trace"]
+		signal_values_dict["total_neg_area_under_dev_trace_inv"] = dev_trace_inv_results["neg_area_under_dev_trace"]
+		
+		signal_values_dict["total_pos_area_under_dev_trace_inv_wo_glitches"] = dev_trace_inv_results["pos_area_under_dev_trace_wo_glitches"]
+		signal_values_dict["total_neg_area_under_dev_trace_inv_wo_glitches"] = dev_trace_inv_results["neg_area_under_dev_trace_wo_glitches"]
+		signal_values_dict["total_pos_area_under_dev_trace_inv_transitions"] = dev_trace_inv_results["pos_area_under_dev_trace_transitions"]
+		signal_values_dict["total_neg_area_under_dev_trace_inv_transitions"] = dev_trace_inv_results["neg_area_under_dev_trace_transitions"]
+		signal_values_dict["total_pos_area_under_dev_trace_inv_transitions_wo_glitches"] = dev_trace_inv_results["pos_area_under_dev_trace_transitions_wo_glitches"]
+		signal_values_dict["total_neg_area_under_dev_trace_inv_transitions_wo_glitches"] = dev_trace_inv_results["neg_area_under_dev_trace_transitions_wo_glitches"]	
 				
-		max_values_dict["total_sum_error_msim"] += dev_trace_msim_results["total_area_under_dev_trace"]
-		max_values_dict["total_pos_area_under_dev_trace_msim"] += dev_trace_msim_results["pos_area_under_dev_trace"]
-		max_values_dict["total_neg_area_under_dev_trace_msim"] += dev_trace_msim_results["neg_area_under_dev_trace"]
+		signal_values_dict["total_sum_error_msim"] = dev_trace_msim_results["total_area_under_dev_trace"]
+		signal_values_dict["total_pos_area_under_dev_trace_msim"] = dev_trace_msim_results["pos_area_under_dev_trace"]
+		signal_values_dict["total_neg_area_under_dev_trace_msim"] = dev_trace_msim_results["neg_area_under_dev_trace"]
 					
-		max_values_dict["total_pos_area_under_dev_trace_msim_wo_glitches"] += dev_trace_msim_results["pos_area_under_dev_trace_wo_glitches"]
-		max_values_dict["total_neg_area_under_dev_trace_msim_wo_glitches"] += dev_trace_msim_results["neg_area_under_dev_trace_wo_glitches"]
-		max_values_dict["total_pos_area_under_dev_trace_msim_transitions"] += dev_trace_msim_results["pos_area_under_dev_trace_transitions"]
-		max_values_dict["total_neg_area_under_dev_trace_msim_transitions"] += dev_trace_msim_results["neg_area_under_dev_trace_transitions"]
-		max_values_dict["total_pos_area_under_dev_trace_msim_transitions_wo_glitches"] += dev_trace_msim_results["pos_area_under_dev_trace_transitions_wo_glitches"]
-		max_values_dict["total_neg_area_under_dev_trace_msim_transitions_wo_glitches"] += dev_trace_msim_results["neg_area_under_dev_trace_transitions_wo_glitches"]
+		signal_values_dict["total_pos_area_under_dev_trace_msim_wo_glitches"] = dev_trace_msim_results["pos_area_under_dev_trace_wo_glitches"]
+		signal_values_dict["total_neg_area_under_dev_trace_msim_wo_glitches"] = dev_trace_msim_results["neg_area_under_dev_trace_wo_glitches"]
+		signal_values_dict["total_pos_area_under_dev_trace_msim_transitions"] = dev_trace_msim_results["pos_area_under_dev_trace_transitions"]
+		signal_values_dict["total_neg_area_under_dev_trace_msim_transitions"] = dev_trace_msim_results["neg_area_under_dev_trace_transitions"]
+		signal_values_dict["total_pos_area_under_dev_trace_msim_transitions_wo_glitches"] = dev_trace_msim_results["pos_area_under_dev_trace_transitions_wo_glitches"]
+		signal_values_dict["total_neg_area_under_dev_trace_msim_transitions_wo_glitches"] = dev_trace_msim_results["neg_area_under_dev_trace_transitions_wo_glitches"]
 				
-		max_values_dict["total_sum_glitches_spice_inv"] += dev_trace_inv_results["total_glitches_tr0"]
-		max_values_dict["total_sum_glitches_orig_spice_inv"] += dev_trace_inv_results["orig_glitches_tr0"]
-		max_values_dict["total_sum_glitches_inverted_spice_inv"] += dev_trace_inv_results["inverted_glitches_tr0"]
+		signal_values_dict["total_sum_glitches_spice_inv"] = dev_trace_inv_results["total_glitches_tr0"]
+		signal_values_dict["total_sum_glitches_orig_spice_inv"] = dev_trace_inv_results["orig_glitches_tr0"]
+		signal_values_dict["total_sum_glitches_inverted_spice_inv"] = dev_trace_inv_results["inverted_glitches_tr0"]
 		
-		max_values_dict["total_sum_glitches_inv"] += dev_trace_inv_results["total_glitches_tr1"]
-		max_values_dict["total_sum_glitches_orig_inv"] += dev_trace_inv_results["orig_glitches_tr1"]
-		max_values_dict["total_sum_glitches_inverted_inv"] += dev_trace_inv_results["inverted_glitches_tr1"]
+		signal_values_dict["total_sum_glitches_inv"] = dev_trace_inv_results["total_glitches_tr1"]
+		signal_values_dict["total_sum_glitches_orig_inv"] = dev_trace_inv_results["orig_glitches_tr1"]
+		signal_values_dict["total_sum_glitches_inverted_inv"] = dev_trace_inv_results["inverted_glitches_tr1"]
 		
-		max_values_dict["total_sum_glitches_spice_msim"] += dev_trace_msim_results["total_glitches_tr0"]
-		max_values_dict["total_sum_glitches_orig_spice_msim"] += dev_trace_msim_results["orig_glitches_tr0"]
-		max_values_dict["total_sum_glitches_inverted_spice_msim"] += dev_trace_msim_results["inverted_glitches_tr0"]
+		signal_values_dict["total_sum_glitches_spice_msim"] = dev_trace_msim_results["total_glitches_tr0"]
+		signal_values_dict["total_sum_glitches_orig_spice_msim"] = dev_trace_msim_results["orig_glitches_tr0"]
+		signal_values_dict["total_sum_glitches_inverted_spice_msim"] = dev_trace_msim_results["inverted_glitches_tr0"]
 		
-		max_values_dict["total_sum_glitches_msim"] += dev_trace_msim_results["total_glitches_tr1"]
-		max_values_dict["total_sum_glitches_orig_msim"] += dev_trace_msim_results["orig_glitches_tr1"]
-		max_values_dict["total_sum_glitches_inverted_msim"] += dev_trace_msim_results["inverted_glitches_tr1"]
+		signal_values_dict["total_sum_glitches_msim"] = dev_trace_msim_results["total_glitches_tr1"]
+		signal_values_dict["total_sum_glitches_orig_msim"] = dev_trace_msim_results["orig_glitches_tr1"]
+		signal_values_dict["total_sum_glitches_inverted_msim"] = dev_trace_msim_results["inverted_glitches_tr1"]
+				
+		signal_values_dict["total_tc_spice"] = tc_spice
+		signal_values_dict["total_tc_msim"] = tc_modelsim
+		signal_values_dict["total_tc_inv"] = tc_involution
+		
+		# now add all the values from the signal_values_dict to the max_values_dict
+		for key, value in signal_values_dict.items():
+			max_values_dict[key] += signal_values_dict[key]
+			
+		if export_signal_result:
+			export_signal_values_dict = dict()
+			for key, value in signal_values_dict.items():
+				export_signal_values_dict[key + "_" + signal_name] = signal_values_dict[key]
+				
+			extend_results(results_file, export_signal_values_dict)
 		
 		if abs(max_values_dict["max_tc_dev_abs_inv"]) < abs(tc_spice- tc_involution):
 			max_values_dict["max_tc_dev_abs_inv"] = tc_spice- tc_involution	
@@ -301,45 +319,50 @@ def prepareFigureData(start_out_name, crossings_file, involution_vcd, modelsim_v
 		if abs(max_values_dict["max_tc_dev_per_msim"]) < abs(dev_per_msim):
 			max_values_dict["max_tc_dev_per_msim"] = dev_per_msim		
 			
-		max_values_dict["total_tc_spice"] += tc_spice
-		max_values_dict["total_tc_msim"] += tc_modelsim
-		max_values_dict["total_tc_inv"] += tc_involution
 		
 		# we do not want to generate plots
 		if(zoom_number == 0):
 			continue
+			
+		plt.rcParams['font.size'] = 16
+		plt.rcParams['lines.linewidth'] = 5.0
 		
 		# Fig 1: print the traces (SPICE, Involution, ModelSim)
+		spice_caption = "SPICE"
+		inv_channel_caption = "Inv. Ch."
+		vhdl_vital_caption = "VHDL Vital"
+		
 		name = start_out_name +signal_name
+		filename = convert_string_to_filename(name)
 
-		plt.figure()
+		plt.figure()		
 		axes = list()
 		axes.append(plt.subplot(3, 1, 1))
-		plt.plot(trace[0], trace[1], '-r', linewidth=2)    
-		plt.title('transition count: SPICE(%d), Involution(%d), Modelsim(%d)'% (tc_spice, tc_involution, tc_modelsim))
-		plt.ylabel('SPICE')
+		plt.plot(trace[0], trace[1], '-r', linewidth=3)    
+		#plt.title('transition count: SPICE(%d), Involution(%d), Modelsim(%d)'% (tc_spice, tc_involution, tc_modelsim))
+		plt.ylabel(spice_caption)
 		plt.ylim([ylim_start,ylim_end])
 		plt.xlim([x_first,x_last])
 		plt.grid()
 
 		axes.append(plt.subplot(3, 1, 2))
-		plt.plot(dataInv[0], dataInv[1], '-b', linewidth=2)
-		plt.ylabel('Involution')
+		plt.plot(dataInv[0], dataInv[1], '#4DAF4A', linewidth=3)
+		plt.ylabel(inv_channel_caption)
 		plt.ylim([ylim_start,ylim_end])
 		plt.xlim([x_first,x_last])
 		plt.grid()
 
 		axes.append(plt.subplot(3, 1, 3))
-		plt.plot(dataModelsim[0], dataModelsim[1], '-g', linewidth=2)
+		plt.plot(dataModelsim[0], dataModelsim[1], '#377EB8', linewidth=3)
 		plt.xlabel('time [ns]')
-		plt.ylabel('Modelsim')
+		plt.ylabel(vhdl_vital_caption)
 		plt.ylim([ylim_start,ylim_end])
 		plt.xlim([x_first,x_last])
 		plt.grid()	
 		
-		plt.savefig(fig_folder + name + '.png')
+		plt.savefig(fig_folder + filename + '.png')
 		
-		print_zoom_plots(fig_folder + name, '.png', plt, axes, x_first, x_last, zoom_number, overlapping)		
+		print_zoom_plots(fig_folder + filename, '.png', plt, axes, x_first, x_last, zoom_number, overlapping)		
 		
 		
 		# Fig 2: print the deviation traces SPICE vs Involution
@@ -348,7 +371,7 @@ def prepareFigureData(start_out_name, crossings_file, involution_vcd, modelsim_v
 		axes = list()
 		axes.append(plt.subplot(3, 1, 1))
 		plt.plot(trace[0], trace[1], '-r', linewidth=2)
-		plt.title('sum(error(Involution)) = %.3f, sum(error(Modelsim)) = %.3f'%(dev_trace_inv_results["total_area_under_dev_trace"],dev_trace_msim_results["total_area_under_dev_trace"]))
+		plt.title('sum(error(%s)) = %.3f, sum(error(%s)) = %.3f'%(inv_channel_caption,dev_trace_inv_results["total_area_under_dev_trace"],vhdl_vital_caption,dev_trace_msim_results["total_area_under_dev_trace"]))
 		plt.ylabel('SPICE')
 		plt.ylim([ylim_start,ylim_end])
 		plt.xlim([x_first,x_last])
@@ -356,7 +379,7 @@ def prepareFigureData(start_out_name, crossings_file, involution_vcd, modelsim_v
 
 		axes.append(plt.subplot(3, 1, 2))
 		plt.plot(dataInv[0], dataInv[1], '-b', linewidth=2)		
-		plt.ylabel('Involution')
+		plt.ylabel(inv_channel_caption)
 		plt.ylim([ylim_start,ylim_end])
 		plt.xlim([x_first,x_last])
 		plt.grid()
@@ -369,9 +392,9 @@ def prepareFigureData(start_out_name, crossings_file, involution_vcd, modelsim_v
 		plt.xlim([x_first,x_last])
 		plt.grid()
 		
-		plt.savefig(fig_folder+ name + '_devInv.png')		
+		plt.savefig(fig_folder+ filename + '_devInv.png')		
 		
-		print_zoom_plots(fig_folder + name, '_devInv.png', plt, axes, x_first, x_last, zoom_number, overlapping)	
+		print_zoom_plots(fig_folder + filename, '_devInv.png', plt, axes, x_first, x_last, zoom_number, overlapping)	
 
 		# Fig 3: print the deviation traces SPICE vs Modelsim
 
@@ -379,7 +402,7 @@ def prepareFigureData(start_out_name, crossings_file, involution_vcd, modelsim_v
 		axes = list()
 		axes.append(plt.subplot(3, 1, 1))
 		plt.plot(trace[0], trace[1], '-r', linewidth=2) 
-		plt.title('sum(error(Involution)) = %.3f, sum(error(Modelsim)) = %.3f'%(dev_trace_inv_results["total_area_under_dev_trace"],dev_trace_msim_results["total_area_under_dev_trace"]))   
+		plt.title('sum(error(%s)) = %.3f, sum(error(%s)) = %.3f'%(inv_channel_caption,dev_trace_inv_results["total_area_under_dev_trace"],vhdl_vital_caption,dev_trace_msim_results["total_area_under_dev_trace"]))   
 		plt.ylabel('SPICE')
 		plt.ylim([ylim_start,ylim_end])
 		plt.xlim([x_first,x_last])
@@ -387,7 +410,7 @@ def prepareFigureData(start_out_name, crossings_file, involution_vcd, modelsim_v
 		
 		axes.append(plt.subplot(3, 1, 2))
 		plt.plot(dataModelsim[0], dataModelsim[1], '-g', linewidth=2)		
-		plt.ylabel('Modelsim')
+		plt.ylabel(vhdl_vital_caption)
 		plt.ylim([ylim_start,ylim_end])
 		plt.xlim([x_first,x_last])
 		plt.grid()
@@ -400,18 +423,18 @@ def prepareFigureData(start_out_name, crossings_file, involution_vcd, modelsim_v
 		plt.xlim([x_first,x_last])
 		plt.grid()
 
-		plt.savefig(fig_folder+ name + '_devModelsim.png')
+		plt.savefig(fig_folder+ filename + '_devModelsim.png')
 		
-		print_zoom_plots(fig_folder + name, '_devModelsim.png', plt, axes, x_first, x_last, zoom_number, overlapping)	
+		print_zoom_plots(fig_folder + filename, '_devModelsim.png', plt, axes, x_first, x_last, zoom_number, overlapping)	
 
 		
 		# Fig 4: deviation traces Involution vs Modelsim
 		plt.figure()
 		axes = list()
 		axes.append(plt.subplot(2, 1, 1))
-		plt.title('sum(error(Involution)) = %.3f, sum(error(Modelsim)) = %.3f'%(dev_trace_inv_results["total_area_under_dev_trace"],dev_trace_msim_results["total_area_under_dev_trace"])) 
+		plt.title('sum(error(%s)) = %.3f, sum(error(%s)) = %.3f'%(inv_channel_caption,dev_trace_inv_results["total_area_under_dev_trace"],vhdl_vital_caption,dev_trace_msim_results["total_area_under_dev_trace"])) 
 		plt.plot(dev_trace_inv_results["dev_trace"][0], dev_trace_inv_results["dev_trace"][1], '-b', linewidth=2)
-		plt.ylabel('Involution')
+		plt.ylabel(inv_channel_caption)
 		plt.ylim([ylim_start,ylim_end])
 		plt.xlim([x_first,x_last])
 		plt.grid()
@@ -419,14 +442,14 @@ def prepareFigureData(start_out_name, crossings_file, involution_vcd, modelsim_v
 		axes.append(plt.subplot(2, 1, 2))
 		plt.plot(dev_trace_msim_results["dev_trace"][0], dev_trace_msim_results["dev_trace"][1], '-g', linewidth=2)		
 		plt.xlabel('time [ns]')
-		plt.ylabel('Modelsim')
+		plt.ylabel(vhdl_vital_caption)
 		plt.ylim([ylim_start,ylim_end])
 		plt.xlim([x_first,x_last])
 		plt.grid()
 
-		plt.savefig(fig_folder+ name + '_diff.png')
+		plt.savefig(fig_folder+ filename + '_diff.png')
 		
-		print_zoom_plots(fig_folder + name, '_diff.png', plt, axes, x_first, x_last, zoom_number, overlapping)	
+		print_zoom_plots(fig_folder + filename, '_diff.png', plt, axes, x_first, x_last, zoom_number, overlapping)	
 		
 	# now write the results in the tex file
 	
@@ -446,7 +469,7 @@ def prepareFigureData(start_out_name, crossings_file, involution_vcd, modelsim_v
 	max_values_dict["total_tc_deviation_per_msim"] = (max_values_dict["total_tc_msim"] - max_values_dict["total_tc_spice"]) / (max_values_dict["total_tc_spice"] * 1.0) * 100
 	max_values_dict["total_tc_deviation_per_inv"] = (max_values_dict["total_tc_inv"] - max_values_dict["total_tc_spice"]) / (max_values_dict["total_tc_spice"] * 1.0) * 100
 	
-	extend_results(results_file, max_values_dict)
+	extend_results(results_file, max_values_dict)	
 			
 #********************************************************************************
 
@@ -514,7 +537,6 @@ def get_trace(switchingTimes, initialValue):
 #--------------------------------------------------------------------------------
 
 def get_deviation_trace(tr0, tr1, export_dev_trace_info, fig_folder, signal_name):
-
 	# res contains the deviation trace
 	# res[0][..] contains the times for which deviations (and therefore transitions in the deviation trace) take place
 	# res[1][y] contains the value of the deviation trace at time with the index y
@@ -782,12 +804,7 @@ def get_deviation_trace(tr0, tr1, export_dev_trace_info, fig_folder, signal_name
 					pos_area_under_dev_trace_wo_glitches += area
 					row[csv_index_dict['pos_area_under_dev_trace_wo_glitches']] = area
 					pos_area_under_dev_trace_transitions_wo_glitches +=1
-				
-			
-			# TODO: We should ignore the deviation between MSIM and SPICE, 
-			# since the MSIM outputs are set to X (= VTH) and not to an 
-			# initial value like INV / SPICE
-			
+						
 			total_area_under_dev_trace += area
 						
 		csv_data.append(row)

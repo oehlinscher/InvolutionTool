@@ -52,7 +52,7 @@ Vgpwl2 nx2shape 0 PWL(<nx2>)
 Vgpwl6 nx6shape 0 PWL(<nx6>)
 
 
-.PROBE TRAN v(nx1) v(nx2) v(nx3) v(nx6) v(nx7) v(xmycir.inst_*:ZN)
+.PROBE TRAN v(nx1) v(nx2) v(nx3) v(nx6) v(nx7) v(xmycir.inst_*:ZN) v(nx22) v(nx23)
 .TRAN 0.01PS <STOPTIME>NS
 
 * Average Power calculation via average current
@@ -64,9 +64,5 @@ Vgpwl6 nx6shape 0 PWL(<nx6>)
 .MEAS TRAN max_cur max 'abs(i(vdd))' from=0ns to=<STOPTIME>NS 
 .MEAS TRAN max_mvdd max V(mvdd) from=0ns to=<STOPTIME>NS 
 .MEAS TRAN pwr_max PARAM='abs(max_cur*max_mvdd)'
-
-* TODO: Find all probe points in SPICE
-.LPRINT(<VTH>, <VTH>) v(nx1) v(nx2) v(nx3) v(nx6) v(nx7) v(xmycir.inst_*:ZN)
-
 
 .END

@@ -1,12 +1,8 @@
 {
   "ND2M1N": {
     "T_P": 1, 
-	"channel_type" : "HILL_CHANNEL",
-	"channel_location" : "INPUT",
-	"channel_parameters" : {
-		"N_UP" : 1.0,
-		"N_DO" : 1.0
-	},
+	"channel_location" : "OUTPUT",
+	"channel_type" : "EXP_CHANNEL",
     "entity_name": "ND2M1N", 
     "function": "nand", 
     "inputs": [
@@ -18,7 +14,9 @@
     ]
   }, 
   "NR2M1N": {
-    "T_P": 1, 
+    "T_P": 1, 	
+	"channel_location" : "OUTPUT",
+	"channel_type" : "EXP_CHANNEL",
     "entity_name": "NR2M1N", 
     "function": "nor", 
     "inputs": [
@@ -31,7 +29,7 @@
   }, 
   "CKINVM1N": {
     "T_P": 1, 
-	"channel_location" : "INPUT",
+	"channel_location" : "OUTPUT",
 	"channel_type" : "EXP_CHANNEL",
     "entity_name": "CKINVM1N", 
     "function": "not", 
@@ -43,7 +41,9 @@
     ]
   }, 
   "AN2M1N": {
-    "T_P": 1, 
+    "T_P": 1, 	
+	"channel_location" : "OUTPUT",
+	"channel_type" : "EXP_CHANNEL",
     "entity_name": "AN2M1N", 
     "function": "and", 
     "inputs": [
@@ -56,6 +56,8 @@
   }, 
   "OR2M1N": {
     "T_P": 1, 
+	"channel_location" : "OUTPUT",
+	"channel_type" : "EXP_CHANNEL",
     "entity_name": "OR2M1N", 
     "function": "or", 
     "inputs": [
@@ -67,7 +69,9 @@
     ]
   }, 
   "XNR2M1NA": {
-    "T_P": 1, 
+    "T_P": 1,
+	"channel_location" : "OUTPUT",
+	"channel_type" : "EXP_CHANNEL",
     "entity_name": "XNR2M1NA", 
     "function": "xnor", 
     "inputs": [
@@ -80,6 +84,8 @@
   }, 
   "XOR2M1NA": {
     "T_P": 1, 
+	"channel_location" : "OUTPUT",
+	"channel_type" : "EXP_CHANNEL",
     "entity_name": "XOR2M1NA", 
     "function": "xor", 
     "inputs": [
@@ -91,9 +97,9 @@
     ]
   }, 
   "INV_X1": {
-    "T_P": 1, 
-	"channel_location" : "INPUT",
-	"channel_type" : "EXP_CHANNEL",
+    "T_P": 0.1, 
+	"channel_location" : "OUTPUT",
+	"channel_type" : "EXP_CHANNEL",	
     "entity_name": "INV_X1", 
     "function": "not", 
     "inputs": [
@@ -105,7 +111,7 @@
   }, 
   "INV_X2": {
     "T_P": 1, 
-	"channel_location" : "INPUT",
+	"channel_location" : "OUTPUT",
 	"channel_type" : "EXP_CHANNEL",
     "entity_name": "INV_X2", 
     "function": "not", 
@@ -118,7 +124,7 @@
   }, 
   "INV_X4": {
     "T_P": 1, 
-	"channel_location" : "INPUT",
+	"channel_location" : "OUTPUT",
 	"channel_type" : "EXP_CHANNEL",
     "entity_name": "INV_X4", 
     "function": "not", 
@@ -131,7 +137,7 @@
   }, 
   "INV_X8": {
     "T_P": 1, 
-	"channel_location" : "INPUT",
+	"channel_location" : "OUTPUT",
 	"channel_type" : "EXP_CHANNEL",
     "entity_name": "INV_X8", 
     "function": "not", 
@@ -144,7 +150,7 @@
   }, 
   "NAND2_X2": {
     "T_P": 1, 
-	"channel_location" : "INPUT",
+	"channel_location" : "OUTPUT",
 	"channel_type" : "EXP_CHANNEL",
     "entity_name": "NAND2_X2", 
     "function": "nand", 

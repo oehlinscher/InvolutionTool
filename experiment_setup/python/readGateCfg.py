@@ -59,16 +59,19 @@ class Gate:
 		self.outputs = list()
 		self.T_P = 1 # in ps
 		self.function = ""
-		self.channel_location = ChannelLocation.INPUT
+		self.channel_location = ChannelLocation.OUTPUT # Default Output, since VHDl Vital also places the delay at the output
 		self.channel_type = ChannelType.EXP_CHANNEL
 		self.channel_parameters = dict()
 		
 class ChannelType():
 	EXP_CHANNEL = "EXP_CHANNEL"
 	HILL_CHANNEL = "HILL_CHANNEL"
+	SUMEXP_CHANNEL = "SUMEXP_CHANNEL"
+	PUREDELAY_CHANNEL = "PUREDELAY_CHANNEL"
 		
 class ChannelLocation():
 	INPUT = "INPUT"
+	INPUT_SWAPPED = "INPUT_SWAPPED"
 	OUTPUT = "OUTPUT"
 	OUTPUT_SWAPPED = "OUTPUT_SWAPPED"
 		

@@ -75,7 +75,8 @@ def generate(input_dir, output_dir, config_dir, vdd, vth, temp, spice_lib, spice
 		while i < generate_cfg.N:
 			# randomly select the signal which should have the next transition
 			next_sig = random.choice(generate_cfg.signals)
-			difference = round(random.gauss(generate_cfg.mue, generate_cfg.sigma),round_digits)
+			
+			difference = generate_sample(generate_cfg.mue, generate_cfg.sigma, generate_cfg.bound, round_digits)
 			
 			next_transition_time = 0
 			last_local_trans_time = signal_crossings_dict[next_sig][-1]
@@ -118,8 +119,8 @@ def generate(input_dir, output_dir, config_dir, vdd, vth, temp, spice_lib, spice
 						# we add a transition to a "pair-signal"	
 					rand_val = random.random()
 					my_print("Correlation possibility: " + str(g.correlation_possibility) + ", rand_val: " + str(rand_val))
-					if rand_val < g.correlation_possibility: 				
-						difference = round(random.gauss(g.mue, g.sigma),round_digits) # abs(...)? -> not necessary, but if the difference is negative it can happen that the "causing" transition is after the "caused" transition				
+					if rand_val < g.correlation_possibility: 		
+						difference = generate_sample(g.mue, g.sigma, g.bound, round_digits) # abs(...)? -> not necessary, but if the difference is negative it can happen that the "causing" transition is after the "caused" 			
 						last_local_trans_time = signal_crossings_dict[sig][-1]
 										
 						my_print("Adding transition to signal " + sig + ", which is in a pair with " + next_sig)
@@ -202,6 +203,17 @@ def generate(input_dir, output_dir, config_dir, vdd, vth, temp, spice_lib, spice
 			for src, target in replacements.items():
 				line = line.replace(src, target)
 			outfile.write(line)
+
+def generate_sample(mu, sigma, bound, round_digits):
+	while True:
+		# generate until we find a difference in ou bound
+		difference = round(random.gauss(mu, sigma),round_digits)
+		if bound is None or abs(mu - difference) < bound * sigma:
+			#print('Sample: {0}'.format(difference))
+			return difference
+		else:
+			#print('Resample. Value {0} is out of bounds'.format(difference))
+			pass
 			
 if __name__ == "__main__":
     main()

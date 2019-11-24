@@ -47,7 +47,7 @@ def main():
 				
 				
 	
-	for key, value in dep_dict.iteritems():
+	for key, value in dep_dict.items():
 		print("matching_dict['{0}'] = (['{1}', '{2}', -1, -1, 0, 0])".format(key, value[0], value[1]))
 	
 	

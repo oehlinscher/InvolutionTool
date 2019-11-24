@@ -101,4 +101,8 @@ if [ -f ${TOP_DIR}/perf/performance_meassure.txt ]; then
 	mv ${TOP_DIR}/perf/performance_meassure.txt ${TARGET_FOLDER}/performance_meassure.txt
 fi
 
+if [ -f ${TOP_DIR}/perf/perf.json ]; then
+	python ./python/extendResults.py ${TARGET_FOLDER}/results.json ${TOP_DIR}/perf/perf.json 
+fi
+
 #pdflatex ${TARGET_FOLDER}/report_single.tex # Not available on asic - Server

@@ -32,11 +32,8 @@ def main():
 	convertVCD(sys.argv[1], sys.argv[2], sys.argv[3])	
 	
 def convertVCD(input_file, output_file, matching_file):
-	replacements = {}
-	with open(matching_file, 'r') as f:
-		for line in f.readlines():
-			parts = line.strip(' \t\n\r').split(' ')
-			replacements[parts[0]] = parts[1]
+	replacements = matching_file_to_dict(matching_file)
+	
 		
 	replacing = False;
 	module_list = list()

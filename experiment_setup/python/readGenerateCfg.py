@@ -45,6 +45,7 @@ class GenerateCfg:
 		self.mue = 0.029
 		self.sigma = 0.01
 		self.rise_time = 0.001
+		self.bound = None # Default: we do not cut samples. A value x means, that only values where "abs(mu - sample_value) < bound * sigma" is satisfied, otherwise we resample (no clipping). Moreover, note that if the bound is too small, it might take a lot of resampling, since a lot of variables are rejected
 		self.calc_next_transition_mode = CalcNextTransitionMode.GLOBAL
 		self.signals = list()
 		self.groups = list()
@@ -54,6 +55,7 @@ class Group:
 		self.signals = list()
 		self.mue = 0.010
 		self.sigma = 0.03
+		self.bound = None # Same behavior as for GenerateCfg
 		self.oneway = False
 		self.correlation_possibility = 0.5 # value between 0 and 1
 		

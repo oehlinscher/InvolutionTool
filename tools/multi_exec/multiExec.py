@@ -91,7 +91,9 @@ def multi_exec_sim(config_file):
 	#os.environ["ME_REPORT_FOLDER"] = "multi_exec_" + time.strftime("%Y%m%d_%H%M%S")
 			
 	# innermost loops (keep waveform!) must have lower numbers than than properties where a new waveform has to be created
-	KEY_GROUPS = 4
+	KEY_WAVEFORM = 6
+	KEY_SPICE_PROPERTIES = 5 # we can keep the waveform, but need to re-execute the Spice Simulation for these properties
+	KEY_DIGSIM_PROPERTIES = 4 # no need to re-execute SPICE, but we need to re-run our digital (ModelSim) simulation. ==> For example if only the sdf / spef File is changed
 	KEY_CHANNEL_LOCATION = 3
 	KEY_CHANNEL_TYPE = 2
 	KEY_T_P = 1
@@ -100,7 +102,7 @@ def multi_exec_sim(config_file):
 	property_dict = dict()
 	total_sim_num = 1
 	if len(multi_exec.waveform_generation) > 0:
-		property_dict[KEY_GROUPS] = 0
+		property_dict[KEY_WAVEFORM] = 0
 		total_sim_num = total_sim_num * len(multi_exec.waveform_generation)
 	if len(multi_exec.gate_generation.t_p_list) > 0:	
 		property_dict[KEY_T_P] = 0
@@ -111,20 +113,34 @@ def multi_exec_sim(config_file):
 	if len(multi_exec.gate_generation.channel_type_list) > 0:	
 		property_dict[KEY_CHANNEL_TYPE] = 0
 		total_sim_num = total_sim_num * len(multi_exec.gate_generation.channel_type_list)
+	if len(multi_exec.spice_properties) > 0:
+		property_dict[KEY_SPICE_PROPERTIES] = 0
+		total_sim_num = total_sim_num * len(multi_exec.spice_properties)
+	if len(multi_exec.digsim_properties) > 0:
+		property_dict[KEY_DIGSIM_PROPERTIES] = 0
+		total_sim_num = total_sim_num * len(multi_exec.digsim_properties)
 		
 	
-	last_key_to_keep_waveform = KEY_CHANNEL_LOCATION
+	last_key_to_keep_waveform = KEY_SPICE_PROPERTIES
+	last_key_to_keep_spice = KEY_DIGSIM_PROPERTIES
+	last_key_to_keep_stddigsim = KEY_CHANNEL_LOCATION
+	
 	length_dict = dict()
-	length_dict[KEY_GROUPS] = len(multi_exec.waveform_generation)
+	length_dict[KEY_WAVEFORM] = len(multi_exec.waveform_generation)
+	length_dict[KEY_SPICE_PROPERTIES] = len(multi_exec.spice_properties)
+	length_dict[KEY_DIGSIM_PROPERTIES] = len(multi_exec.digsim_properties)
 	length_dict[KEY_CHANNEL_LOCATION] = len(multi_exec.gate_generation.channel_location_list)	
 	length_dict[KEY_CHANNEL_TYPE] = len(multi_exec.gate_generation.channel_type_list)		
 	length_dict[KEY_T_P] = len(multi_exec.gate_generation.t_p_list)		
 		
 	# 4. simulate
 	my_print("Keep waveform: " + str(multi_exec.keep_waveform), EscCodes.OKBLUE, override_print_env_flag)
+	# If keep_waveform is false, we just re-execute the complete toolchain fpr each configuration (do not keep SPICE, STD DIGISIM if possible)
 	for iteraterion in range(multi_exec.N):
 		my_print("Iteration: " + str(iteraterion + 1), EscCodes.OKBLUE, override_print_env_flag)
 		keep_waveform_local = False # we ALWAYS want a new waveform in a new iteration
+		keep_std_digsim = False
+		keep_spice = False
 				
 		curr_sim_num = 1
 		config_num = 0		
@@ -148,7 +164,7 @@ def multi_exec_sim(config_file):
 			config_num = config_num + 1
 			# iterate over all properties to set
 			for key, value in property_dict.items():
-				if key == KEY_GROUPS:		
+				if key == KEY_WAVEFORM:		
 					new_waveform_generation = multi_exec.waveform_generation[value]
 				elif key == KEY_T_P:
 					for gate in new_gates.values():
@@ -157,11 +173,21 @@ def multi_exec_sim(config_file):
 					for gate in new_gates.values():
 						gate.channel_location = multi_exec.gate_generation.channel_location_list[value]
 				elif key == KEY_CHANNEL_TYPE:
-					for gate in new_gates.values():
-						if "channel_type" in multi_exec.gate_generation.channel_type_list[value].keys():
-							gate.channel_type = multi_exec.gate_generation.channel_type_list[value]["channel_type"]							
-						if "channel_parameters" in multi_exec.gate_generation.channel_type_list[value].keys():
-							gate.channel_parameters = multi_exec.gate_generation.channel_type_list[value]["channel_parameters"]
+					gate_config_dict = multi_exec.gate_generation.channel_type_list[value]
+					for gate_key, gate_value in new_gates.items():
+						gate_key_for_copy = "ALL" # use the default configuration for this gate
+						if gate_key in gate_config_dict:
+							gate_key_for_copy = gate_key # we found a more specific configuration for this gate => use it	
+						if "channel_type" in gate_config_dict[gate_key_for_copy].keys():
+							gate_value.channel_type = gate_config_dict[gate_key_for_copy]["channel_type"]							
+						if "channel_parameters" in gate_config_dict[gate_key_for_copy].keys():
+							gate_value.channel_parameters = gate_config_dict[gate_key_for_copy]["channel_parameters"]
+				elif key == KEY_SPICE_PROPERTIES:
+					# nothing to do?
+					pass
+				elif key == KEY_DIGSIM_PROPERTIES:
+					# nothing to do?
+					pass
 				else:
 					my_print("Error: Undefined key", EscCodes.FAIL, override_print_env_flag)
 						
@@ -182,23 +208,31 @@ def multi_exec_sim(config_file):
 			os.environ["TARGET_FOLDER"] = os.path.join(os.environ["RESULT_OUTPUT_DIR"], os.environ["ME_REPORT_FOLDER"], time.strftime("%Y%m%d_%H%M%S"))
 			my_print("target folder: " + str(os.environ["TARGET_FOLDER"]))
 			
+			# set the current spice_properties (if we have some). Note that these properties need to be checked with ifndef PROP_NAME before they are exported in the default *.cfg files
+			set_config_property_list(multi_exec.spice_properties, property_dict, KEY_SPICE_PROPERTIES)
+			set_config_property_list(multi_exec.digsim_properties, property_dict, KEY_DIGSIM_PROPERTIES)
+			
+			# always check for the keep_waveform setting from the json file ==> If disabled, we always rerun the complete simulation
+			if multi_exec.keep_waveform and keep_std_digsim:			
+				my_print("Keep DIGSIM!", EscCodes.OKBLUE, override_print_env_flag)
+				execute_make_cmd("make me_involution")		
+			elif multi_exec.keep_waveform and keep_spice:
+				my_print("Keep SPICE!", EscCodes.OKBLUE, override_print_env_flag)
+				execute_make_cmd("make me_digsim")		
+			elif multi_exec.keep_waveform and keep_waveform_local:
+				my_print("Keep Waveform!", EscCodes.OKBLUE, override_print_env_flag)
+				execute_make_cmd("make clean")
+				execute_make_cmd("make all") # Careful, altough we clean up, we still want to keep the waveform		
+			else:		
+				my_print("Complete run!", EscCodes.OKBLUE, override_print_env_flag)	
+				# Clean up after previous simulation
+				execute_make_cmd("make clean")
+						
+				# Now execute the simulation
+				execute_make_cmd("make all")
+						
+			# Add a file with the "configuration id" - required for reporting
 			if not (os.getenv('SKIP_SIMULATION', None)):		
-				# if we keep_waveform, we do not need to simulate the SPICE / ModelSim parts			
-				if keep_waveform_local:
-					# no make clean, because we need some of the results from the last simulation
-					# execute_make_cmd("make sim_involution")
-					# execute_make_cmd("make power_dc_involution")
-					# execute_make_cmd("make power_pt_involution")
-					# execute_make_cmd("make report")
-					execute_make_cmd("make involution")
-				else:			
-					# Clean up after previous simulation
-					execute_make_cmd("make clean")
-							
-					# Now execute the simulation
-					execute_make_cmd("make all")
-							
-				# Add a file with the "configuration id" - required for reporting
 				with open(os.path.join(os.environ["TARGET_FOLDER"], "config_id"), "w") as cfg_id_file:
 					cfg_id_file.write(str(config_num))
 			
@@ -216,15 +250,15 @@ def multi_exec_sim(config_file):
 					#print "Overflow at: " + key + ""
 					property_dict[key] = 0
 					# We had an overflow. Now check if we can keep the waveform (true as long this is not the last parameter that keeps the waveform)
-					if key < last_key_to_keep_waveform:
-						keep_waveform_local = multi_exec.keep_waveform
-					else: 
-						keep_waveform_local = False
-				else:								
-					if key <= last_key_to_keep_waveform: # add properties here for which the waveform can be kept (if defined in config file)
-						keep_waveform_local = multi_exec.keep_waveform
-					else:
-						keep_waveform_local = False
+					
+
+					keep_std_digsim = calc_keep_property(key, last_key_to_keep_stddigsim, True)
+					keep_spice = calc_keep_property(key, last_key_to_keep_spice, True)
+					keep_waveform_local = calc_keep_property(key, last_key_to_keep_waveform, True)
+				else:
+					keep_std_digsim = calc_keep_property(key, last_key_to_keep_stddigsim, False)
+					keep_spice = calc_keep_property(key, last_key_to_keep_spice, False)
+					keep_waveform_local = calc_keep_property(key, last_key_to_keep_waveform, False)
 					
 					break; # no need to increment the other properties
 					
@@ -239,7 +273,10 @@ def multi_exec_sim(config_file):
 				
 			curr_sim_num = curr_sim_num + 1
 	
-def execute_make_cmd(cmd):	
+def execute_make_cmd(cmd):		
+	if (os.getenv('SKIP_SIMULATION', None)):		
+		return
+
 	#make_process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=os.environ["EXPERIMENT_SETUP_DIR"])
 	postfix = ""
 	print_level = get_print_level()
@@ -251,12 +288,31 @@ def execute_make_cmd(cmd):
 		my_print (cmd + " failed!", EscCodes.FAIL, override_print_env_flag)
 	else:
 		my_print(cmd + " succeeded!", EscCodes.OKGREEN, override_print_env_flag)
+		
+def set_config_property_list(lst, property_dict, key):
+	if len(lst) > 0:				
+		props = lst[property_dict[key]]
+		for key_prop, value_prop in props.items():
+			os.environ[key_prop] = value_prop
+			
+def calc_keep_property(key, last_key, overflow):
+	if overflow:
+		if key < last_key:
+			return True
+	else:
+		if key <= last_key:
+			return True
+	return False
+	
+
 	
 	
 class MultiExec:
 	def __init__(self):
 		self.N = 1
 		self.waveform_generation = list()
+		self.spice_properties = list()
+		self.digsim_properties = list()
 		self.gate_generation = GateGeneration()
 		self.keep_waveform = True
 		
@@ -264,7 +320,11 @@ class GateGeneration:
 	def __init__(self):
 		self.t_p_list = list()
 		self.channel_location_list = list()	
-		self.channel_type_list = list()
+		# a list which contains the configurations to sweep over.
+		# each element of the list contains a dictionary, where the key is the mame of the gate, and the value is again a dict.
+		# Currently, channel_type and channel_parameters can be specified
+		# Note that there must be a special entry with the key "ALL", which specifies the configuration of all gates which have not been specified more specifically
+		self.channel_type_list = list() 
 		
 class ChannelType:
 	def __init__(self):

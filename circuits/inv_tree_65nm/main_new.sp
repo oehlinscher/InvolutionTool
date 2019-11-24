@@ -36,8 +36,8 @@ Xmycir din dout1 dout2 dout3 dout4 mvdd inv_tree
 * use if shaping should be at the input
 Vgpwl dinshape 0 PWL(<din>)
 
-.PROBE TRAN v(din) v(xmycir.g*:z)
-.TRAN 0.01PS <STOPTIME>NS
+.PROBE TRAN v(din) v(xmycir.g*:z) v(dout*)
+.TRAN 0.001PS <STOPTIME>NS
 
 * Average Power calculation via average current
 .MEAS TRAN avg_cur avg i(vdd) from=0ns to=<STOPTIME>NS 
@@ -49,8 +49,5 @@ Vgpwl dinshape 0 PWL(<din>)
 .MEAS TRAN max_mvdd max V(mvdd) from=0ns to=<STOPTIME>NS 
 .MEAS TRAN pwr_max PARAM='abs(max_cur*max_mvdd)'
 
-* Find out the threshold values which are used by SPICE? -> we decided to use a single threshold, the same that we use for creating the crossings file
-* temp1, temp2, temp3, temp4, temp5, temp51, temp52
-.LPRINT(<VTH>, <VTH>) v(din) v(xmycir.g*:z)
 
 .END

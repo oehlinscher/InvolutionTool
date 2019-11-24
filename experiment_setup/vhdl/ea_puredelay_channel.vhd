@@ -1,7 +1,7 @@
 -------------------------------------------------------------------------------
 --
 --	Involution Tool
---	File: gate_template.vhd
+--	File: ea_pure_delay_channel.vhd
 --	
 --  Copyright (C) 2018-2019  Daniel OEHLINGER <d.oehlinger@outlook.com>
 --
@@ -25,43 +25,43 @@
 --
 -------------------------------------------------------------------------------
 
-library IEEE;
-use IEEE.STD_LOGIC_1164.all;
-use IEEE.VITAL_Timing.all;
-use IEEE.VITAL_Primitives.all;
-use work.exp_channel_pkg.all;
-use work.hill_channel_pkg.all;
-use work.sumexp_channel_pkg.all;
-use work.puredelay_channel_pkg.all;
 
-ENTITY ##ENTITY_NAME## IS
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
 
+ENTITY puredelay_channel IS
 	GENERIC (
-		##ENTITY_GENERIC##
-
-	   MsgOn : Boolean := TRUE;
-	   TimingChecksOn : Boolean := TRUE;
-	   XOn : Boolean := TRUE;
-	   InstancePath : String := "*"
+		D_UP : time; 
+		D_DO : time; 
+		T_P  : time;
+		V_DD : real;
+		V_TH : real
+	);
+	PORT ( 
+		input : IN std_logic;
+		output : OUT std_logic
 	);
 
-	PORT (
-		##PORTS##
-	);
+END puredelay_channel;
 
-	ATTRIBUTE VITAL_LEVEL0 OF ##ENTITY_NAME## : ENTITY IS TRUE;
+-----------------------------------------------------------------
 
-END ##ENTITY_NAME##;
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
 
+ARCHITECTURE beh OF puredelay_channel IS
 
---BEGIN_ARCH
-ARCHITECTURE ##ARCH_NAME## OF ##ENTITY_NAME## IS
-	##ARCH_SIGNALS##
 BEGIN
+	pure_delay : PROCESS (input)
+	BEGIN
+		IF rising_edge(input) THEN
+			output <= TRANSPORT input AFTER D_UP;
+		ELSIF falling_edge(input) THEN
+			output <= TRANSPORT input AFTER D_DO;
+		ELSIF (now = 0 fs) THEN
+			output <= input;
+		END IF;
 
-	##ARCH_DELAY_CHANNEL##
-	
-	##ARCH_FUNCTION##
-  
-END;
---END_ARCH
+	END PROCESS;
+
+END ARCHITECTURE;

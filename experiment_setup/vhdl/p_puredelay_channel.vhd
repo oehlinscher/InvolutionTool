@@ -1,7 +1,7 @@
 -------------------------------------------------------------------------------
 --
 --	Involution Tool
---	File: gate_template.vhd
+--	File: p_pure_delay_channel.vhd
 --	
 --  Copyright (C) 2018-2019  Daniel OEHLINGER <d.oehlinger@outlook.com>
 --
@@ -25,43 +25,29 @@
 --
 -------------------------------------------------------------------------------
 
-library IEEE;
-use IEEE.STD_LOGIC_1164.all;
-use IEEE.VITAL_Timing.all;
-use IEEE.VITAL_Primitives.all;
-use work.exp_channel_pkg.all;
-use work.hill_channel_pkg.all;
-use work.sumexp_channel_pkg.all;
-use work.puredelay_channel_pkg.all;
 
-ENTITY ##ENTITY_NAME## IS
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
 
-	GENERIC (
-		##ENTITY_GENERIC##
+-----------------------------------------------------------------
 
-	   MsgOn : Boolean := TRUE;
-	   TimingChecksOn : Boolean := TRUE;
-	   XOn : Boolean := TRUE;
-	   InstancePath : String := "*"
-	);
+PACKAGE puredelay_channel_pkg IS
+	COMPONENT puredelay_channel IS
 
-	PORT (
-		##PORTS##
-	);
+		GENERIC (
+			D_UP : time;	
+			D_DO : time;	
+			-- The following generics are not used by this channel, but since these generics are the required by standard involution channels, we need to add them here
+			T_P  : time;			
+			V_DD : real := 1.0;
+			V_TH : real := 0.5
+		);
+		PORT (
+			input : IN std_logic;
+			output : OUT std_logic
+		);
 
-	ATTRIBUTE VITAL_LEVEL0 OF ##ENTITY_NAME## : ENTITY IS TRUE;
+	END COMPONENT puredelay_channel;
+END PACKAGE puredelay_channel_pkg;
 
-END ##ENTITY_NAME##;
-
-
---BEGIN_ARCH
-ARCHITECTURE ##ARCH_NAME## OF ##ENTITY_NAME## IS
-	##ARCH_SIGNALS##
-BEGIN
-
-	##ARCH_DELAY_CHANNEL##
-	
-	##ARCH_FUNCTION##
-  
-END;
---END_ARCH
+-----------------------------------------------------------------

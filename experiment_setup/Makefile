@@ -33,15 +33,23 @@ all:
 	# not ideal to directly call reporting, but otherwise performance meassurement does not work properly
 	./scripts/reporting.sh ${TIME_ALL}
 
-# used from multi_exec tool, called when the waveform (and all other simulations) can be kept
+# Targets which are used from the multi_exec tool, in order to keep certain parts of the simulation.
 # do not call manually, unless you know what you are doing!
-involution:
+me_involution:
 	$(eval TIME_INVOLUTION := $(shell date +%s%3N))
 	$(MAKE) sim_involution
 	$(MAKE) power_dc_involution	
 	$(MAKE) power_pt_involution	
 	# not ideal to directly call reporting, but otherwise performance meassurement does not work properly
 	./scripts/reporting.sh ${TIME_INVOLUTION}
+	
+me_digsim:
+	$(eval TIME_DIGSIM := $(shell date +%s%3N))
+	$(MAKE) sim
+	$(MAKE) power	
+	# not ideal to directly call reporting, but otherwise performance meassurement does not work properly
+	./scripts/reporting.sh ${TIME_DIGSIM}
+	
 
 
 #### SETUP   ##############################################################
@@ -59,39 +67,35 @@ ${GEN_OUTPUT_DIR}/main_new_exp.sp: ./python/generateWaveform.py
 spice: 
 	$(eval TIME_SPICE := $(shell date +%s%3N))
 	mkdir -p ${SPICE_OUTPUT_DIR}
+ifeq ($(ANALOG_SIMULATION_TOOL),HSPICE)
 	$(MAKE) ${SPICE_OUTPUT_DIR}/main_new_exp.tr0
+else
+	$(MAKE) ${SPICE_OUTPUT_DIR}/main_new_exp.raw
+endif
 	./scripts/timing.sh $@ ${TIME_SPICE} 
 
-${SPICE_OUTPUT_DIR}/main_new_exp.tr0: ${SPICE_OUTPUT_DIR}/main_new_exp.vcd0
-${SPICE_OUTPUT_DIR}/main_new_exp.mt0: ${SPICE_OUTPUT_DIR}/main_new_exp.tr0
-	
-${SPICE_OUTPUT_DIR}/main_new_exp.vcd0: ${GEN_OUTPUT_DIR}/main_new_exp.sp
+
+${SPICE_OUTPUT_DIR}/main_new_exp.tr0: ${GEN_OUTPUT_DIR}/main_new_exp.sp 
 # 	Enable HSPICE for 65nm
 #	hspice -i ${SPICE_INPUT_DIR}/main_new_exp -o ${SPICE_OUTPUT_DIR}/main_new_exp -mt 8 -hpp
-ifeq ($(ANALOG_SIMULATION_TOOL),HSPICE)
 	hspice -i ${SPICE_INPUT_DIR}/main_new_exp -o ${SPICE_OUTPUT_DIR}/main_new_exp
-#	Enable Spectre for 15nm
-else
+
+${SPICE_OUTPUT_DIR}/main_new_exp.raw: ${GEN_OUTPUT_DIR}/main_new_exp.sp python/digitizeRaw.py 
 	spectre +spp -format nutbin -outdir ${SPICE_OUTPUT_DIR} ${SPICE_INPUT_DIR}/main_new_exp.sp
-	python3.6 ./python/makeVCD.py ${VTH} ${SPICE_OUTPUT_DIR}/main_new_exp.raw ${SPICE_OUTPUT_DIR}/main_new_exp.vcd0
-endif
+
     
 crossings: 
 	$(eval TIME_CROSSINGS := $(shell date +%s%3N))
 	mkdir -p ${CROSSINGS_OUTPUT_DIR}
-	$(MAKE) ${CROSSINGS_OUTPUT_DIR}/crossings.json
-	
+	$(MAKE) ${CROSSINGS_OUTPUT_DIR}/crossings.json	
 	./scripts/timing.sh $@ ${TIME_CROSSINGS} 
-	
-# HSPICE version	
-ifeq ($(ANALOG_SIMULATION_TOOL),HSPICE)
-${CROSSINGS_OUTPUT_DIR}/crossings.json: python/makeCrossings.py ${SPICE_OUTPUT_DIR}/main_new_exp.tr0
-	mkdir -p ${CROSSINGS_OUTPUT_DIR}
-	python2.6 ./python/makeCrossings.py ${CROSSINGS_INPUT_DIR} ${CROSSINGS_OUTPUT_DIR} ${VTH}
+
+ifeq ($(ANALOG_SIMULATION_TOOL),HSPICE)	
+${CROSSINGS_OUTPUT_DIR}/crossings.json: ${SPICE_OUTPUT_DIR}/main_new_exp.tr0 ./python/digitizeTr0.py
+	python2.6 ./python/digitizeTr0.py ${SPICE_OUTPUT_DIR}/main_new_exp.tr0 ${SPICE_OUTPUT_DIR}/main_new_exp.vcd0 ${CROSSINGS_OUTPUT_DIR}/crossings.json ${VTH} ${TOP_DIR}/${MATCHING_FILE}
 else
-# Spectre version
-${CROSSINGS_OUTPUT_DIR}/crossings.json: ${SPICE_OUTPUT_DIR}/main_new_exp.vcd0
-	cp ${SPICE_OUTPUT_DIR}/main_new_exp.json ${CROSSINGS_OUTPUT_DIR}/crossings.json
+${CROSSINGS_OUTPUT_DIR}/crossings.json: ${SPICE_OUTPUT_DIR}/main_new_exp.raw ./python/digitizeRaw.py
+	python3.6 ./python/digitizeRaw.py ${SPICE_OUTPUT_DIR}/main_new_exp.raw ${SPICE_OUTPUT_DIR}/main_new_exp.vcd0 ${CROSSINGS_OUTPUT_DIR}/crossings.json ${VTH} ${TOP_DIR}/${MATCHING_FILE}
 endif
 	
 #### READ   ###############################################################
@@ -159,7 +163,7 @@ ${MODELSIM_OUTPUT_DIR}/%.do: ${MODELSIM_OUTPUT_DIR}/localDoTemplate
 
 ${MODELSIM_OUTPUT_DIR}/localDoTemplate: $(patsubst %, ${GATES_DIR}/%.vhd, ${REQUIRED_GATES}) ./scripts/templateDo ${CIRCUIT_DIR}/circuit_involution.vhd ${CIRCUIT_DIR}/circuit_modelsim.vhd
 	mkdir -p ${MODELSIM_OUTPUT_DIR}
-	./scripts/createDoTemplate.sh ${SDF_FILE} ${CIRCUIT_FILE} ${CIRCUIT_NAME} ${UNIT_NAME} "${VCD_SIGNALS}" ${TOP_DIR} ${CIRCUIT_DIR} ${VECTOR_OUTPUT_DIR} ${GATES_DIR} ${SIM_LIBRARY_VERILOG} ${VDD} ${VTH} ${CIRCUIT_FILE_TYPE}
+	./scripts/createDoTemplate.sh ${SDF_FILE} ${CIRCUIT_FILE} ${CIRCUIT_NAME} ${UNIT_NAME} "${VCD_SIGNALS}" ${TOP_DIR} ${CIRCUIT_DIR} ${VECTOR_OUTPUT_DIR} ${GATES_DIR} ${SIM_LIBRARY_VERILOG} ${VDD} ${VTH} ${CIRCUIT_FILE_TYPE} ${SIM_LIBRARY_COMPILER} ${VSIM_OPTIONS}
 	mv -f localDoTemplate ${MODELSIM_OUTPUT_DIR}/localDoTemplate
 	
 #### POWER  ###############################################################
@@ -369,7 +373,7 @@ report:
 #### CLEAN  ###############################################################  
 clean: 
 	rm -rf ${GEN_OUTPUT_DIR}/main_new_exp.sp ${GEN_OUTPUT_DIR}/waveform.json
-	rm -rf ${SPICE_OUTPUT_DIR}/*.tr0 ${SPICE_OUTPUT_DIR}/*.st0 ${SPICE_OUTPUT_DIR}/*.mt0 ${SPICE_OUTPUT_DIR}/*.lis ${SPICE_OUTPUT_DIR}/*.ic0 ${SPICE_OUTPUT_DIR}/*.vcd* ${SPICE_OUTPUT_DIR}/*.printtr0 ${SPICE_OUTPUT_DIR}/*.json SPICE_OUTPUT_DIR}/*.srf
+	rm -rf ${SPICE_OUTPUT_DIR}/*.tr0 ${SPICE_OUTPUT_DIR}/*.st0 ${SPICE_OUTPUT_DIR}/*.mt0 ${SPICE_OUTPUT_DIR}/*.lis ${SPICE_OUTPUT_DIR}/*.ic0 ${SPICE_OUTPUT_DIR}/*.vcd* ${SPICE_OUTPUT_DIR}/*.printtr0 ${SPICE_OUTPUT_DIR}/*.json SPICE_OUTPUT_DIR}/*.srf ${SPICE_OUTPUT_DIR}/*.raw ${SPICE_OUTPUT_DIR}/*.measure ${SPICE_OUTPUT_DIR}/*.log
 	rm -rf ${CROSSINGS_OUTPUT_DIR}/crossings.json
 	rm -rf ${VECTOR_OUTPUT_DIR}/vectors_*
 	rm -rf ${MODELSIM_OUTPUT_DIR}/work ${MODELSIM_OUTPUT_DIR}/transcript ${MODELSIM_OUTPUT_DIR}/*.log ${MODELSIM_OUTPUT_DIR}/*.do ${MODELSIM_OUTPUT_DIR}/localDoTemplate ${MODELSIM_OUTPUT_DIR}/*.vcd ${MODELSIM_OUTPUT_DIR}/circuit_involution.vhd ${MODELSIM_OUTPUT_DIR}/circuit_modelsim.vhd

@@ -128,6 +128,30 @@ def dict_key_to_lower_case(dictionary):
 	dictionary = temp_dict
 	return dictionary
 	
+def convert_string_to_filename(str):
+	return str.replace("/", "_")
+	
+def parse_matching_line(line):
+	parts = line.strip(' \t\n\r').split(' ')
+	return (parts[0].lower(), parts[1].lower())
+	
+	
+def matching_file_to_list(matching_file):
+	matching = list()
+	with open(matching_file, 'r') as f:
+		for line in f.readlines():
+			result = parse_matching_line(line)
+			matching.append(result)
+	return matching
+			
+def matching_file_to_dict(matching_file):
+	matching = dict()
+	with open(matching_file, 'r') as f:
+		for line in f.readlines():
+			(part0, part1) = parse_matching_line(line)
+			matching[part0] = part1
+	return matching
+	
 class PrintLevel:
 	INFORMATION = 1
 	WARNING = 2

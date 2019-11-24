@@ -1,0 +1,122 @@
+{
+    "inst_0 A": [
+        "nx3",
+        "Xmycir.inst_0:ZN",
+        -1,
+        -1,
+        0,
+        0,
+        "inst_0",
+        "IOPATH A1 ZN"
+    ],
+    "inst_0 B": [
+        "nx6",
+        "Xmycir.inst_0:ZN",
+        -1,
+        -1,
+        0,
+        0,
+        "inst_0",
+        "IOPATH A2 ZN"
+    ],
+    "inst_1 A": [
+        "nx1",
+        "Xmycir.inst_1:ZN",
+        -1,
+        -1,
+        0,
+        0,
+        "inst_1",
+        "IOPATH A1 ZN"
+    ],
+    "inst_1 B": [
+        "nx3",
+        "Xmycir.inst_1:ZN",
+        -1,
+        -1,
+        0,
+        0,
+        "inst_1",
+        "IOPATH A2 ZN"
+    ],
+    "inst_2 A": [
+        "nx7",
+        "Xmycir.inst_2:ZN",
+        -1,
+        -1,
+        0,
+        0,
+        "inst_2",
+        "IOPATH A1 ZN"
+    ],
+    "inst_2 B": [
+        "Xmycir.inst_0:ZN",
+        "Xmycir.inst_2:ZN",
+        -1,
+        -1,
+        0,
+        0,
+        "inst_2",
+        "IOPATH A2 ZN"
+    ],
+    "inst_3 A": [
+        "nx2",
+        "Xmycir.inst_3:ZN",
+        -1,
+        -1,
+        0,
+        0,
+        "inst_3",
+        "IOPATH A1 ZN"
+    ],
+    "inst_3 B": [
+        "Xmycir.inst_0:ZN",
+        "Xmycir.inst_3:ZN",
+        -1,
+        -1,
+        0,
+        0,
+        "inst_3",
+        "IOPATH A2 ZN"
+    ],
+    "inst_4 A": [
+        "Xmycir.inst_3:ZN",
+        "nx23",
+        -1,
+        -1,
+        0,
+        0,
+        "inst_4",
+        "IOPATH A1 ZN"
+    ],
+    "inst_4 B": [
+        "Xmycir.inst_2:ZN",
+        "nx23",
+        -1,
+        -1,
+        0,
+        0,
+        "inst_4",
+        "IOPATH A2 ZN"
+    ],
+    "inst_5 A": [
+        "Xmycir.inst_1:ZN",
+        "nx22",
+        -1,
+        -1,
+        0,
+        0,
+        "inst_5",
+        "IOPATH A1 ZN"
+    ],
+    "inst_5 B": [
+        "Xmycir.inst_3:ZN",
+        "nx22",
+        -1,
+        -1,
+        0,
+        0,
+        "inst_5",
+        "IOPATH A2 ZN"
+    ]
+}

@@ -32,6 +32,7 @@ use IEEE.VITAL_Timing.all;
 use IEEE.VITAL_Primitives.all;
 use work.exp_channel_pkg.all;
 use work.hill_channel_pkg.all;
+use work.sumexp_channel_pkg.all;
 
 ENTITY DFFRNQ_X1 IS
 
@@ -70,7 +71,15 @@ ENTITY DFFRNQ_X1 IS
 	   
 	   -- Channel specific parameters Hill Channel
 	   N_UP : real := 1.0;
-	   N_DO : real := 1.0
+	   N_DO : real := 1.0;
+	   
+	   -- Channel specific parameters SumExp Channel
+	   TAU_1_UP : time := 1.0 ps;
+	   TAU_2_UP : time := 1.0 ps;
+	   X_1_UP : real := 1.0;
+	   TAU_1_DO : time := 1.0 ps;
+	   TAU_2_DO : time := 1.0 ps;
+	   X_1_DO : real := 1.0
 	   
 	);
 
@@ -87,6 +96,13 @@ END DFFRNQ_X1;
 
 --BEGIN_ARCH
 ARCHITECTURE EXP_CHANNEL_INPUT OF DFFRNQ_X1 IS
+BEGIN
+  
+END;
+--END_ARCH
+
+--BEGIN_ARCH
+ARCHITECTURE EXP_CHANNEL_INPUT_SWAPPED OF DFFRNQ_X1 IS
 BEGIN
   
 END;
@@ -111,6 +127,12 @@ END;
 --END_ARCH
 
 --BEGIN_ARCH
+ARCHITECTURE HILL_CHANNEL_INPUT_SWAPPED OF DFFRNQ_X1 IS	
+BEGIN  
+END;
+--END_ARCH
+
+--BEGIN_ARCH
 ARCHITECTURE HILL_CHANNEL_OUTPUT OF DFFRNQ_X1 IS
 BEGIN  
 END;
@@ -118,6 +140,30 @@ END;
 
 --BEGIN_ARCH
 ARCHITECTURE HILL_CHANNEL_OUTPUT_SWAPPED OF DFFRNQ_X1 IS
+BEGIN  
+END;
+--END_ARCH
+
+--BEGIN_ARCH
+ARCHITECTURE SUMEXP_CHANNEL_INPUT OF DFFRNQ_X1 IS	
+BEGIN  
+END;
+--END_ARCH
+
+--BEGIN_ARCH
+ARCHITECTURE SUMEXP_CHANNEL_INPUT_SWAPPED OF DFFRNQ_X1 IS	
+BEGIN  
+END;
+--END_ARCH
+
+--BEGIN_ARCH
+ARCHITECTURE SUMEXP_CHANNEL_OUTPUT OF DFFRNQ_X1 IS
+BEGIN  
+END;
+--END_ARCH
+
+--BEGIN_ARCH
+ARCHITECTURE SUMEXP_CHANNEL_OUTPUT_SWAPPED OF DFFRNQ_X1 IS
 BEGIN  
 END;
 --END_ARCH

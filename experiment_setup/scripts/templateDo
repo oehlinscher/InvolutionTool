@@ -29,11 +29,15 @@ vcom -work work -2008 -novopt ./vhdl/p_exp_channel.vhd
 vcom -work work -2008 -novopt ./vhdl/ea_exp_channel.vhd
 vcom -work work -2008 -novopt ./vhdl/p_hill_channel.vhd
 vcom -work work -2008 -novopt ./vhdl/ea_hill_channel.vhd
+vcom -work work -2008 -novopt ./vhdl/p_sumexp_channel.vhd
+vcom -work work -2008 -novopt ./vhdl/ea_sumexp_channel.vhd
+vcom -work work -2008 -novopt ./vhdl/p_puredelay_channel.vhd
+vcom -work work -2008 -novopt ./vhdl/ea_puredelay_channel.vhd
 
 if {$mode eq {involution}} {
 	vcom -work work -2008 -novopt ##gateDirs##
 } else {
-	vlog -work work -novopt -stats=none ##simLibraryVerilog##
+	##simLibraryCompiler## -work work -novopt -stats=none ##simLibraryVerilog##
 }
 
 # define which type to use, VHDL causes no SDF annotation problems,
@@ -65,7 +69,7 @@ if {$mode eq {involution}} {
 	#vsim work.circuit_TB -t fs -novopt -sdfnoerror -sdfmin ##unitName##=##topDir####sdfFile## -GVectorsDir=##vectorsDir## -GV_DD=##channelVDD## -GV_TH=##channelVTH## circuit_config
 	vsim work.circuit_TB -t fs -novopt -sdfnoerror -sdfmin ##unitName##=##topDir####sdfFile## -GVectorsDir=##vectorsDir## -GV_DD=##channelVDD## -GV_TH=##channelVTH##
 } else {
-	vsim work.circuit_TB -t fs -novopt -sdfnoerror -sdfmin ##unitName##=##topDir####sdfFile## -GVectorsDir=##vectorsDir##
+	vsim work.circuit_TB -t fs -novopt -sdfnoerror -sdfmin ##unitName##=##topDir####sdfFile## -GVectorsDir=##vectorsDir## ##vsimOptions##  
 }
 #vsim work.circuit_TB -t fs -voptargs=+acc=full -sdfnoerror -sdfmax ##unitName##=##topDir####sdfFile##
 

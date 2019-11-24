@@ -1,0 +1,122 @@
+{
+    "inst_0 A": [
+        "nx3",
+        "xmycir.inst_0:z",
+        -1,
+        -1,
+        0,
+        0,
+        "inst_0",
+        "IOPATH A Z"
+    ],
+    "inst_0 B": [
+        "nx6",
+        "xmycir.inst_0:z",
+        -1,
+        -1,
+        0,
+        0,
+        "inst_0",
+        "IOPATH B Z"
+    ],
+    "inst_1 A": [
+        "nx1",
+        "xmycir.inst_1:z",
+        -1,
+        -1,
+        0,
+        0,
+        "inst_1",
+        "IOPATH A Z"
+    ],
+    "inst_1 B": [
+        "nx3",
+        "xmycir.inst_1:z",
+        -1,
+        -1,
+        0,
+        0,
+        "inst_1",
+        "IOPATH B Z"
+    ],
+    "inst_2 A": [
+        "nx7",
+        "xmycir.inst_2:z",
+        -1,
+        -1,
+        0,
+        0,
+        "inst_2",
+        "IOPATH A Z"
+    ],
+    "inst_2 B": [
+        "xmycir.inst_0:z",
+        "xmycir.inst_2:z",
+        -1,
+        -1,
+        0,
+        0,
+        "inst_2",
+        "IOPATH B Z"
+    ],
+    "inst_3 A": [
+        "nx2",
+        "xmycir.inst_3:z",
+        -1,
+        -1,
+        0,
+        0,
+        "inst_3",
+        "IOPATH A Z"
+    ],
+    "inst_3 B": [
+        "xmycir.inst_0:z",
+        "xmycir.inst_3:z",
+        -1,
+        -1,
+        0,
+        0,
+        "inst_3",
+        "IOPATH B Z"
+    ],
+    "inst_4 A": [
+        "xmycir.inst_3:z",
+        "nx23",
+        -1,
+        -1,
+        0,
+        0,
+        "inst_4",
+        "IOPATH A Z"
+    ],
+    "inst_4 B": [
+        "xmycir.inst_2:z",
+        "nx23",
+        -1,
+        -1,
+        0,
+        0,
+        "inst_4",
+        "IOPATH B Z"
+    ],
+    "inst_5 A": [
+        "xmycir.inst_1:z",
+        "nx22",
+        -1,
+        -1,
+        0,
+        0,
+        "inst_5",
+        "IOPATH A Z"
+    ],
+    "inst_5 B": [
+        "xmycir.inst_3:z",
+        "nx22",
+        -1,
+        -1,
+        0,
+        0,
+        "inst_5",
+        "IOPATH B Z"
+    ]
+}

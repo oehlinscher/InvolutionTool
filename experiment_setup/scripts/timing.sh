@@ -29,6 +29,8 @@ then
 	
 	ELAPSED=$(($(date +%s%3N)-${2}))
 	echo ${1} ${ELAPSED} >> ${TOP_DIR}/perf/performance_meassure.txt
+	
+	python python/extendResults.py ${TOP_DIR}/perf/perf.json "TIMING_${1}" ${ELAPSED}
 
 fi
 

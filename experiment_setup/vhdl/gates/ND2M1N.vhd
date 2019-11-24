@@ -31,6 +31,7 @@ use IEEE.VITAL_Timing.all;
 use IEEE.VITAL_Primitives.all;
 use work.exp_channel_pkg.all;
 use work.hill_channel_pkg.all;
+use work.sumexp_channel_pkg.all;
 
 ENTITY ND2M1N IS
 
@@ -53,7 +54,15 @@ ENTITY ND2M1N IS
 	   
 	   -- Channel specific parameters Hill Channel
 	   N_UP : real := 1.0;
-	   N_DO : real := 1.0
+	   N_DO : real := 1.0;
+	   
+	   -- Channel specific parameters SumExp Channel
+	   TAU_1_UP : time := 1.0 ps;
+	   TAU_2_UP : time := 1.0 ps;
+	   X_1_UP : real := 1.0;
+	   TAU_1_DO : time := 1.0 ps;
+	   TAU_2_DO : time := 1.0 ps;
+	   X_1_DO : real := 1.0
 	   
 	);
 
@@ -89,6 +98,42 @@ BEGIN
 	generic map(
 		D_UP => tpd_B_Z(tr01),
 		D_DO => tpd_B_Z(tr10),
+		T_P => T_P,
+		V_DD => V_DD,
+		V_TH => V_TH)
+	port map(
+		input => B,
+		output => B_del);
+
+	
+	
+	Z <= A_del nand B_del;
+  
+END;
+--END_ARCH
+
+--BEGIN_ARCH
+ARCHITECTURE EXP_CHANNEL_INPUT_SWAPPED OF ND2M1N IS
+	SIGNAL A_del : STD_ULOGIC := 'X';
+	SIGNAL B_del : STD_ULOGIC := 'X';
+	
+BEGIN
+
+	delay_A : exp_channel
+	generic map(
+		D_UP => tpd_A_Z(tr10),
+		D_DO => tpd_A_Z(tr01),
+		T_P => T_P,
+		V_DD => V_DD,
+		V_TH => V_TH)
+	port map(
+		input => A,
+		output => A_del);
+
+	delay_B : exp_channel
+	generic map(
+		D_UP => tpd_B_Z(tr10),
+		D_DO => tpd_B_Z(tr01),
 		T_P => T_P,
 		V_DD => V_DD,
 		V_TH => V_TH)
@@ -192,6 +237,46 @@ END;
 --END_ARCH
 
 --BEGIN_ARCH
+ARCHITECTURE HILL_CHANNEL_INPUT_SWAPPED OF ND2M1N IS
+	SIGNAL A_del : STD_ULOGIC := 'X';
+	SIGNAL B_del : STD_ULOGIC := 'X';
+	
+BEGIN
+
+	delay_A : hill_channel
+	generic map(
+		D_UP => tpd_A_Z(tr10),
+		D_DO => tpd_A_Z(tr01),
+		T_P => T_P,
+		V_DD => V_DD,
+		V_TH => V_TH,
+		N_UP => N_UP,
+		N_DO => N_DO)
+	port map(
+		input => A,
+		output => A_del);
+
+	delay_B : hill_channel
+	generic map(
+		D_UP => tpd_B_Z(tr10),
+		D_DO => tpd_B_Z(tr01),
+		T_P => T_P,
+		V_DD => V_DD,
+		V_TH => V_TH,
+		N_UP => N_UP,
+		N_DO => N_DO)
+	port map(
+		input => B,
+		output => B_del);
+
+	
+	
+	Z <= A_del nand B_del;
+  
+END;
+--END_ARCH
+
+--BEGIN_ARCH
 ARCHITECTURE HILL_CHANNEL_OUTPUT OF ND2M1N IS
 	SIGNAL Z_pre : STD_ULOGIC := 'X';
 	
@@ -232,6 +317,162 @@ BEGIN
 		V_TH => V_TH,
 		N_UP => N_UP,
 		N_DO => N_DO)
+	port map(
+		input => Z_pre,
+		output => Z);
+
+	
+	
+	Z_pre <= A nand B;
+  
+END;
+--END_ARCH
+
+--BEGIN_ARCH
+ARCHITECTURE SUMEXP_CHANNEL_INPUT OF ND2M1N IS
+	SIGNAL A_del : STD_ULOGIC := 'X';
+	SIGNAL B_del : STD_ULOGIC := 'X';
+	
+BEGIN
+
+	delay_A : sumexp_channel
+	generic map(
+		D_UP => tpd_A_Z(tr01),
+		D_DO => tpd_A_Z(tr10),
+		T_P => T_P,
+		V_DD => V_DD,
+		V_TH => V_TH,
+		TAU_1_UP => TAU_1_UP,
+		TAU_2_UP => TAU_2_UP,
+		X_1_UP => X_1_UP,
+		TAU_1_DO => TAU_1_DO,
+		TAU_2_DO => TAU_2_DO,
+		X_1_DO => X_1_DO)
+	port map(
+		input => A,
+		output => A_del);
+
+	delay_B : sumexp_channel
+	generic map(
+		D_UP => tpd_B_Z(tr01),
+		D_DO => tpd_B_Z(tr10),
+		T_P => T_P,
+		V_DD => V_DD,
+		V_TH => V_TH,
+		TAU_1_UP => TAU_1_UP,
+		TAU_2_UP => TAU_2_UP,
+		X_1_UP => X_1_UP,
+		TAU_1_DO => TAU_1_DO,
+		TAU_2_DO => TAU_2_DO,
+		X_1_DO => X_1_DO)
+	port map(
+		input => B,
+		output => B_del);
+
+	
+	
+	Z <= A_del nand B_del;
+  
+END;
+--END_ARCH
+
+--BEGIN_ARCH
+ARCHITECTURE SUMEXP_CHANNEL_INPUT_SWAPPED OF ND2M1N IS
+	SIGNAL A_del : STD_ULOGIC := 'X';
+	SIGNAL B_del : STD_ULOGIC := 'X';
+	
+BEGIN
+
+	delay_A : sumexp_channel
+	generic map(
+		D_UP => tpd_A_Z(tr10),
+		D_DO => tpd_A_Z(tr01),
+		T_P => T_P,
+		V_DD => V_DD,
+		V_TH => V_TH,
+		TAU_1_UP => TAU_1_UP,
+		TAU_2_UP => TAU_2_UP,
+		X_1_UP => X_1_UP,
+		TAU_1_DO => TAU_1_DO,
+		TAU_2_DO => TAU_2_DO,
+		X_1_DO => X_1_DO)
+	port map(
+		input => A,
+		output => A_del);
+
+	delay_B : sumexp_channel
+	generic map(
+		D_UP => tpd_B_Z(tr10),
+		D_DO => tpd_B_Z(tr01),
+		T_P => T_P,
+		V_DD => V_DD,
+		V_TH => V_TH,
+		TAU_1_UP => TAU_1_UP,
+		TAU_2_UP => TAU_2_UP,
+		X_1_UP => X_1_UP,
+		TAU_1_DO => TAU_1_DO,
+		TAU_2_DO => TAU_2_DO,
+		X_1_DO => X_1_DO)
+	port map(
+		input => B,
+		output => B_del);
+
+	
+	
+	Z <= A_del nand B_del;
+  
+END;
+--END_ARCH
+
+--BEGIN_ARCH
+ARCHITECTURE SUMEXP_CHANNEL_OUTPUT OF ND2M1N IS
+	SIGNAL Z_pre : STD_ULOGIC := 'X';
+	
+BEGIN
+
+	delay_Z_pre : sumexp_channel
+	generic map(
+		D_UP => (tpd_A_Z(tr01) + tpd_A_Z(tr01))/2,
+		D_DO => (tpd_A_Z(tr10) + tpd_A_Z(tr10))/2,
+		T_P => T_P,
+		V_DD => V_DD,
+		V_TH => V_TH,
+		TAU_1_UP => TAU_1_UP,
+		TAU_2_UP => TAU_2_UP,
+		X_1_UP => X_1_UP,
+		TAU_1_DO => TAU_1_DO,
+		TAU_2_DO => TAU_2_DO,
+		X_1_DO => X_1_DO)
+	port map(
+		input => Z_pre,
+		output => Z);
+
+	
+	
+	Z_pre <= A nand B;
+  
+END;
+--END_ARCH
+
+--BEGIN_ARCH
+ARCHITECTURE SUMEXP_CHANNEL_OUTPUT_SWAPPED OF ND2M1N IS
+	SIGNAL Z_pre : STD_ULOGIC := 'X';
+	
+BEGIN
+
+	delay_Z_pre : sumexp_channel
+	generic map(
+		D_UP => (tpd_A_Z(tr10) + tpd_A_Z(tr10))/2,
+		D_DO => (tpd_A_Z(tr01) + tpd_A_Z(tr01))/2,
+		T_P => T_P,
+		V_DD => V_DD,
+		V_TH => V_TH,
+		TAU_1_UP => TAU_1_UP,
+		TAU_2_UP => TAU_2_UP,
+		X_1_UP => X_1_UP,
+		TAU_1_DO => TAU_1_DO,
+		TAU_2_DO => TAU_2_DO,
+		X_1_DO => X_1_DO)
 	port map(
 		input => Z_pre,
 		output => Z);

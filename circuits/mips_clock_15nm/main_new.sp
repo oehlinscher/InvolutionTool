@@ -19,9 +19,6 @@
 + INGOLD=2
 + PARHIER=LOCAL
 + POST=CSDF
-+ PROBE
-+ BRIEF
-+ ACCURATE
 + ABSVAR=0.05
 *+ DELMAX=100fs * use automatic DELMAX
 
@@ -42,10 +39,8 @@ Xmycir clk 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 mvdd 0 mips
 Vgpwl clkshape 0 PWL(<clk>)
 
 
-* TODO Find correct probes
 .PROBE TRAN v(clk) v(xmycir.*:ZN)
 
-* TODO: reduce as soon we know that everything is working
 .TRAN 1PS <STOPTIME>NS
 
 * Average Power calculation via average current
@@ -57,8 +52,5 @@ Vgpwl clkshape 0 PWL(<clk>)
 .MEAS TRAN max_cur max 'abs(i(vdd))' from=0ns to=<STOPTIME>NS 
 .MEAS TRAN max_mvdd max V(mvdd) from=0ns to=<STOPTIME>NS 
 .MEAS TRAN pwr_max PARAM='abs(max_cur*max_mvdd)'
-
-* TODO: Find all probe points in SPICE
-.LPRINT(<VTH>, <VTH>) v(clk) v(xmycir.*:ZN)
 
 .END

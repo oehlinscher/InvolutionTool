@@ -80,7 +80,7 @@ def generate_gates(default_config_file, circuit_config_file, gate_dir, gate_temp
 			for input in gate.inputs:
 				entity_generic_list.append(input)
 			
-			if gate.channel_location == ChannelLocation.INPUT:
+			if gate.channel_location == ChannelLocation.INPUT or gate.channel_location == ChannelLocation.INPUT_SWAPPED:
 				my_print("Before")
 				arch_postfix = "_before"
 				
@@ -135,9 +135,15 @@ def generate_gates(default_config_file, circuit_config_file, gate_dir, gate_temp
 			for channel in delay_channel_list:
 				d_up = ""
 				d_down = ""
-				if gate.channel_location == ChannelLocation.INPUT:
-					d_up = "tpd_" + channel[0] + "_" + output + "(tr01)"
-					d_down = "tpd_" + channel[0] + "_" + output + "(tr10)"
+				if gate.channel_location == ChannelLocation.INPUT or gate.channel_location == ChannelLocation.INPUT_SWAPPED:
+					delay_up = "tr01"
+					delay_down = "tr10"
+					if gate.channel_location == ChannelLocation.INPUT_SWAPPED:
+						delay_up = "tr10"
+						delay_down = "tr01"
+						
+					d_up = "tpd_" + channel[0] + "_" + output + "(" + delay_up +")"
+					d_down = "tpd_" + channel[0] + "_" + output + "(" + delay_down + ")"
 				if gate.channel_location == ChannelLocation.OUTPUT or gate.channel_location == ChannelLocation.OUTPUT_SWAPPED:
 					delay_up = "tr01"
 					delay_down = "tr10"
@@ -158,6 +164,10 @@ def generate_gates(default_config_file, circuit_config_file, gate_dir, gate_temp
 					channel_name = "exp_channel"
 				elif gate.channel_type == ChannelType.HILL_CHANNEL:
 					channel_name = "hill_channel"
+				elif gate.channel_type == ChannelType.SUMEXP_CHANNEL:					
+					channel_name = "sumexp_channel"
+				elif gate.channel_type == ChannelType.PUREDELAY_CHANNEL:	
+					channel_name = "puredelay_channel"
 				else:
 					my_print("Unkown channel type: " + str(gate.channel_type), EscCodes.FAIL)
 					

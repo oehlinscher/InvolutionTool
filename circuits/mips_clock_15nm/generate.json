@@ -1,8 +1,8 @@
 {
   "N": 50, 
-  "calc_next_transition_mode": "LOCAL",
+  "calc_next_transition_mode": "GLOBAL",
   "groups": [], 
-  "mue": 0.1, 
+  "mue": 0.015, 
   "sigma": 0.01, 
   "signals": [
     "clk"

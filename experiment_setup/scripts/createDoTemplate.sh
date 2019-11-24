@@ -31,13 +31,13 @@ GATE_DIRS=""
 
 for i in ./vhdl/gates/*.vhd 
 do
-	if [ -f "$i" ]; then printf echo "Found"; GATE_DIRS+=" ./vhdl/gates/*.vhd "; fi
+	if [ -f "$i" ]; then GATE_DIRS+=" ./vhdl/gates/*.vhd "; fi
 	break;
 done
 
 for i in  ${9}/*.vhd
 do
-	if [ -f "$i" ]; then printf echo "Found 2"; GATE_DIRS+="${9}*.vhd"; fi
+	if [ -f "$i" ]; then GATE_DIRS+="${9}*.vhd"; fi
 	break;
 done
 
@@ -53,4 +53,6 @@ sed "s@##gateDirs##@${GATE_DIRS}@g" | \
 sed "s@##simLibraryVerilog##@${10}@g" | \
 sed "s@##channelVDD##@${11}@g" | \
 sed "s@##channelVTH##@${12}@g" | \
-sed "s@##circuitFileType##@${13}@g" > localDoTemplate
+sed "s@##circuitFileType##@${13}@g" | \
+sed "s@##simLibraryCompiler##@${14}@g" | \
+sed "s@##vsimOptions##@${15}@g" > localDoTemplate
