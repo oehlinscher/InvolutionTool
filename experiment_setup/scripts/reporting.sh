@@ -59,6 +59,8 @@ python2.6 ./python/printCWG.py ${WAVEFORM_GENERATION_CONFIG_DIR}/generate.json $
 cp ${WAVEFORM_GENERATION_CONFIG_DIR}/generate.json ${TARGET_FOLDER}/generate.json
 python2.6 ./python/combineGateGeneration.py ${GENERAL_GATE_CONFIG_DIR}/gate_config.json ${CIRCUIT_GATE_CONFIG_DIR}/gate_config.json ${TARGET_FOLDER}/gate_config.json
 cp ${GEN_OUTPUT_DIR}/waveform.json ${TARGET_FOLDER}/waveform.json
+cp ${WAVEFORM_GENERATION_CONFIG_DIR}/generate.json ${TARGET_FOLDER}/generate.json
+python2.6 ./python/gateGenerationToResults.py ${TARGET_FOLDER}/gate_config.json "${REQUIRED_GATES}" ${TARGET_FOLDER}/results.json GATES
 ./scripts/timing.sh "report_CONFIGURATION" ${TIME_REPORT_SUB} 
 
 # Prepare figures, parse data and store to results.json

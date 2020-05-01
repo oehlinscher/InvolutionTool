@@ -125,6 +125,9 @@ def multi_exec_sim(config_file):
 	last_key_to_keep_spice = KEY_DIGSIM_PROPERTIES
 	last_key_to_keep_stddigsim = KEY_CHANNEL_LOCATION
 	
+	last_key_to_keep_group_count = KEY_T_P
+	last_key_to_keep_reference_count = KEY_SPICE_PROPERTIES
+	
 	length_dict = dict()
 	length_dict[KEY_WAVEFORM] = len(multi_exec.waveform_generation)
 	length_dict[KEY_SPICE_PROPERTIES] = len(multi_exec.spice_properties)
@@ -143,7 +146,12 @@ def multi_exec_sim(config_file):
 		keep_spice = False
 				
 		curr_sim_num = 1
-		config_num = 0		
+		config_num = 0	
+
+		# Reset ME_reference_group and ME_group, these are "counters" which are later used for reporting
+		os.environ["ME_reference_group"] = "0" 	# The ME_reference_group is incremented when the waveform config changes
+		os.environ["ME_group"] = "0"				# The ME_group is incremented when a channel property changes
+		
 		
 		# reset property_dict indices (value is a pointer to the current setting for each key)
 		for key in property_dict.keys():
@@ -255,16 +263,26 @@ def multi_exec_sim(config_file):
 					keep_std_digsim = calc_keep_property(key, last_key_to_keep_stddigsim, True)
 					keep_spice = calc_keep_property(key, last_key_to_keep_spice, True)
 					keep_waveform_local = calc_keep_property(key, last_key_to_keep_waveform, True)
+					keep_group_count = calc_keep_property(key, last_key_to_keep_group_count, True)
+					keep_reference_group_count = calc_keep_property(key, last_key_to_keep_reference_count, True)
 				else:
 					keep_std_digsim = calc_keep_property(key, last_key_to_keep_stddigsim, False)
 					keep_spice = calc_keep_property(key, last_key_to_keep_spice, False)
 					keep_waveform_local = calc_keep_property(key, last_key_to_keep_waveform, False)
+					keep_group_count = calc_keep_property(key, last_key_to_keep_group_count, False)
+					keep_reference_group_count = calc_keep_property(key, last_key_to_keep_reference_count, False)
 					
 					break; # no need to increment the other properties
-					
+			
 			if len(property_dict) == 0:
 				# if we just want to execute the standard configuration multiple times, we have an overflow after each simulation run:
 				overflow = True
+				
+			if not keep_group_count:			
+				os.environ["ME_group"] = str(int(os.environ["ME_group"]) + 1)
+				
+			if not keep_reference_group_count:
+				os.environ["ME_reference_group"] = str(int(os.environ["ME_reference_group"]) + 1)
 					
 			# "first" property has "overflowed", we are done			
 			if overflow:	

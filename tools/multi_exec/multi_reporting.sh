@@ -1,5 +1,8 @@
 #!/bin/sh
 
+echo ${RESULT_OUTPUT_DIR}
+echo ${ME_REPORT_FOLDER}
+
 # variables for the target folder
 export TARGET_FOLDER=${RESULT_OUTPUT_DIR}/${ME_REPORT_FOLDER}/multi_report/
 
@@ -32,3 +35,7 @@ python2.6 ${EXPERIMENT_SETUP_DIR}/python/generateReportVars.py ${TARGET_FOLDER}/
 
 # also export into csv, values in the report can be easily checked, sorted, ...
 python2.6 export.py
+
+# Store multi_exec configuration values (for better traceability)
+cp ./multi_exec.cfg ${TARGET_FOLDER}/multi_exec.cfg
+cp ./multi_exec.json ${TARGET_FOLDER}/multi_exec.json
