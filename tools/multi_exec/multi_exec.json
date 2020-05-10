@@ -3,9 +3,34 @@
   "keep_waveform" : true,
   "gate_generation": {
     "t_p_list": [
-		1.00
+		0.00,
+		0.10,
+		0.25,
+		0.50,
+		0.75,
+		1.00,		
+		[0.0, "PERCENT"],
+		[20.0, "PERCENT"],
+		[40.0, "PERCENT"],
+		[60.0, "PERCENT"],
+		[95.0, "PERCENT"],
+		[100.0, "PERCENT"]
     ],
 	"channel_type_list": [
+	  {
+		"ALL" : {		
+			"channel_type" : "PUREDELAY_CHANNEL",
+			"channel_parameters" : {
+			}
+		}
+	  },
+	  {
+		"ALL" : {		
+			"channel_type" : "EXP_CHANNEL",
+			"channel_parameters" : {
+			}
+		}
+	  },
 	  {
 	  	"ALL" : {	
 			"channel_type" : "HILL_CHANNEL",
@@ -14,12 +39,25 @@
 				"N_DO" : 1.0
 			}
 		}
+	  },  
+	  {
+		"ALL" : {
+			"channel_type" : "SUMEXP_CHANNEL",
+			"channel_parameters" : {
+				"X_1_UP" : 0.25,
+				"X_1_DO" : 0.25,
+				"TAU_1_UP" : "30 fs",
+				"TAU_1_DO" : "30 fs",
+				"TAU_2_UP" : "3000 fs",
+				"TAU_2_DO" : "3000 fs"
+			}
+		}
 	  }
 	]
   },
   "waveform_generation": [
 	{
-	  "N": 50, 
+	  "N": 500, 
       "calc_next_transition_mode": "LOCAL", 
       "mue": 0.015, 
       "sigma": 0.01

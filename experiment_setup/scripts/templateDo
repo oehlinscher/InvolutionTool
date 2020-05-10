@@ -25,6 +25,7 @@ vlib work
 
 set mode ##name##
 
+vcom -work work -2008 -novopt ./vhdl/p_channel_base.vhd
 vcom -work work -2008 -novopt ./vhdl/p_exp_channel.vhd
 vcom -work work -2008 -novopt ./vhdl/ea_exp_channel.vhd
 vcom -work work -2008 -novopt ./vhdl/p_hill_channel.vhd

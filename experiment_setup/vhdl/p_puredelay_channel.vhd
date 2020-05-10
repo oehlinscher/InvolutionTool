@@ -28,6 +28,7 @@
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
+USE work.channel_base_pkg.ALL;
 
 -----------------------------------------------------------------
 
@@ -38,7 +39,9 @@ PACKAGE puredelay_channel_pkg IS
 			D_UP : time;	
 			D_DO : time;	
 			-- The following generics are not used by this channel, but since these generics are the required by standard involution channels, we need to add them here
-			T_P  : time;			
+			T_P  : time;
+			T_P_PERCENT : real				:= 0.0;	
+			T_P_MODE	: PARAMETER_MODE 	:= ABSOLUTE;			
 			V_DD : real := 1.0;
 			V_TH : real := 0.5
 		);

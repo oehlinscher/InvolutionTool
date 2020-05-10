@@ -27,18 +27,20 @@ def main():
     add_column_if_not_exists(data, 5, 'CWGcalcnexttransitionmodename')  
 
     # gate_config.json --> results.json
-    add_column_if_not_exists(data, 6, 'GATEST_P')                 
-    add_column_if_not_exists(data, 7, 'GATESname')     
-    add_column_if_not_exists(data, 8, 'GATESchannel_type')               
-    add_column_if_not_exists(data, 9, 'GATESchannel_location')    
-    add_column_if_not_exists(data, 10, 'GATESn_up')                
-    add_column_if_not_exists(data, 11, 'GATESn_do')               
-    add_column_if_not_exists(data, 12, 'GATESx_1_up')      
-    add_column_if_not_exists(data, 13, 'GATESx_1_do')                       
-    add_column_if_not_exists(data, 14, 'GATEStau_1_up')                    
-    add_column_if_not_exists(data, 15, 'GATEStau_1_do')              
-    add_column_if_not_exists(data, 16, 'GATEStau_2_up')                 
-    add_column_if_not_exists(data, 17, 'GATEStau_2_do')       
+    add_column_if_not_exists(data, 6, 'GATEST_P')   
+    add_column_if_not_exists(data, 7, 'GATEST_P_Percent')      
+    add_column_if_not_exists(data, 8, 'GATEST_P_Mode')                    
+    add_column_if_not_exists(data, 9, 'GATESname')     
+    add_column_if_not_exists(data, 10, 'GATESchannel_type')               
+    add_column_if_not_exists(data, 11, 'GATESchannel_location')    
+    add_column_if_not_exists(data, 12, 'GATESn_up')                
+    add_column_if_not_exists(data, 13, 'GATESn_do')               
+    add_column_if_not_exists(data, 14, 'GATESx_1_up')      
+    add_column_if_not_exists(data, 15, 'GATESx_1_do')                       
+    add_column_if_not_exists(data, 16, 'GATEStau_1_up')                    
+    add_column_if_not_exists(data, 17, 'GATEStau_1_do')              
+    add_column_if_not_exists(data, 18, 'GATEStau_2_up')                 
+    add_column_if_not_exists(data, 19, 'GATEStau_2_do')       
 
     # multiExec.py -> results.json:         This data needs to be written into the results.json file during the multi-execution
     # generate.json -> results.json:        This data need to be written into the results.json file during each-execution 
@@ -46,9 +48,10 @@ def main():
     #                                       If we have two relevant gates with say T_P = 1 and T_P = 2 we get a list [1,2]
     
     data = data.groupby(['me_config_id', 'ENVME_reference_group', 'ENVME_group', 'CWGn', 'CWGmue',
-        'CWGsigma', 'CWGcalcnexttransitionmodename', 'GATEST_P',  'GATESname', 'GATESchannel_type',
+        'CWGsigma', 'CWGcalcnexttransitionmodename', 'GATEST_P', 'GATEST_P_Percent', 'GATEST_P_Mode', 'GATESname', 'GATESchannel_type',
         'GATESchannel_location', 'GATESn_up', 'GATESn_do', 'GATESx_1_up', 'GATESx_1_do', 'GATEStau_1_up', 
         'GATEStau_1_do', 'GATEStau_2_up', 'GATEStau_2_do']).mean()
+        
     
     # Now calculate all the metrics...
     data['total_pos_area_under_dev_trace_inv_per_spice_transition'] = data.apply (lambda row: row['total_pos_area_under_dev_trace_inv']/row['total_tc_spice']*1000, axis=1)
@@ -99,6 +102,8 @@ def main():
 def add_column_if_not_exists(data, idx, column_name):    
     if not column_name in data:
         data.insert(idx, column_name, '')    
+
+    data[column_name] = data[column_name].astype(str)
 
 
 def relative_change(x, x_reference):

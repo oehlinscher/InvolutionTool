@@ -96,11 +96,13 @@ def main():
 	# Handle compability with old / new column names:		
 	reference_group_col = get_column_name(data, ['reference_group', 'ENVME_reference_group'])
 	group_col = get_column_name(data, ['group', 'ENVME_group'])
-	n_col = "CWGn"
+	n_col = get_column_name(data, ["CWGn"])
 	mue_col = get_column_name(data, ['mu', 'CWGmue'])
 	sigma_col = get_column_name(data, ['sigma', 'CWGsigma'])
 	trans_mode_col = get_column_name(data, ['trans_mode', 'CWGcalcnexttransitionmodename'])
 	tp_col = get_column_name(data, ['T_P', 'GATEST_P'])
+	tp_percent_col = get_column_name(data, ['GATEST_P_Percent'])
+	tp_mode_col = get_column_name(data, ["GATEST_P_Mode"])
 	gate_channel_type_col = get_column_name(data, ['name', 'GATESchannel_type'])
 	channel_location_col = get_column_name(data, ['channel_location', 'GATESchannel_location'])
 	n_up_col = get_column_name(data, ['n_up', 'GATESn_up'])
@@ -111,9 +113,20 @@ def main():
 	tau1_do_col = get_column_name(data, ['tau_1', 'GATEStau_1_do'])
 	tau2_up_col = get_column_name(data, ['tau_2', 'GATEStau_2_up'])
 	tau2_do_col = get_column_name(data, ['tau_2', 'GATEStau_2_do'])
-	vth_col = "v_th"
+	vth_col = get_column_name(data, ["v_th"])
 
+	# Check that we either use othe same GATEST_P_Mode (decides if x-Axis in ps or in %) --> we do not want to mix these
+	tp_mode = None
 
+	# "Combine" tp_col and tp_percent_col
+	if tp_mode_col is not None:
+		data[tp_mode_col] = data.apply (lambda row: (build_param_string_value(row[tp_mode_col], "{0}", None)), axis=1)	
+		
+		
+	data[tp_col] = data.apply (lambda row: float(build_param_string_value(row[tp_col], "{0}", None)) if tp_mode_col is not None and row[tp_mode_col] == "ABSOLUTE" else row[tp_col], axis=1)
+
+	if tp_percent_col is not None:
+		data[tp_percent_col] = data.apply (lambda row: float(build_param_string_value(row[tp_percent_col], "{0}", None)) if tp_mode_col is not None and row[tp_mode_col] == "PERCENT" else row[tp_percent_col], axis=1)	
 	
 	for (act_col, ref_col, label) in column_names:
 		# Find out all unique reference_group values and plot them	 
@@ -137,22 +150,31 @@ def main():
 			if args.group_filter is not None and len(list(set(args.group_filter) & set(local_groups))) == 0:
 				# no groups to show, therefore also do not show the reference
 				continue
+		
 				
 			general_additional_parameter_string = ""
 			if vth_col in ref_group_data and ref_group_data[vth_col].iloc[0] is not None and not math.isnan(ref_group_data[vth_col].iloc[0]):
 				v_th = "{0:.4f}".format(ref_group_data[vth_col].iloc[0])
 				general_additional_parameter_string += "$V_{th}=" + v_th + "$"
-				
-			if show_reference:			
-				temp_label_string = label_string.format('Verilog Inertial', '-', ref_group_data[trans_mode_col].iloc[0], ref_group_data[mue_col].iloc[0] * 1000, ref_group_data[sigma_col].iloc[0] * 1000, general_additional_parameter_string,'')
-				#label_string = 'reference, ' + str(ref_group_data['trans_mode'].iloc[0]) + ", mu="+ str(ref_group_data['mu'].iloc[0]) + ", sigma=" + str(ref_group_data['sigma'].iloc[0])
-				axes[subplot_index].plot(ref_group_data[tp_col], ref_group_data[ref_col], label=temp_label_string, color=next(colorcycler), linestyle=next(linecycler), marker=next(markercycler)) 
-				
+					
 			# find all groups for this reference:
+			group_data = None
+			actual_tp_col = None		
 			for group_id in local_groups:			
 				if args.group_filter is not None and group_id not in args.group_filter:
 					continue
 				group_data = data.loc[data[group_col] == group_id]
+
+				# TODO: Check which T_Pmode to use
+				if tp_mode_col is None:
+					tp_mode = check_and_set_tp_mode(tp_mode, "ABSOLUTE")
+				else:
+					curr_mode = build_param_string(tp_mode_col, group_data, "{0}")
+					assert(curr_mode == "ABSOLUTE" or curr_mode == "PERCENT")
+					tp_mode = check_and_set_tp_mode(tp_mode, curr_mode)
+
+				actual_tp_col = set_actual_tp_column(actual_tp_col, tp_mode, tp_col, tp_percent_col)
+
 				additional_params_string_list = list()
 
 				n_up_string = build_param_string(n_up_col, group_data, "{0:.1f}")
@@ -181,11 +203,25 @@ def main():
 
 				temp_label_string = label_string.format(channel_type_string, channel_location_string, group_data[trans_mode_col].iloc[0], 
 					group_data[mue_col].iloc[0] * 1000, group_data[sigma_col].iloc[0] * 1000, general_additional_parameter_string, additional_params_string)
-				handle = axes[subplot_index].plot(group_data[tp_col], group_data[act_col], label=temp_label_string, color=next(colorcycler), linestyle=next(linecycler), marker=next(markercycler)) 	
+				handle = axes[subplot_index].plot(group_data[actual_tp_col], group_data[act_col], label=temp_label_string, color=next(colorcycler), linestyle=next(linecycler), marker=next(markercycler)) 	
+		
+			# We possibly need to further restrict the ref_group_datato the current T_Pmode
+			if tp_mode_col is not None:				
+				actual_tp_col_complete_val = group_data[tp_mode_col].iloc[0]
+				ref_group_data = ref_group_data[ref_group_data[tp_mode_col] == actual_tp_col_complete_val]
+			if show_reference:			
+				temp_label_string = label_string.format('Verilog Inertial', '-', ref_group_data[trans_mode_col].iloc[0], ref_group_data[mue_col].iloc[0] * 1000, ref_group_data[sigma_col].iloc[0] * 1000, general_additional_parameter_string,'')
+				#label_string = 'reference, ' + str(ref_group_data['trans_mode'].iloc[0]) + ", mu="+ str(ref_group_data['mu'].iloc[0]) + ", sigma=" + str(ref_group_data['sigma'].iloc[0])
+				axes[subplot_index].plot(ref_group_data[actual_tp_col], ref_group_data[ref_col], label=temp_label_string, color=next(colorcycler), linestyle=next(linecycler), marker=next(markercycler)) 
+		
 		axes[subplot_index].set_ylabel(label)
 		subplot_index += 1
 	
-	axes[-1].set_xlabel(r"$T_P [ps]$")
+	if tp_mode == "ABSOLUTE":
+		axes[-1].set_xlabel(r"$T_P [ps]$")
+	else:
+		axes[-1].set_xlabel(r"$T_P [\%]$")
+
 	handles, labels = axes[-1].get_legend_handles_labels()
 	
 	# number_of_columns = len(data.reference_group.unique())
@@ -227,33 +263,37 @@ def add_up_down_string(params_list, var, up, down):
 	
 def build_param_string(column, group_data, format1, format2=None):
 	if column in group_data and group_data[column].iloc[0] is not None and group_data[column].iloc[0]:
-		val = group_data[column].iloc[0]
-		values = []
+		val = group_data[column].iloc[0]	
+		return build_param_string_value(val, format1, format2)	
+
+	return None
+
+def build_param_string_value(val, format1, format2):
+	values = []
+	try:
+		values = val.split(',')
+	except:
+		values = [val]
+
+	nrValues = len(set(values))
+	if nrValues == 1:	
+		singleVal = values[0]
+
 		try:
-			values = val.split(',')
-		except:
-			values = [val]
-
-		nrValues = len(set(values))
-		if nrValues == 1:	
-			singleVal = values[0]
-
-			try:
-				if math.isnan(singleVal):
-					return None
-			except:
-				pass
-
-			if not singleVal:
+			if math.isnan(singleVal):
 				return None
-			else:	
-				return try_to_format(values[0], format1, format2)
-		elif nrValues >= 1:
-			strlist = ""
-			for val in values:
-				strlist.append(try_to_format(val, format1, format2))
-			return ','.join(strlist)
+		except:
+			pass
 
+		if not singleVal:
+			return None
+		else:	
+			return try_to_format(values[0], format1, format2)
+	elif nrValues >= 1:
+		strlist = ""
+		for val in values:
+			strlist.append(try_to_format(val, format1, format2))
+		return ','.join(strlist)
 	return None
 
 def try_to_format(val, format1, format2):
@@ -267,6 +307,22 @@ def try_to_format(val, format1, format2):
 				return format2.format(float(val))
 			except:
 				return format2.format(val)
+
+
+def check_and_set_tp_mode(tp_mode, target):
+	if tp_mode is not None and tp_mode != target:
+		assert(False)
+
+	return target
+
+def set_actual_tp_column(actual_tp_col, tp_mode, tp_col, tp_percent_col):
+	if tp_mode == "ABSOLUTE":
+		return tp_col
+	elif tp_mode == "PERCENT":
+		return tp_percent_col
+	else:
+		assert(False)
+	return None
 
 
 

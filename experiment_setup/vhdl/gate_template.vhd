@@ -29,6 +29,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.VITAL_Timing.all;
 use IEEE.VITAL_Primitives.all;
+USE work.channel_base_pkg.ALL;
 use work.exp_channel_pkg.all;
 use work.hill_channel_pkg.all;
 use work.sumexp_channel_pkg.all;

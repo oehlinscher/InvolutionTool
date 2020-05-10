@@ -58,10 +58,16 @@ class Gate:
 		self.inputs = list()
 		self.outputs = list()
 		self.T_P = 1 # in ps
+		self.T_P_percent = 0.0
+		self.T_P_mode = ParameterMode.ABSOLUTE
 		self.function = ""
 		self.channel_location = ChannelLocation.OUTPUT # Default Output, since VHDl Vital also places the delay at the output
 		self.channel_type = ChannelType.EXP_CHANNEL
 		self.channel_parameters = dict()
+
+class ParameterMode():
+	ABSOLUTE = "ABSOLUTE"
+	PERCENT = "PERCENT"
 		
 class ChannelType():
 	EXP_CHANNEL = "EXP_CHANNEL"

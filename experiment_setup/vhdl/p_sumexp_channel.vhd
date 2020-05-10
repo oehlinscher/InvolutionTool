@@ -27,22 +27,26 @@
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
+USE work.channel_base_pkg.ALL;
 
 PACKAGE sumexp_channel_pkg IS
+
 	COMPONENT sumexp_channel IS
 
 		GENERIC (
-			D_UP : time;	
-			D_DO : time;	
-			T_P  : time;			
-			V_DD : real := 1.0;
-			V_TH : real := 0.5;	
-			X_1_UP : real;
-			X_1_DO : real;	
-			TAU_1_UP : time;
-			TAU_1_DO : time;
-			TAU_2_UP : time;
-			TAU_2_DO : time
+			D_UP 		: time;	
+			D_DO 		: time;	
+			T_P  		: time;	
+			T_P_PERCENT : real				:= 0.0;	
+			T_P_MODE	: PARAMETER_MODE 	:= ABSOLUTE;
+			V_DD 		: real 				:= 1.0;
+			V_TH 		: real 				:= 0.5;	
+			X_1_UP 		: real;
+			X_1_DO 		: real;	
+			TAU_1_UP 	: time;
+			TAU_1_DO 	: time;
+			TAU_2_UP 	: time;
+			TAU_2_DO 	: time
 		);
 		PORT (
 			input : IN std_logic;

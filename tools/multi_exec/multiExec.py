@@ -151,6 +151,8 @@ def multi_exec_sim(config_file):
 		# Reset ME_reference_group and ME_group, these are "counters" which are later used for reporting
 		os.environ["ME_reference_group"] = "0" 	# The ME_reference_group is incremented when the waveform config changes
 		os.environ["ME_group"] = "0"				# The ME_group is incremented when a channel property changes
+		prev_param_mode = None
+		me_group_param_mode_dict = dict()
 		
 		
 		# reset property_dict indices (value is a pointer to the current setting for each key)
@@ -176,7 +178,37 @@ def multi_exec_sim(config_file):
 					new_waveform_generation = multi_exec.waveform_generation[value]
 				elif key == KEY_T_P:
 					for gate in new_gates.values():
-						gate.T_P = multi_exec.gate_generation.t_p_list[value]
+						# Make distinction between ABSOLUTE and PERCENT
+						if isinstance(multi_exec.gate_generation.t_p_list[value], list):
+							mode = multi_exec.gate_generation.t_p_list[value][1]
+							gate.T_P_mode = mode;
+							if mode == ParameterMode.ABSOLUTE:
+								gate.T_P = multi_exec.gate_generation.t_p_list[value][0]
+							elif mode == ParameterMode.PERCENT:
+								gate.T_P_percent = multi_exec.gate_generation.t_p_list[value][0]
+							else:
+								my_print("Error: Unknown T_P_mode:  " + mode, EscCodes.FAIL, override_print_env_flag)
+						else:
+							# Default behaviour (ABSOLUTE)
+							gate.T_P = multi_exec.gate_generation.t_p_list[value]
+							gate.T_P_mode = ParameterMode.ABSOLUTE
+							
+						# Handle ME_group counter (must be different between ABSOLUTE and percent
+						if prev_param_mode is None:
+							prev_param_mode = gate.T_P_mode
+							me_group_param_mode_dict[prev_param_mode] = int(os.environ["ME_group"])
+						elif prev_param_mode != gate.T_P_mode:
+							# check the dict if we already have a group id for this T_P
+							if gate.T_P_mode in me_group_param_mode_dict:
+								# go back to the already used group id
+								os.environ["ME_group"] = str(me_group_param_mode_dict[gate.T_P_mode])
+							else:
+								# Create new group id								
+								me_group_param_mode_dict[gate.T_P_mode] = max(me_group_param_mode_dict.values()) + 1
+								# and use this id
+								os.environ["ME_group"] = str(me_group_param_mode_dict[gate.T_P_mode])
+							prev_param_mode = gate.T_P_mode
+						
 				elif key == KEY_CHANNEL_LOCATION:	
 					for gate in new_gates.values():
 						gate.channel_location = multi_exec.gate_generation.channel_location_list[value]
@@ -279,7 +311,14 @@ def multi_exec_sim(config_file):
 				overflow = True
 				
 			if not keep_group_count:			
-				os.environ["ME_group"] = str(int(os.environ["ME_group"]) + 1)
+				# we need to get the maximum value from the dict (because we could configure ABSOLUTE, PERCENT, ABSOLUTE)
+				new_group_id = int(os.environ["ME_group"]) + 1
+				if not me_group_param_mode_dict:
+					new_group_id = max(me_group_param_mode_dict.values()) + 1
+				os.environ["ME_group"] = str(new_group_id)
+				# Reset our datastructures
+				me_group_param_mode_dict = dict()
+				prev_param_mode = None
 				
 			if not keep_reference_group_count:
 				os.environ["ME_reference_group"] = str(int(os.environ["ME_reference_group"]) + 1)
@@ -336,7 +375,7 @@ class MultiExec:
 		
 class GateGeneration:
 	def __init__(self):
-		self.t_p_list = list()
+		self.t_p_list = list() # If this is just a list of values, we assume that these are ABSOLUTE values in ps, if it is a list of 2-element arrays, the first value is either the value in ps or percent, and the second value is the type (ABSOLUTE or RELATIVE)
 		self.channel_location_list = list()	
 		# a list which contains the configurations to sweep over.
 		# each element of the list contains a dictionary, where the key is the mame of the gate, and the value is again a dict.

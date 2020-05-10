@@ -27,6 +27,7 @@
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
+USE work.channel_base_pkg.ALL;
 
 PACKAGE hill_channel_pkg IS
 	COMPONENT hill_channel IS
@@ -35,11 +36,13 @@ PACKAGE hill_channel_pkg IS
 			D_UP : time; 
 			D_DO : time; 
 			T_P  : time;
+			T_P_PERCENT : real				:= 0.0;	
+			T_P_MODE	: PARAMETER_MODE 	:= ABSOLUTE;
 			V_DD : real := 1.0;
 			V_TH : real := 0.5;
 			N_UP : real := 1.0;
-			N_DO : real := 1.0;
-			USE_INVERSE : bit := '0'
+			N_DO : real := 1.0
+			--USE_INVERSE : bit := '0'
 		);
 		PORT (
 			input : IN std_logic;

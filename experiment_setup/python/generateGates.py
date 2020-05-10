@@ -181,7 +181,10 @@ def generate_gates(default_config_file, circuit_config_file, gate_dir, gate_temp
 					"\tgeneric map(\n" + 
 					"\t\tD_UP => "+ d_up +",\n" +
 					"\t\tD_DO => " + d_down + ",\n" + 
-					"\t\tT_P => " + str(gate.T_P) + " ps" + channel_parameters + ",\n" + 
+					"\t\tT_P => " + str(gate.T_P) + " ps" + ",\n"
+					"\t\tT_P_PERCENT => " + str(gate.T_P_percent) + ",\n"
+					"\t\tT_P_MODE => " + str(gate.T_P_mode) +
+					channel_parameters + ",\n" + 
 					"\t\tV_DD => " + os.environ['VDD'] + ",\n" + 
 					"\t\tV_TH => " + os.environ['VTH'] + ")\n" + 
 					"\tport map(\n" + 

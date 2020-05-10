@@ -27,20 +27,24 @@
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
+USE work.sumexp_channel_pkg.ALL;
+USE work.channel_base_pkg.ALL;
 
 ENTITY sumexp_channel IS
 	GENERIC (
-		D_UP : time; 
-		D_DO : time; 
-		T_P  : time;
-		V_DD : real;
-		V_TH : real;
-		TAU_1_UP : time;
-		TAU_2_UP : time;
-		X_1_UP : real;
-		TAU_1_DO : time;
-		TAU_2_DO : time;
-		X_1_DO : real
+		D_UP 		: time; 
+		D_DO 		: time; 
+		T_P  		: time;
+		T_P_PERCENT : real;	
+		T_P_MODE	: PARAMETER_MODE := ABSOLUTE;
+		V_DD 		: real;
+		V_TH 		: real;
+		TAU_1_UP 	: time;
+		TAU_2_UP 	: time;
+		X_1_UP 		: real;
+		TAU_1_DO 	: time;
+		TAU_2_DO 	: time;
+		X_1_DO 		: real
 	);
 	PORT ( 
 		input : IN std_logic;
@@ -82,15 +86,21 @@ ARCHITECTURE beh OF sumexp_channel IS
 	  )   
 	  RETURN real 
 	  IS
+		VARIABLE FUNC_X : real := 0.0;
+		VARIABLE FUNC_PRIME_X : real := 0.0;
 		VARIABLE H : real := 0.0;	
 		VARIABLE X : real := 0.0;
 	  BEGIN  		
 		X := X_IN;		
 		H := EPSILON;	
 		if ENABLE then
-			-- report "Start Iteration with X: " & real'IMAGE(X) & ", TARGET_VALUE: " & real'IMAGE(TARGET_VALUE) & ", EPSILON: " & real'IMAGE(EPSILON) & ", D_UP: " & time'IMAGE(D_UP) & ", X_MIN_VALUE:" & real'IMAGE(X_MIN_VALUE) & ", T_P:" & time'IMAGE(T_P);
+			-- report "Start Iteration with X: " & real'IMAGE(X) & ", TARGET_VALUE: " & real'IMAGE(TARGET_VALUE) & ", EPSILON: " & real'IMAGE(EPSILON) & ", D_UP: " & time'IMAGE(D_UP) & ", X_MIN_VALUE:" & real'IMAGE(X_MIN_VALUE);
 			WHILE ABS(H) >= EPSILON AND ABS(X_IN) >= X_MIN_VALUE LOOP
-				H := (FUNC(X) - TARGET_VALUE) / FUNC_PRIME(X);
+				FUNC_X := FUNC(X);
+				FUNC_PRIME_X := FUNC_PRIME(X);
+				-- report "FUNC(X): " & real'IMAGE(FUNC_X); 
+				-- report "FUNC_PRIME(X): " & real'IMAGE(FUNC_PRIME_X); 
+				H := (FUNC_X - TARGET_VALUE) / FUNC_PRIME_X;
 				WHILE X - H < ATTENUATION_BELOW_VALUE LOOP
 					H := H / 2.0;
 				END LOOP;			
@@ -100,7 +110,36 @@ ARCHITECTURE beh OF sumexp_channel IS
 			-- report "End Iteration with X: " & real'IMAGE(X);
 		END IF;
 		RETURN X;
-	END; 
+	END;
+	
+	FUNCTION is_pure_delay
+	RETURN boolean
+	IS
+	BEGIN
+		RETURN (T_P_PERCENT = 100.0 and T_P_MODE = PERCENT);
+	END;	
+	
+	FUNCTION set_c 
+	GENERIC 
+	(	
+		FUNCTION FUNC (x_in: real; target_value: real; enable: boolean) RETURN real	
+	)
+	PARAMETER 
+	(
+		D : in time
+	)
+	RETURN real
+	IS
+	BEGIN
+		IF is_pure_delay THEN
+			-- We are in the PureDelay Channel case (and we cannot find a c (at least one which is not infinity) which satisfies f(c) = V_TH, and hence we set it to 0)
+			-- We will check later anyway that if we are in the pure delay case we do not call newton on f(t)
+			RETURN 1.0;
+		ELSE
+			RETURN FUNC(1.0, V_TH, real(D / relTime) > 0.0);
+		END IF;
+
+	END;
 	
 	-- General f with c and t as variables
 	FUNCTION f_up_ct (c : IN real; t : IN real; x1 : IN real; tau1 : IN time; tau2 : in time)
@@ -148,26 +187,26 @@ ARCHITECTURE beh OF sumexp_channel IS
 	FUNCTION f_up_c(c : IN real)
 		RETURN real IS
 	BEGIN
-		-- report "D_UP: " & time'IMAGE(D_UP) & ", D_DO: " & time'IMAGE(D_DO) & ", T_P: " & time'IMAGE(T_P) & ", VTH:" & real'IMAGE(V_TH) & ", VDD:" & real'IMAGE(V_DD);
-		return f_up_ct(c, real((D_UP - T_P) / relTime), X_1_UP, TAU_1_UP, TAU_2_UP);
+		-- report "D_UP: " & time'IMAGE(D_UP) & ", D_DO: " & time'IMAGE(D_DO) & ", VTH:" & real'IMAGE(V_TH) & ", VDD:" & real'IMAGE(V_DD);
+		return f_up_ct(c, real((D_UP - calc_tp(T_P, T_P_PERCENT, T_P_MODE, D_UP)) / relTime), X_1_UP, TAU_1_UP, TAU_2_UP);
 	END;
 	
 	FUNCTION f_do_c(c : IN real)
 		RETURN real IS
 	BEGIN
-		return f_do_ct(c, real((D_DO - T_P) / relTime), X_1_DO, TAU_1_DO, TAU_2_DO);
+		return f_do_ct(c, real((D_DO - calc_tp(T_P, T_P_PERCENT, T_P_MODE, D_DO)) / relTime), X_1_DO, TAU_1_DO, TAU_2_DO);
 	END;
 	
 	FUNCTION f_up_c_prime_c(c : IN real)
 		RETURN real IS
 	BEGIN
-		return f_up_ct_prime_c(c, real((D_UP - T_P) / relTime), X_1_UP, TAU_1_UP, TAU_2_UP);
+		return f_up_ct_prime_c(c, real((D_UP - calc_tp(T_P, T_P_PERCENT, T_P_MODE, D_UP)) / relTime), X_1_UP, TAU_1_UP, TAU_2_UP);
 	END;
 	
 	FUNCTION f_do_c_prime_c(c : IN real)
 		RETURN real IS
 	BEGIN
-		return f_do_ct_prime_c(c, real((D_DO - T_P) / relTime), X_1_DO, TAU_1_DO, TAU_2_DO);
+		return f_do_ct_prime_c(c, real((D_DO - calc_tp(T_P, T_P_PERCENT, T_P_MODE, D_DO)) / relTime), X_1_DO, TAU_1_DO, TAU_2_DO);
 	END;
 	
 	-- Instantiations of newton for calculation C_UP / C_DO
@@ -181,8 +220,15 @@ ARCHITECTURE beh OF sumexp_channel IS
 	-- because otherwise the function would be executed before the sdf file has been loaded, 
 	-- which causes overflows (since D_UP and D_DO are then assumed to be 0)
 	-- This is just a workaround, maybe there is a better solution to specifiy the order of execution
-	CONSTANT C_UP : real := newton_f_up_c(1.0, V_TH, real(D_DO / relTime) > 0.0 and real(D_UP / relTime) > 0.0);
-	CONSTANT C_DO : real := newton_f_do_c(1.0, V_TH, real(D_DO / relTime) > 0.0 and real(D_UP / relTime) > 0.0);	
+		
+	FUNCTION set_c_up_inst IS NEW set_c
+	GENERIC MAP(FUNC => newton_f_up_c);
+	
+	FUNCTION set_c_do_inst IS NEW set_c
+	GENERIC MAP(FUNC => newton_f_do_c);
+	
+	CONSTANT C_UP : real := set_c_up_inst(D_UP);
+	CONSTANT C_DO : real := set_c_do_inst(D_DO);
   
 	-- f(t)
 	FUNCTION f_up_t (t : IN real)
@@ -243,6 +289,7 @@ BEGIN
   sumexp_channel_involution: PROCESS (input)
     VARIABLE last_output_time : time := -1 sec;
     VARIABLE T, delay : time;
+	VARIABLE sum_exp_del : time;
   BEGIN
 	-- report "D_UP: " & time'IMAGE(D_UP) & ", T_P: " & time'IMAGE(T_P);   
 	-- report "C_UP: " & real'IMAGE(C_UP) & ", C_DO: " & real'IMAGE(C_DO);	
@@ -258,26 +305,39 @@ BEGIN
 	IF rising_edge(input) THEN
 		-- report "got rising edge";
 		
-		delay := D_UP - (newton_f_up_t(1000.0, f_do_t(real((T + D_DO) / relTime)), true) * relTime);
+		sum_exp_del := 0 fs;
+		IF NOT is_pure_delay THEN
+			sum_exp_del := (newton_f_up_t(1000.0, f_do_t(real((T + D_DO) / relTime)), true) * relTime);
+		END IF;
+		
+		delay := D_UP - sum_exp_del;
+		-- report "SumExpDelay UP: " & time'IMAGE(sum_exp_del) & ", T: " & time'IMAGE(T) & ", D_DO: " & time'IMAGE(D_DO) &  ", Target Value: " & real'IMAGE(f_do_t(real((T + D_DO) / relTime)));
 		-- report "delay: " & time'IMAGE(delay);
 
 		last_output_time := now + delay;
 
 		IF (delay < 0 fs) THEN
 			delay := 0 fs;
+			report "Capped delay";
 		END IF;	
 		output <= TRANSPORT '1' AFTER delay;
 
     ELSIF falling_edge(input) THEN
 		-- report "got falling edge";
+		sum_exp_del := 0 fs;
+		IF NOT is_pure_delay THEN
+			sum_exp_del := (newton_f_do_t(1000.0, f_up_t(real((T + D_UP) / relTime)), true) * relTime);
+		END IF;
 
-		delay := D_DO - (newton_f_do_t(1000.0, f_up_t(real((T + D_UP) / relTime)), true) * relTime);
+		delay := D_DO - sum_exp_del;
+		-- report "SumExpDelay DO: " & time'IMAGE(sum_exp_del) & ", T: " & time'IMAGE(T) & ", D_UP: " & time'IMAGE(D_UP) &  ", Target Value: " & real'IMAGE(f_up_t(real((T + D_UP) / relTime)));
 		-- report "delay: " & time'IMAGE(delay);
 
 		last_output_time := now + delay;
 
 		IF (delay < 0 fs) THEN
 			delay := 0 fs;
+			report "Capped delay";
 		END IF;	
 		output <= TRANSPORT '0' AFTER delay;
 

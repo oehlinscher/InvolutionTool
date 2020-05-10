@@ -28,12 +28,15 @@
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
+USE work.channel_base_pkg.ALL;
 
 ENTITY puredelay_channel IS
 	GENERIC (
 		D_UP : time; 
 		D_DO : time; 
 		T_P  : time;
+		T_P_PERCENT : real				:= 0.0;	
+		T_P_MODE	: PARAMETER_MODE 	:= ABSOLUTE;
 		V_DD : real;
 		V_TH : real
 	);

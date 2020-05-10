@@ -36,6 +36,8 @@ def print_to_results(gate_config_file, required_gates, results_file, prefix):
 	generate_all = required_gates is None or required_gates is "" or "ALL" in required_gates
 	
 	t_p_list = []
+	t_p_percent_list = []
+	t_p_mode_list = []
 	name_list = []
 	channel_type_list = []
 	channel_location_list = []
@@ -55,6 +57,8 @@ def print_to_results(gate_config_file, required_gates, results_file, prefix):
 			continue # we do not want to generate all gates, if not necessary for the circuit
 		
 		t_p_list.append(gate.T_P)
+		t_p_percent_list.append(gate.T_P_percent)
+		t_p_mode_list.append(gate.T_P_mode)
 		name_list.append(gate.entity_name)
 		channel_type_list.append(gate.channel_type)
 		channel_location_list.append(gate.channel_location)
@@ -70,6 +74,8 @@ def print_to_results(gate_config_file, required_gates, results_file, prefix):
 	# Now extend the results dictionary
 	results = dict()
 	append_to_result_dict(results, prefix + 'T_P', t_p_list)
+	append_to_result_dict(results, prefix + 'T_P_Percent', t_p_percent_list)
+	append_to_result_dict(results, prefix + 'T_P_Mode', t_p_mode_list)
 	append_to_result_dict(results, prefix + 'name', name_list)
 	append_to_result_dict(results, prefix + 'channel_type', channel_type_list)
 	append_to_result_dict(results, prefix + 'channel_location', channel_location_list)

@@ -28,12 +28,15 @@
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
+USE work.channel_base_pkg.ALL;
 
 ENTITY exp_channel IS
 	GENERIC (
 		D_UP : time; 
 		D_DO : time; 
 		T_P  : time;
+		T_P_PERCENT : real				:= 0.0;	
+		T_P_MODE	: PARAMETER_MODE 	:= ABSOLUTE;
 		V_DD : real;
 		V_TH : real
 	);
@@ -49,10 +52,11 @@ END exp_channel;
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
 USE ieee.math_real.ALL;
+USE work.channel_base_pkg.ALL;
 
 ARCHITECTURE beh OF exp_channel IS
-  CONSTANT tau_up: time := integer ( real ( (D_UP - T_P) / 1 fs ) / (- LOG(1.0 - V_TH / V_DD)) ) * 1 fs;
-  CONSTANT tau_do: time := integer ( real ( (D_DO - T_P) / 1 fs ) / (- LOG(V_TH / V_DD)) ) * 1 fs;
+  CONSTANT tau_up: time := integer ( real ( (D_UP - calc_tp(T_P, T_P_PERCENT, T_P_MODE, D_UP)) / 1 fs ) / (- LOG(1.0 - V_TH / V_DD)) ) * 1 fs;
+  CONSTANT tau_do: time := integer ( real ( (D_DO - calc_tp(T_P, T_P_PERCENT, T_P_MODE, D_DO)) / 1 fs ) / (- LOG(V_TH / V_DD)) ) * 1 fs;
 
   CONSTANT relTime: time := 1 fs;
 
@@ -64,7 +68,6 @@ BEGIN
     VARIABLE last_output_time : time := -1 sec;
     VARIABLE T, delay : time;
   BEGIN
-
 	-- report "input transition at " & time'IMAGE(now);	
 	-- report "last output at " & time'IMAGE(last_output_time);
     T := now - last_output_time;
