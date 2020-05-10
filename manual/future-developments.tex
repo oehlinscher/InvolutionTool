@@ -35,13 +35,7 @@ would further increase the usability and / or the performance
 	only limited to \modelsim as digital simulation tool, this recipe and the 
 	output folder should be renamed to something more general (\emph{make 
 	digital}?). (CONSISTENCY).
-	
-	\item The file (\file{evaluation.csv}) that is used by the plotting tool 
-	(Section~\ref{sec:man-plots}) is currently prepared manually out of the 
-	\file{results.csv}. This process should be automated in the future with a 
-	Python script (group data, add additional information, calculate metrics). 
-	(FEATURE).
-	
+
 	\item Rethink the naming conventions for the extracted values out of the 
 	different files of the tools. Especially important if different tools than 
 	the standard tools are used. (USABILITY).
@@ -49,4 +43,14 @@ would further increase the usability and / or the performance
 	\item The tools described in Section~\ref{sec:man-sdf-extract} and 
 	Section~\ref{sec:man-generate-matching} need to be generalized, so that 
 	they work for multiple circuits. (FEATURE).
+\end{itemize}
+
+\subsection{Implemented Improvements}
+
+\begin{itemize}
+	\item V2.1: The file (\file{evaluation.csv}) that is used by the plotting tool 
+	(Section~\ref{sec:man-plots}) is currently prepared manually out of the 
+	\file{results.csv}. This process should be automated in the future with a 
+	Python script (group data, add additional information, calculate metrics). 
+	(FEATURE). The script \file{prepareData.py} takes now care of automatically preparing the data for plotting.
 \end{itemize}
