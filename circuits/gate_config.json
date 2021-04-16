@@ -95,9 +95,22 @@
     "outputs": [
       "Z"
     ]
-  }, 
+  },
+  "BUF_X4": {
+    "T_P": 1, 
+	"channel_location" : "OUTPUT",
+	"channel_type" : "EXP_CHANNEL",	
+    "entity_name": "BUF_X4", 
+    "function": "", 
+    "inputs": [
+      "I"
+    ], 
+    "outputs": [
+      "Z"
+    ]
+  },  
   "INV_X1": {
-    "T_P": 0.1, 
+    "T_P": 1, 
 	"channel_location" : "OUTPUT",
 	"channel_type" : "EXP_CHANNEL",	
     "entity_name": "INV_X1", 
@@ -140,6 +153,32 @@
 	"channel_location" : "OUTPUT",
 	"channel_type" : "EXP_CHANNEL",
     "entity_name": "INV_X8", 
+    "function": "not", 
+    "inputs": [
+      "I"
+    ], 
+    "outputs": [
+      "ZN"
+    ]
+  },
+  "INV_X12": {
+    "T_P": 1, 
+	"channel_location" : "OUTPUT",
+	"channel_type" : "EXP_CHANNEL",
+    "entity_name": "INV_X12", 
+    "function": "not", 
+    "inputs": [
+      "I"
+    ], 
+    "outputs": [
+      "ZN"
+    ]
+  }, 
+  "INV_X16": {
+    "T_P": 1, 
+	"channel_location" : "OUTPUT",
+	"channel_type" : "EXP_CHANNEL",
+    "entity_name": "INV_X16", 
     "function": "not", 
     "inputs": [
       "I"

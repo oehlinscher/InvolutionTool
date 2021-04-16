@@ -44,11 +44,12 @@ ENTITY sumexp_channel IS
 		X_1_UP 		: real;
 		TAU_1_DO 	: time;
 		TAU_2_DO 	: time;
-		X_1_DO 		: real
+		X_1_DO 		: real;
+		INIT_VALUE : std_logic := '0'
 	);
 	PORT ( 
 		input : IN std_logic;
-		output : OUT std_logic
+		output : OUT std_logic := INIT_VALUE
 	);
 
 END sumexp_channel;
@@ -287,9 +288,10 @@ BEGIN
   --########################################################  
   
   sumexp_channel_involution: PROCESS (input)
-    VARIABLE last_output_time : time := -1 sec;
+    VARIABLE last_output_time : time;
     VARIABLE T, delay : time;
 	VARIABLE sum_exp_del : time;
+	VARIABLE first_transition : bit := '1';
   BEGIN
 	-- report "D_UP: " & time'IMAGE(D_UP) & ", T_P: " & time'IMAGE(T_P);   
 	-- report "C_UP: " & real'IMAGE(C_UP) & ", C_DO: " & real'IMAGE(C_DO);	
@@ -302,15 +304,19 @@ BEGIN
 
 	-- in VITAL they check for A'LAST_VALUE
 	-- but there also 'L' and 'H' of importance
-	IF rising_edge(input) THEN
-		-- report "got rising edge";
-		
-		sum_exp_del := 0 fs;
-		IF NOT is_pure_delay THEN
-			sum_exp_del := (newton_f_up_t(1000.0, f_do_t(real((T + D_DO) / relTime)), true) * relTime);
-		END IF;
-		
-		delay := D_UP - sum_exp_del;
+	IF input'EVENT and input = '1'  THEN
+		-- report "got rising edge";	
+
+		if first_transition = '1' then
+			delay := D_UP;
+			first_transition := '0';
+		else
+			sum_exp_del := 0 fs;
+			IF NOT is_pure_delay THEN
+				sum_exp_del := (newton_f_up_t(1000.0, f_do_t(real((T + D_DO) / relTime)), true) * relTime);
+			END IF;		
+			delay := D_UP - sum_exp_del;
+		end if;
 		-- report "SumExpDelay UP: " & time'IMAGE(sum_exp_del) & ", T: " & time'IMAGE(T) & ", D_DO: " & time'IMAGE(D_DO) &  ", Target Value: " & real'IMAGE(f_do_t(real((T + D_DO) / relTime)));
 		-- report "delay: " & time'IMAGE(delay);
 
@@ -322,14 +328,21 @@ BEGIN
 		END IF;	
 		output <= TRANSPORT '1' AFTER delay;
 
-    ELSIF falling_edge(input) THEN
+	ELSIF input'EVENT and input = '0' THEN
 		-- report "got falling edge";
-		sum_exp_del := 0 fs;
-		IF NOT is_pure_delay THEN
-			sum_exp_del := (newton_f_do_t(1000.0, f_up_t(real((T + D_UP) / relTime)), true) * relTime);
-		END IF;
 
-		delay := D_DO - sum_exp_del;
+		if first_transition = '1' then
+			delay := D_DO;
+			first_transition := '0';
+		else	
+			sum_exp_del := 0 fs;
+			IF NOT is_pure_delay THEN
+				sum_exp_del := (newton_f_do_t(1000.0, f_up_t(real((T + D_UP) / relTime)), true) * relTime);
+			END IF;
+
+			delay := D_DO - sum_exp_del;	
+		end if;
+
 		-- report "SumExpDelay DO: " & time'IMAGE(sum_exp_del) & ", T: " & time'IMAGE(T) & ", D_UP: " & time'IMAGE(D_UP) &  ", Target Value: " & real'IMAGE(f_up_t(real((T + D_UP) / relTime)));
 		-- report "delay: " & time'IMAGE(delay);
 
@@ -340,9 +353,6 @@ BEGIN
 			report "Capped delay";
 		END IF;	
 		output <= TRANSPORT '0' AFTER delay;
-
-    ELSIF (now = 0 fs) THEN
-		output <= input;
     END IF;
 
   END PROCESS;

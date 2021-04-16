@@ -1,9 +1,9 @@
 -------------------------------------------------------------------------------
 --
 --	Involution Tool
---	File: p_pure_delay_channel.vhd
+--	File: p_gidm_sumexp_channel.vhd
 --	
---  Copyright (C) 2018-2019  Daniel OEHLINGER <d.oehlinger@outlook.com>
+--  Copyright (C) 2018-2020  Daniel OEHLINGER <d.oehlinger@outlook.com>
 --
 --  This source file may be used and distributed without restriction provided
 --  that this copyright statement is not removed from the file and that any
@@ -25,21 +25,40 @@
 --
 -------------------------------------------------------------------------------
 
-
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
+USE work.channel_base_pkg.ALL;
 
------------------------------------------------------------------
+PACKAGE gidm_sumexp_channel_pkg IS
 
-PACKAGE pure_delay_channel_pkg IS
-	COMPONENT pure_delay_channel IS
-		GENERIC (D_UP, D_DO : TIME);
+	COMPONENT gidm_sumexp_channel IS
+
+		GENERIC (
+			D_INF_UP : time; 
+			D_INF_DO : time; 
+	
+			V_DD : real := 1.0;
+			V_TH : real := 0.5;
+	
+			TAU_1_UP 	: time;
+			TAU_2_UP 	: time;
+			X_1_UP 		: real;
+	
+			TAU_1_DO 	: time;
+			TAU_2_DO 	: time;
+			X_1_DO 		: real;
+
+			D_MIN : time;
+			DELTA_PLUS : time;
+			DELTA_MINUS : time;
+			
+			TRANSITION_TIME_FILE_PATH : string
+		);
 		PORT (
 			input : IN std_logic;
 			output : OUT std_logic
 		);
 
-	END COMPONENT pure_delay_channel;
-END PACKAGE pure_delay_channel_pkg;
-
------------------------------------------------------------------
+	END COMPONENT gidm_sumexp_channel;
+	
+END gidm_sumexp_channel_pkg;

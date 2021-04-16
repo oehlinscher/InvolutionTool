@@ -34,6 +34,10 @@ use work.exp_channel_pkg.all;
 use work.hill_channel_pkg.all;
 use work.sumexp_channel_pkg.all;
 use work.puredelay_channel_pkg.all;
+use work.gidm_exp_channel_pkg.all;
+use work.gidm_hill_channel_pkg.all;
+use work.gidm_sumexp_channel_pkg.all;
+USE std.textio.all;
 
 ENTITY ##ENTITY_NAME## IS
 
@@ -47,6 +51,8 @@ ENTITY ##ENTITY_NAME## IS
 	);
 
 	PORT (
+		-- GIDM: We need to initialize in- and outputs with 0, since they are our transition indicator
+		-- IDM: We need to initialize the input signals with the value of the predecessor
 		##PORTS##
 	);
 
@@ -57,8 +63,12 @@ END ##ENTITY_NAME##;
 
 --BEGIN_ARCH
 ARCHITECTURE ##ARCH_NAME## OF ##ENTITY_NAME## IS
+	-- GIDM: Here we need to initialize the GIs with the value of its predecessor and the GO with the value of the channel itself
+	-- IDM: Currently only channel location output supported: We need to initialize the GO with the value of the channel itself 
 	##ARCH_SIGNALS##
 BEGIN
+
+	##ARCH_INPUT_PROCESSES##
 
 	##ARCH_DELAY_CHANNEL##
 	

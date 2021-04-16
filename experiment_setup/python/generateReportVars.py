@@ -44,7 +44,7 @@ def generate_report_vars(input_file, output_file):
 	modified_dict = dict()
 	for key, value in current_dict.iteritems(): 	
 		# replace special chars in the key
-		k = key.replace(" ", "").replace("_", "").lower()
+		k = key.replace(" ", "").replace("_", "").replace("[", "").replace("]", "").lower().lower()
 									
 		# replace digits in the key
 		if any(c.isdigit() for c in k):

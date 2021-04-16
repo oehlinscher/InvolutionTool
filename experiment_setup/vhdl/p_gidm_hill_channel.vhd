@@ -1,9 +1,9 @@
 -------------------------------------------------------------------------------
 --
 --	Involution Tool
---	File: ea_pure_delay_channel.vhd
+--	File: p_gidm_hill_channel.vhd
 --	
---  Copyright (C) 2018-2019  Daniel OEHLINGER <d.oehlinger@outlook.com>
+--  Copyright (C) 2018-2020  Daniel OEHLINGER <d.oehlinger@outlook.com>
 --
 --  This source file may be used and distributed without restriction provided
 --  that this copyright statement is not removed from the file and that any
@@ -25,37 +25,33 @@
 --
 -------------------------------------------------------------------------------
 
-
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
+USE work.channel_base_pkg.ALL;
 
-ENTITY pure_delay_channel IS
-	GENERIC (D_UP, D_DO : TIME);
-	PORT (
-		input : IN std_logic;
-		output : OUT std_logic
-	);
+PACKAGE gidm_hill_channel_pkg IS
+	COMPONENT gidm_hill_channel IS
 
-END pure_delay_channel;
+		GENERIC (
+			D_INF_UP : time; 
+			D_INF_DO : time; 
 
------------------------------------------------------------------
+			V_DD : real := 1.0;
+			V_TH : real := 0.5;
 
-LIBRARY ieee;
-USE ieee.std_logic_1164.ALL;
+			N_UP : real := 1.0;
+			N_DO : real := 1.0;
+			
+			D_MIN : time;
+			DELTA_PLUS : time;
+			DELTA_MINUS : time;
+			
+			TRANSITION_TIME_FILE_PATH : string
+		);
+		PORT (
+			input : IN std_logic;
+			output : OUT std_logic
+		);
 
-ARCHITECTURE beh OF pure_delay_channel IS
-
-BEGIN
-	pure_delay : PROCESS (input)
-	BEGIN
-		IF rising_edge(input) THEN
-			output <= TRANSPORT input AFTER D_UP;
-		ELSIF falling_edge(input) THEN
-			output <= TRANSPORT input AFTER D_DO;
-		ELSIF (now = 0 fs) THEN
-			output <= input;
-		END IF;
-
-	END PROCESS;
-
-END ARCHITECTURE;
+	END COMPONENT gidm_hill_channel;
+END gidm_hill_channel_pkg;

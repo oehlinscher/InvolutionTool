@@ -1,0 +1,20 @@
+{
+    "inst2A": "nx7", 
+    "inst2B": "net1", 
+    "inst4A": "net3", 
+    "inst1A": "nx1", 
+    "inst1B": "nx3", 
+    "inst5A": "net0", 
+    "inst5B": "net3", 
+    "inst3B": "net1", 
+    "inst3A": "nx2", 
+    "inst4Z": "nx23", 
+    "inst4B": "net2", 
+    "inst5Z": "nx22", 
+    "inst0A": "nx3", 
+    "inst3Z": "net3", 
+    "inst0B": "nx6", 
+    "inst2Z": "net2", 
+    "inst0Z": "net1", 
+    "inst1Z": "net0"
+}

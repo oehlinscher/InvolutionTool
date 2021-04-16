@@ -1,0 +1,114 @@
+{
+    "genblk1\\[12\\]\\.ix16": [
+        "genblk1[12].ix12:zn",
+        "z",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[12\\]\\.ix12": [
+        "genblk1[10].ix16:zn",
+        "genblk1[12].ix12:zn",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[10\\]\\.ix16": [
+        "genblk1[10].ix12:zn",
+        "genblk1[10].ix16:zn",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[10\\]\\.ix12": [
+        "genblk1[8].ix16:zn",
+        "genblk1[10].ix12:zn",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[8\\]\\.ix16": [
+        "genblk1[8].ix12:zn",
+        "genblk1[8].ix16:zn",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[8\\]\\.ix12": [
+        "genblk1[6].ix16:zn",
+        "genblk1[8].ix12:zn",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[6\\]\\.ix16": [
+        "genblk1[6].ix12:zn",
+        "genblk1[6].ix16:zn",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[6\\]\\.ix12": [
+        "genblk1[4].ix16:zn",
+        "genblk1[6].ix12:zn",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[4\\]\\.ix16": [
+        "genblk1[4].ix12:zn",
+        "genblk1[4].ix16:zn",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[4\\]\\.ix12": [
+        "genblk1[2].ix16:zn",
+        "genblk1[4].ix12:zn",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[2\\]\\.ix16": [
+        "genblk1[2].ix12:zn",
+        "genblk1[2].ix16:zn",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[2\\]\\.ix12": [
+        "genblk1[0].ix16:zn",
+        "genblk1[2].ix12:zn",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[0\\]\\.ix16": [
+        "genblk1[0].ix12:zn",
+        "genblk1[0].ix16:zn",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[0\\]\\.ix12": [
+        "i",
+        "genblk1[0].ix12:zn",
+        -1,
+        -1,
+        0,
+        0
+    ]
+}

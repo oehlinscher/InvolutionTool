@@ -1,0 +1,126 @@
+{
+    "cells": [
+        {
+            "cell_type": "ND2M1N", 
+            "instance": "inst5", 
+            "pure_delay_down": "1 ps", 
+            "pure_delay_up": "1 ps"
+        }, 
+        {
+            "cell_type": "ND2M1N", 
+            "instance": "inst2", 
+            "pure_delay_down": "1 ps", 
+            "pure_delay_up": "1 ps"
+        }, 
+        {
+            "cell_type": "ND2M1N", 
+            "instance": "inst1", 
+            "pure_delay_down": "1 ps", 
+            "pure_delay_up": "1 ps"
+        }, 
+        {
+            "cell_type": "ND2M1N", 
+            "instance": "inst4", 
+            "pure_delay_down": "1 ps", 
+            "pure_delay_up": "1 ps"
+        }, 
+        {
+            "cell_type": "ND2M1N", 
+            "instance": "inst3", 
+            "pure_delay_down": "1 ps", 
+            "pure_delay_up": "1 ps"
+        }, 
+        {
+            "cell_type": "ND2M1N", 
+            "instance": "inst0", 
+            "pure_delay_down": "1 ps", 
+            "pure_delay_up": "1 ps"
+        }
+    ], 
+    "interconnects": [
+        {
+            "from_instance": "nx1", 
+            "from_port": "", 
+            "to_instance": "inst1", 
+            "to_port": "A"
+        }, 
+        {
+            "from_instance": "nx7", 
+            "from_port": "", 
+            "to_instance": "inst2", 
+            "to_port": "A"
+        }, 
+        {
+            "from_instance": "nx3", 
+            "from_port": "", 
+            "to_instance": "inst1", 
+            "to_port": "B"
+        }, 
+        {
+            "from_instance": "nx3", 
+            "from_port": "", 
+            "to_instance": "inst0", 
+            "to_port": "A"
+        }, 
+        {
+            "from_instance": "nx2", 
+            "from_port": "", 
+            "to_instance": "inst3", 
+            "to_port": "A"
+        }, 
+        {
+            "from_instance": "nx6", 
+            "from_port": "", 
+            "to_instance": "inst0", 
+            "to_port": "B"
+        }, 
+        {
+            "from_instance": "inst4", 
+            "from_port": "Z", 
+            "to_instance": "nx23", 
+            "to_port": ""
+        }, 
+        {
+            "from_instance": "inst5", 
+            "from_port": "Z", 
+            "to_instance": "nx22", 
+            "to_port": ""
+        }, 
+        {
+            "from_instance": "inst0", 
+            "from_port": "Z", 
+            "to_instance": "inst2", 
+            "to_port": "B"
+        }, 
+        {
+            "from_instance": "inst0", 
+            "from_port": "Z", 
+            "to_instance": "inst3", 
+            "to_port": "B"
+        }, 
+        {
+            "from_instance": "inst2", 
+            "from_port": "Z", 
+            "to_instance": "inst4", 
+            "to_port": "B"
+        }, 
+        {
+            "from_instance": "inst1", 
+            "from_port": "Z", 
+            "to_instance": "inst5", 
+            "to_port": "A"
+        }, 
+        {
+            "from_instance": "inst3", 
+            "from_port": "Z", 
+            "to_instance": "inst5", 
+            "to_port": "B"
+        }, 
+        {
+            "from_instance": "inst3", 
+            "from_port": "Z", 
+            "to_instance": "inst4", 
+            "to_port": "A"
+        }
+    ]
+}

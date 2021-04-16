@@ -30,7 +30,7 @@ def main():
 	elif len(sys.argv) == 9:
 		prepare_testbench(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8])
 	else:
-		my_print("usage: python prepareTestbench.py circuit_file_in circuit_file_out process_template_file input_names vector_names default_gate_config_file circuit_gate_config_file [circuit_configuration_file]", EscCode.FAIL)
+		my_print("usage: python prepareTestbench.py circuit_file_in circuit_file_out process_template_file input_names vector_names default_gate_config_file circuit_gate_config_file [circuit_configuration_file]", EscCodes.FAIL)
 		sys.exit(1)
 	
 

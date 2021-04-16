@@ -40,12 +40,13 @@ ENTITY hill_channel IS
 		V_DD : real;
 		V_TH : real;
 		N_UP : real;
-		N_DO : real
+		N_DO : real;
+		INIT_VALUE : std_logic := '0'
 		--USE_INVERSE : bit
 	);
 	PORT ( 
 		input : IN std_logic;
-		output : OUT std_logic
+		output : OUT std_logic := INIT_VALUE
 	);
 
 END hill_channel;
@@ -76,19 +77,25 @@ BEGIN
   --########################################################  
 
   hill_channel_involution: PROCESS (input)
-    VARIABLE last_output_time : time := -1 sec;
+    VARIABLE last_output_time : time;
     VARIABLE T, delay : time;
+	VARIABLE first_transition : bit := '1';
   BEGIN
 
     T := now - last_output_time;
-	IF rising_edge(input) THEN
+	IF input'EVENT and input = '1'  THEN
 		-- IF USE_INVERSE = '1' THEN	
 			-- delay := - (1.0 / k_up_inv) * (1.0 / (k_do_inv * real((T + D_DO) / relTime)))**(N_DO/N_UP) * relTime + D_UP;
 		-- ELSE
 			-- delay := - k_up_std * (k_do_std / real((T + D_DO) / relTime))**(N_DO/N_UP) * relTime + D_UP;
 		-- END IF;
-		
-		delay := - k_up_std * (k_do_std / real((T + D_DO) / relTime))**(N_DO/N_UP) * relTime + D_UP;
+
+		if first_transition = '1' then
+			delay := D_UP;
+			first_transition := '0';
+		else	
+			delay := - k_up_std * (k_do_std / real((T + D_DO) / relTime))**(N_DO/N_UP) * relTime + D_UP;	
+		end if;	
 
 		last_output_time := now + delay;
 
@@ -97,14 +104,19 @@ BEGIN
 		END IF;	
 		output <= TRANSPORT '1' AFTER delay;
 
-    ELSIF falling_edge(input) THEN
+	ELSIF input'EVENT and input = '0' THEN
 		-- IF USE_INVERSE = '1' THEN	
 			-- delay := - (1.0 / k_do_inv) * (1.0 / (k_up_inv * real((T + D_UP) / relTime)))**(N_UP/N_DO) * relTime + D_DO;
 		-- ELSE
 			-- delay := - k_do_std * (k_up_std / real((T + D_UP) / relTime))**(N_UP/N_DO) * relTime + D_DO;
 		-- END IF;
-		
-		delay := - k_do_std * (k_up_std / real((T + D_UP) / relTime))**(N_UP/N_DO) * relTime + D_DO;
+
+		if first_transition = '1' then
+			delay := D_DO;
+			first_transition := '0';
+		else	
+			delay := - k_do_std * (k_up_std / real((T + D_UP) / relTime))**(N_UP/N_DO) * relTime + D_DO;
+		end if;
 		
 
 		last_output_time := now + delay;
@@ -114,8 +126,6 @@ BEGIN
 		END IF;	
 		output <= TRANSPORT '0' AFTER delay;
 
-    ELSIF (now = 0 fs) THEN
-		output <= input;
     END IF;
 
   END PROCESS;

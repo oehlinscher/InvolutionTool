@@ -38,11 +38,12 @@ ENTITY exp_channel IS
 		T_P_PERCENT : real				:= 0.0;	
 		T_P_MODE	: PARAMETER_MODE 	:= ABSOLUTE;
 		V_DD : real;
-		V_TH : real
+		V_TH : real;
+		INIT_VALUE : std_logic := '0'
 	);
 	PORT ( 
 		input : IN std_logic;
-		output : OUT std_logic
+		output : OUT std_logic := INIT_VALUE
 	);
 
 END exp_channel;
@@ -65,8 +66,9 @@ BEGIN
   --########################################################  
 
   exp_channel_involution: PROCESS (input)
-    VARIABLE last_output_time : time := -1 sec;
+    VARIABLE last_output_time : time;
     VARIABLE T, delay : time;
+	VARIABLE first_transition : bit := '1';
   BEGIN
 	-- report "input transition at " & time'IMAGE(now);	
 	-- report "last output at " & time'IMAGE(last_output_time);
@@ -75,17 +77,21 @@ BEGIN
 
 	-- in VITAL they check for A'LAST_VALUE
 	-- but there also 'L' and 'H' of importance
-	IF rising_edge(input) THEN
+	IF input'EVENT and input = '1'  THEN
 
 		-- report "got rising edge";
-
-		delay := D_UP + integer (
-			real (tau_up / relTime) * LOG(
-				1.0- EXP(
-				-real( (T+D_DO)/relTime ) / real(tau_do/ relTime ) 
+		if first_transition = '1' then
+			delay := D_UP;
+			first_transition := '0';
+		else
+			delay := D_UP + integer (
+				real (tau_up / relTime) * LOG(
+					1.0- EXP(
+					-real( (T+D_DO)/relTime ) / real(tau_do/ relTime ) 
+					)
 				)
-			)
-		) * relTime;
+			) * relTime;		
+		end if;
 		-- report "delay: " & time'IMAGE(delay);
 
 		last_output_time := now + delay;
@@ -95,16 +101,21 @@ BEGIN
 		END IF;	
 		output <= TRANSPORT '1' AFTER delay;
 
-    ELSIF falling_edge(input) THEN
+    ELSIF input'EVENT and input = '0' THEN
 		-- report "got falling edge";
-
-		delay := D_DO + integer (
-			real (tau_do / relTime) * LOG(
-				1.0- EXP( 
-				- real( (T+D_UP)/relTime ) / real(tau_up/ relTime ) 
+		if first_transition = '1' then
+			delay := D_DO;
+			first_transition := '0';
+		else
+			delay := D_DO + integer (
+				real (tau_do / relTime) * LOG(
+					1.0- EXP( 
+					- real( (T+D_UP)/relTime ) / real(tau_up/ relTime ) 
+					)
 				)
-			)
-		) * relTime;
+			) * relTime;	
+		end if;
+
 		-- report "delay: " & time'IMAGE(delay);
 
 		last_output_time := now + delay;
@@ -113,9 +124,6 @@ BEGIN
 			delay := 0 fs;
 		END IF;	
 		output <= TRANSPORT '0' AFTER delay;
-
-    ELSIF (now = 0 fs) THEN
-		output <= input;
     END IF;
 
   END PROCESS;

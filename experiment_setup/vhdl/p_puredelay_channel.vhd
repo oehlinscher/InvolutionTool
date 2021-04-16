@@ -43,7 +43,8 @@ PACKAGE puredelay_channel_pkg IS
 			T_P_PERCENT : real				:= 0.0;	
 			T_P_MODE	: PARAMETER_MODE 	:= ABSOLUTE;			
 			V_DD : real := 1.0;
-			V_TH : real := 0.5
+			V_TH : real := 0.5;
+			INIT_VALUE : std_logic := '0'
 		);
 		PORT (
 			input : IN std_logic;

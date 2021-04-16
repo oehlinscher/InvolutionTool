@@ -20,6 +20,7 @@
 """
 
 import sys
+import json
 sys.path.append('../../experiment_setup/python')
 from vcdParser import *
 
@@ -32,6 +33,7 @@ def main():
 	sdf_output_scale = 1e3 # in femto seconds
 	
 	# line_finder = "IOPATH A Z"
+	# line_finder = "IOPATH I ZN"	
 	line_finder = "IOPATH I ZN"	
 	
 	warning_delay_change = 10
@@ -75,28 +77,29 @@ def main():
 		# Definitely not the most performant implementation, but working ...
 		for idx, (time, value, port) in enumerate(transition_times):
 			for key, entry in matching_dict.items():
-				if entry[0] == port:
-					#print("Port: {0}".format(port))
+				if entry[0].lower() == port.lower():
+					# print("Port: {0}".format(port))
 					# we found the "starting port"
 					# look into the future for x ns
 					future = subsequent_transition_range
+					# print("Future: ", time, time+future)
 					temp_idx = idx
 					found_transition = False
 					while len(transition_times) > temp_idx and transition_times[temp_idx][0] < time + future:						
-						if transition_times[temp_idx][2] == entry[1]:
+						if transition_times[temp_idx][2].lower() == entry[1].lower():
 							#print("{0} < {1} + {2}".format(transition_times[temp_idx][0], time, future))
 							# we found a transition in the specified time range, on the "end" port
 							# now add the information to the matching_dict
 							delay = transition_times[temp_idx][0] - time
-							type = value # 0 = rising; 1 = falling					
-						
-							if type== 0 and delay > 0: # rising transition
+							type = value # 0 = rising; 1 = falling
+		
+							if type== 1 and delay > 0: # rising transition
 								#if entry[2] != -1.0 and abs(entry[3] - delay) > warning_delay_change:
 								#	print("Change rising delay from {0} to {1}".format(entry[2], delay))
 									
 								entry[2] += delay
 								entry[4] += 1
-							elif type == 1 and delay > 0:
+							elif type == 0 and delay > 0:
 								#if entry[3] != -1.0 and abs(entry[3] - delay) > warning_delay_change:
 								#	print("Change falling delay from {0} to {1}".format(entry[3], delay))		
 								entry[3] += delay
@@ -111,8 +114,8 @@ def main():
 						
 						temp_idx = temp_idx + 1		
 					
-					#if not found_transition:
-					#	print('Did not find a matching transition for {0} at {1}'.format(entry[0], time))
+					if not found_transition:
+						print('Did not find a matching transition for {0} at {1}'.format(entry[0], time))
 	
 	
 	for key in sorted(matching_dict.keys()):
@@ -153,7 +156,7 @@ def main():
 			instance = key
 			if len(matching_dict[key]) >= 7:
 				instance = matching_dict[key][6]
-			if line.find("(INSTANCE  {0})".format(instance)) >= 0:		
+			if line.lower().find("(INSTANCE  {0})".format(instance).lower()) >= 0:		
 				# find the next line withing the next few lines which contains IOPATH, and replace...
 				start_idx = line_idx
 				act_line_finder = line_finder

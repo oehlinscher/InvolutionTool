@@ -41,7 +41,8 @@ PACKAGE hill_channel_pkg IS
 			V_DD : real := 1.0;
 			V_TH : real := 0.5;
 			N_UP : real := 1.0;
-			N_DO : real := 1.0
+			N_DO : real := 1.0;
+			INIT_VALUE : std_logic := '0'
 			--USE_INVERSE : bit := '0'
 		);
 		PORT (

@@ -1,0 +1,11 @@
+{
+    "genblk1[0].ix12:zn": "I",
+    "genblk1[0].ix16:zn": "B [2]",
+    "genblk1[2].ix12:zn": "B [3]",
+    "genblk1[2].ix16:zn": "B [4]",
+    "genblk1[4].ix12:zn": "B [5]",
+    "genblk1[4].ix16:zn": "B [6]",
+    "IX12:zn": "B [7]",
+    "genblk2[7].ix8:zn": "B [8]",
+    "Z": "Z"
+}

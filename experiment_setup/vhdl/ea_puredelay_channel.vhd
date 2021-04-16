@@ -38,11 +38,12 @@ ENTITY puredelay_channel IS
 		T_P_PERCENT : real				:= 0.0;	
 		T_P_MODE	: PARAMETER_MODE 	:= ABSOLUTE;
 		V_DD : real;
-		V_TH : real
+		V_TH : real;
+		INIT_VALUE : std_logic := '0'
 	);
 	PORT ( 
 		input : IN std_logic;
-		output : OUT std_logic
+		output : OUT std_logic := INIT_VALUE
 	);
 
 END puredelay_channel;

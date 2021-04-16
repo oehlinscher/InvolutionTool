@@ -91,9 +91,10 @@ def multi_exec_sim(config_file):
 	#os.environ["ME_REPORT_FOLDER"] = "multi_exec_" + time.strftime("%Y%m%d_%H%M%S")
 			
 	# innermost loops (keep waveform!) must have lower numbers than than properties where a new waveform has to be created
-	KEY_WAVEFORM = 6
-	KEY_SPICE_PROPERTIES = 5 # we can keep the waveform, but need to re-execute the Spice Simulation for these properties
-	KEY_DIGSIM_PROPERTIES = 4 # no need to re-execute SPICE, but we need to re-run our digital (ModelSim) simulation. ==> For example if only the sdf / spef File is changed
+	KEY_WAVEFORM = 7
+	KEY_SPICE_PROPERTIES = 6 # we can keep the waveform, but need to re-execute the Spice Simulation for these properties
+	KEY_DIGSIM_PROPERTIES = 5 # no need to re-execute SPICE, but we need to re-run our digital (ModelSim) simulation. ==> For example if only the sdf / spef File is changed
+	KEY_INVOLUTION_PROPERTIES = 4 # we need to reexectue make sim_involution, since for example the SDF has changed (only allowed if we use a different SDF file for (G)IDM and Standard Delay Model, or if USE_GIDM flag is changed) 
 	KEY_CHANNEL_LOCATION = 3
 	KEY_CHANNEL_TYPE = 2
 	KEY_T_P = 1
@@ -119,11 +120,14 @@ def multi_exec_sim(config_file):
 	if len(multi_exec.digsim_properties) > 0:
 		property_dict[KEY_DIGSIM_PROPERTIES] = 0
 		total_sim_num = total_sim_num * len(multi_exec.digsim_properties)
+	if len(multi_exec.involution_properties) > 0:
+		property_dict[KEY_INVOLUTION_PROPERTIES] = 0
+		total_sim_num = total_sim_num * len(multi_exec.involution_properties)
 		
 	
 	last_key_to_keep_waveform = KEY_SPICE_PROPERTIES
 	last_key_to_keep_spice = KEY_DIGSIM_PROPERTIES
-	last_key_to_keep_stddigsim = KEY_CHANNEL_LOCATION
+	last_key_to_keep_stddigsim = KEY_INVOLUTION_PROPERTIES
 	
 	last_key_to_keep_group_count = KEY_T_P
 	last_key_to_keep_reference_count = KEY_SPICE_PROPERTIES
@@ -132,6 +136,7 @@ def multi_exec_sim(config_file):
 	length_dict[KEY_WAVEFORM] = len(multi_exec.waveform_generation)
 	length_dict[KEY_SPICE_PROPERTIES] = len(multi_exec.spice_properties)
 	length_dict[KEY_DIGSIM_PROPERTIES] = len(multi_exec.digsim_properties)
+	length_dict[KEY_INVOLUTION_PROPERTIES] = len(multi_exec.involution_properties)
 	length_dict[KEY_CHANNEL_LOCATION] = len(multi_exec.gate_generation.channel_location_list)	
 	length_dict[KEY_CHANNEL_TYPE] = len(multi_exec.gate_generation.channel_type_list)		
 	length_dict[KEY_T_P] = len(multi_exec.gate_generation.t_p_list)		
@@ -157,7 +162,7 @@ def multi_exec_sim(config_file):
 		
 		# reset property_dict indices (value is a pointer to the current setting for each key)
 		for key in property_dict.keys():
-			property_dict[key] = 0;
+			property_dict[key] = 0
 		
 		while True:			
 			if not keep_waveform_local:
@@ -181,7 +186,7 @@ def multi_exec_sim(config_file):
 						# Make distinction between ABSOLUTE and PERCENT
 						if isinstance(multi_exec.gate_generation.t_p_list[value], list):
 							mode = multi_exec.gate_generation.t_p_list[value][1]
-							gate.T_P_mode = mode;
+							gate.T_P_mode = mode
 							if mode == ParameterMode.ABSOLUTE:
 								gate.T_P = multi_exec.gate_generation.t_p_list[value][0]
 							elif mode == ParameterMode.PERCENT:
@@ -228,6 +233,9 @@ def multi_exec_sim(config_file):
 				elif key == KEY_DIGSIM_PROPERTIES:
 					# nothing to do?
 					pass
+				elif key == KEY_INVOLUTION_PROPERTIES:
+					# nothing to do?
+					pass
 				else:
 					my_print("Error: Undefined key", EscCodes.FAIL, override_print_env_flag)
 						
@@ -251,6 +259,7 @@ def multi_exec_sim(config_file):
 			# set the current spice_properties (if we have some). Note that these properties need to be checked with ifndef PROP_NAME before they are exported in the default *.cfg files
 			set_config_property_list(multi_exec.spice_properties, property_dict, KEY_SPICE_PROPERTIES)
 			set_config_property_list(multi_exec.digsim_properties, property_dict, KEY_DIGSIM_PROPERTIES)
+			set_config_property_list(multi_exec.involution_properties, property_dict, KEY_INVOLUTION_PROPERTIES)
 			
 			# always check for the keep_waveform setting from the json file ==> If disabled, we always rerun the complete simulation
 			if multi_exec.keep_waveform and keep_std_digsim:			
@@ -279,7 +288,6 @@ def multi_exec_sim(config_file):
 			#increment all the counters in the dict (needs to be done in a sorted way)
 			# sorted is also required, because properties where the waveform can be kept have to be in the innermost loop
 			overflow = False			
-			keep_waveform = False
 			
 			for key in sorted(property_dict):					
 				overflow = False
@@ -304,7 +312,7 @@ def multi_exec_sim(config_file):
 					keep_group_count = calc_keep_property(key, last_key_to_keep_group_count, False)
 					keep_reference_group_count = calc_keep_property(key, last_key_to_keep_reference_count, False)
 					
-					break; # no need to increment the other properties
+					break # no need to increment the other properties
 			
 			if len(property_dict) == 0:
 				# if we just want to execute the standard configuration multiple times, we have an overflow after each simulation run:
@@ -314,7 +322,10 @@ def multi_exec_sim(config_file):
 				# we need to get the maximum value from the dict (because we could configure ABSOLUTE, PERCENT, ABSOLUTE)
 				new_group_id = int(os.environ["ME_group"]) + 1
 				if not me_group_param_mode_dict:
-					new_group_id = max(me_group_param_mode_dict.values()) + 1
+					if len(me_group_param_mode_dict.values()) == 0:
+						new_group_id = 0
+					else:
+						new_group_id = max(me_group_param_mode_dict.values()) + 1
 				os.environ["ME_group"] = str(new_group_id)
 				# Reset our datastructures
 				me_group_param_mode_dict = dict()
@@ -370,6 +381,7 @@ class MultiExec:
 		self.waveform_generation = list()
 		self.spice_properties = list()
 		self.digsim_properties = list()
+		self.involution_properties = list()
 		self.gate_generation = GateGeneration()
 		self.keep_waveform = True
 		

@@ -1,0 +1,162 @@
+{
+    "cells": [
+        {
+            "cell_type": "CKINVM1N", 
+            "instance": "g10", 
+            "pure_delay_down": "1 ps", 
+            "pure_delay_up": "1 ps"
+        }, 
+        {
+            "cell_type": "CKINVM1N", 
+            "instance": "g11", 
+            "pure_delay_down": "1 ps", 
+            "pure_delay_up": "1 ps"
+        }, 
+        {
+            "cell_type": "CKINVM1N", 
+            "instance": "g12", 
+            "pure_delay_down": "1 ps", 
+            "pure_delay_up": "1 ps"
+        }, 
+        {
+            "cell_type": "CKINVM1N", 
+            "instance": "g13", 
+            "pure_delay_down": "1 ps", 
+            "pure_delay_up": "1 ps"
+        }, 
+        {
+            "cell_type": "CKINVM1N", 
+            "instance": "g14", 
+            "pure_delay_down": "1 ps", 
+            "pure_delay_up": "1 ps"
+        }, 
+        {
+            "cell_type": "CKINVM1N", 
+            "instance": "g15", 
+            "pure_delay_down": "1 ps", 
+            "pure_delay_up": "1 ps"
+        }, 
+        {
+            "cell_type": "CKINVM1N", 
+            "instance": "g16", 
+            "pure_delay_down": "1 ps", 
+            "pure_delay_up": "1 ps"
+        }, 
+        {
+            "cell_type": "CKINVM1N", 
+            "instance": "g17", 
+            "pure_delay_down": "1 ps", 
+            "pure_delay_up": "1 ps"
+        }, 
+        {
+            "cell_type": "CKINVM1N", 
+            "instance": "g18", 
+            "pure_delay_down": "1 ps", 
+            "pure_delay_up": "1 ps"
+        }, 
+        {
+            "cell_type": "CKINVM1N", 
+            "instance": "g19", 
+            "pure_delay_down": "1 ps", 
+            "pure_delay_up": "1 ps"
+        }, 
+        {
+            "cell_type": "CKINVM1N", 
+            "instance": "g20", 
+            "pure_delay_down": "1 ps", 
+            "pure_delay_up": "1 ps"
+        }
+    ], 
+    "interconnects": [
+        {
+            "from_instance": "din", 
+            "from_port": "", 
+            "to_instance": "g10", 
+            "to_port": "A"
+        }, 
+        {
+            "from_instance": "g17", 
+            "from_port": "Z", 
+            "to_instance": "dout1", 
+            "to_port": ""
+        }, 
+        {
+            "from_instance": "g18", 
+            "from_port": "Z", 
+            "to_instance": "dout2", 
+            "to_port": ""
+        }, 
+        {
+            "from_instance": "g19", 
+            "from_port": "Z", 
+            "to_instance": "dout3", 
+            "to_port": ""
+        }, 
+        {
+            "from_instance": "g20", 
+            "from_port": "Z", 
+            "to_instance": "dout4", 
+            "to_port": ""
+        }, 
+        {
+            "from_instance": "g10", 
+            "from_port": "Z", 
+            "to_instance": "g11", 
+            "to_port": "A"
+        }, 
+        {
+            "from_instance": "g11", 
+            "from_port": "Z", 
+            "to_instance": "g12", 
+            "to_port": "A"
+        }, 
+        {
+            "from_instance": "g12", 
+            "from_port": "Z", 
+            "to_instance": "g13", 
+            "to_port": "A"
+        }, 
+        {
+            "from_instance": "g13", 
+            "from_port": "Z", 
+            "to_instance": "g14", 
+            "to_port": "A"
+        }, 
+        {
+            "from_instance": "g15", 
+            "from_port": "Z", 
+            "to_instance": "g17", 
+            "to_port": "A"
+        }, 
+        {
+            "from_instance": "g15", 
+            "from_port": "Z", 
+            "to_instance": "g18", 
+            "to_port": "A"
+        }, 
+        {
+            "from_instance": "g16", 
+            "from_port": "Z", 
+            "to_instance": "g19", 
+            "to_port": "A"
+        }, 
+        {
+            "from_instance": "g16", 
+            "from_port": "Z", 
+            "to_instance": "g20", 
+            "to_port": "A"
+        }, 
+        {
+            "from_instance": "g14", 
+            "from_port": "Z", 
+            "to_instance": "g15", 
+            "to_port": "A"
+        }, 
+        {
+            "from_instance": "g14", 
+            "from_port": "Z", 
+            "to_instance": "g16", 
+            "to_port": "A"
+        }
+    ]
+}

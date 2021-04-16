@@ -181,6 +181,7 @@ def prepareFigureData(start_out_name, crossings_file, involution_vcd, modelsim_v
 		
 			x_first = min(x_first, spiceData['crossing_times'][entry[0]][0] * 1e-9)
 			x_last = max(x_last, spiceData['crossing_times'][entry[0]][-1] * 1e-9)
+
 		if len(involutionData[signal_name][0]) > 1:
 			x_first = min(x_first, involutionData[signal_name][0][1])
 			x_last = max(x_last, involutionData[signal_name][0][-1])
@@ -195,18 +196,29 @@ def prepareFigureData(start_out_name, crossings_file, involution_vcd, modelsim_v
 	x_first = math.floor(x_first * pow(10, round_digits * -1)) / (pow(10, round_digits * -1))
 	x_last = math.ceil(x_last * pow(10, round_digits * -1)) / (pow(10, round_digits * -1))
 	x_last = x_last + 0.2 # "margin" at the right border 
-		
+	
+	signal_ignore_set = set()
+	if "FIGURE_IGNORE_SIGNALS" in os.environ:
+		# signal_ignore_set = 
+		signal_ignore_set = set([item.lower() for item in json.loads(os.environ["FIGURE_IGNORE_SIGNALS"])])
 	
 	for entry in MATCHING:
+
 		signal_name = entry[1]
+
+		if signal_name in signal_ignore_set:
+			my_print("Ignore signal: " + signal_name + " during trace deviation extraction")
+			continue
 		
 		# get the traces from the various dump files
-		trace = get_trace(spiceData['crossing_times'][entry[0]], spiceData['initial_values'][entry[0]]);
+		trace = get_trace(spiceData['crossing_times'][entry[0]], spiceData['initial_values'][entry[0]])
 		
 		dataInv = involutionData[signal_name]	
+		# print("Inv", dataInv)
 		dev_trace_inv_results = get_deviation_trace(trace, dataInv, inv_export_dev_trace_inf, fig_folder, 'inv_' + signal_name)			
 		
 		dataModelsim = modelsimData[signal_name]
+		# print("MSIM", dataModelsim)
 		dev_trace_msim_results = get_deviation_trace(trace, dataModelsim, msim_export_dev_trace_inf, fig_folder, 'msim_' + signal_name)
 				
 		tc_spice = (len(trace[0])-1)/2
@@ -756,7 +768,7 @@ def get_deviation_trace(tr0, tr1, export_dev_trace_info, fig_folder, signal_name
 				inverted_glitch = True
 			elif not start_values_differ and not end_values_differ:
 				orig_glitch = True
-			else:				
+			else:
 				my_print("neither original glitch nor inverted glitch --> should never be reached,\nsignal: {0}, approx. time: {1}\nPossible issue: Starting values differ between tr0 and tr1\n".format(signal_name, tr0[0][idx0]), EscCodes.FAIL)
 				
 			if glitch_on_tr0:

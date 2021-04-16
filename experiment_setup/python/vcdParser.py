@@ -3,7 +3,7 @@
 	Involution Tool
 	File: vcdParser.py
 	
-    Copyright (C) 2018-2019  Daniel OEHLINGER <d.oehlinger@outlook.com>
+    Copyright (C) 2018-2020  Daniel OEHLINGER <d.oehlinger@outlook.com>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,35 +22,17 @@
 def read_modelsim(fileName, vdd, vth, vss):
 
 	data = {}
-	mapping = {}
+	(mapping, _) = generate_vcd_mapping(fileName)
+	for key, value in mapping.items():
+		data[value] = [[],[]]
+
 	time = 0 # fs
 	
 	module_prefix_list = list()
 
 	module_prefix = ""
 	with open(fileName) as inFile:
-		for line in inFile:
-			if line.startswith("$scope module"):
-				module_prefix_list.append(line.split(' ')[2]) # add element, we are going in one level down
-			if line.startswith("$upscope $end"):
-				module_prefix_list = module_prefix_list[:-1] # remove last element, we are going one level up
-				
-			
-			if len(line) > 3 and line[:4] == '$var':
-				splitStr = line.split(' ')
-				
-				# now we also add the module prefix (but ignore the first two modules, since these are normally the testbench and the circuit under test)
-				module_prefix = ""
-				if len(module_prefix_list) > 2:
-					for elem in module_prefix_list[2:]:
-						module_prefix = module_prefix + elem + "/" 
-				
-				
-				mapping[splitStr[3]] = module_prefix + splitStr[4]				
-				data[module_prefix + splitStr[4]] = [[],[]]
-				continue
-				
-				
+		for line in inFile:		
 			# HSPICE vcd is slightly different
 			line = line.rstrip("\n\r")
 			if line.startswith('b') and len(line) >= 4:
@@ -73,8 +55,45 @@ def read_modelsim(fileName, vdd, vth, vss):
 				do_append(data[mapping[line[1:]]], vdd, time)
 				continue
 
-
 	return data
+
+def generate_vcd_mapping(vcd_file_path):
+	char_to_signal_mapping = {}
+	signal_to_char_mapping = {}
+	module_prefix_list = list()
+
+	module_prefix = ""
+	with open(vcd_file_path) as inFile:
+		for line in inFile:
+			if line.startswith("$scope module"):
+				module_prefix_list.append(line.split(' ')[2]) # add element, we are going in one level down
+			if line.startswith("$upscope $end"):
+				module_prefix_list = module_prefix_list[:-1] # remove last element, we are going one level up
+							
+			if len(line) > 3 and line[:4] == '$var':				
+				splitStr = line.split(' ')
+				
+				# now we also add the module prefix (but ignore the first two modules, since these are normally the testbench and the circuit under test)
+				module_prefix = ""
+				if len(module_prefix_list) > 2:
+					for elem in module_prefix_list[2:]:
+						module_prefix = module_prefix + elem + "/" 
+				
+				char = splitStr[3]
+				# The signal name can also contain spaces, so we need to take all splitStr, except for the last one ($end)
+				signal = module_prefix
+				for i in range(4, len(splitStr) - 1): 
+					signal += splitStr[i] + " "
+				signal = signal.rstrip()
+				
+				char_to_signal_mapping[char] = 	signal	
+				signal_to_char_mapping[signal] = char
+				continue
+
+			if line.startswith("$enddefinitions $end"):
+				break # we are done with reading the mapping
+
+	return (char_to_signal_mapping, signal_to_char_mapping)
 
 #--------------------------------------------------------------------------------
 	

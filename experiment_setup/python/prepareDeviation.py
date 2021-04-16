@@ -20,6 +20,7 @@
 """
 
 import sys
+import os
 from helper import *
 from parserHelper import *
 
@@ -34,13 +35,19 @@ def prepare_deviation(results_file):
 	results = read_results(results_file)
 
 	deviation_dict = dict()
+
+	sim_types = ["DC", "PT_AVG", "PT_TIM"]
+	if "ENABLE_PRIMETIME" in os.environ:
+		if not to_bool(os.environ["ENABLE_PRIMETIME"]):
+			sim_types = ["DC"]
+
 	
 	for ref in ["spice", "column"]:
 		for delay_model in ["SPICE", "MODELSIM", "INVOLUTION"]:
 			if ref == "column" and delay_model == "spice":
 				continue
 				
-			for sim_type in ["DC", "PT_AVG", "PT_TIM"]:			
+			for sim_type in sim_types:			
 				# get the reference_value			
 				reference_value = 0;
 				actual_value = 0;

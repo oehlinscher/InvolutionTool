@@ -46,7 +46,8 @@ PACKAGE sumexp_channel_pkg IS
 			TAU_1_UP 	: time;
 			TAU_1_DO 	: time;
 			TAU_2_UP 	: time;
-			TAU_2_DO 	: time
+			TAU_2_DO 	: time;
+			INIT_VALUE : std_logic := '0'
 		);
 		PORT (
 			input : IN std_logic;

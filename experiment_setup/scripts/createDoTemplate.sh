@@ -55,4 +55,8 @@ sed "s@##channelVDD##@${11}@g" | \
 sed "s@##channelVTH##@${12}@g" | \
 sed "s@##circuitFileType##@${13}@g" | \
 sed "s@##simLibraryCompiler##@${14}@g" | \
-sed "s@##vsimOptions##@${15}@g" > localDoTemplate
+sed "s@##vsimOptions##@${15}@g" | \
+sed "s@##useGIDM##@${16}@g" | \
+sed "s@##circuitFileGIDM##@${17}@g" | \
+sed "s@##sdfFileGIDM##@${18}@g" | \
+sed "s@##generateGatePerInstance##@${19}@g"> localDoTemplate

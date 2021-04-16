@@ -131,26 +131,35 @@ def dict_key_to_lower_case(dictionary):
 def convert_string_to_filename(str):
 	return str.replace("/", "_")
 	
-def parse_matching_line(line):
-	parts = line.strip(' \t\n\r').split(' ')
-	return (parts[0].lower(), parts[1].lower())
-	
-	
 def matching_file_to_list(matching_file):
-	matching = list()
-	with open(matching_file, 'r') as f:
-		for line in f.readlines():
-			result = parse_matching_line(line)
-			matching.append(result)
-	return matching
-			
-def matching_file_to_dict(matching_file):
+	matching_dict = matching_file_to_dict(matching_file)
+	matching_list = list()
+	for key, value in matching_dict.items():
+		matching_list.append((key, value))
+	return matching_list
+
+# Some functions need the value with its case preserved. 
+# Call with value_as_is set to True if the value should not be converted to lower case
+def matching_file_to_dict(matching_file, value_as_is=False):
 	matching = dict()
 	with open(matching_file, 'r') as f:
-		for line in f.readlines():
-			(part0, part1) = parse_matching_line(line)
-			matching[part0] = part1
-	return matching
+		matching = json.load(f)
+
+	# complete dict to lower case
+	if value_as_is:		
+		return dict((k.lower(), v) for k,v in matching.items())
+	else:
+		return dict((k.lower(), v.lower()) for k,v in matching.items())
+
+def convert_instance_name(instance, replace_square_brackets_with_space=False):
+	square_brackets_repl = ""
+	if replace_square_brackets_with_space:
+		square_brackets_repl = " "
+	return instance.replace("/", "").replace("_", "").replace("[", square_brackets_repl).replace("]", square_brackets_repl).replace("\\", "").replace(".", "").strip()
+
+def convert_port_name(port):
+	return port.replace("/", "").replace("_", "")		
+
 	
 class PrintLevel:
 	INFORMATION = 1

@@ -32,7 +32,7 @@ def main():
 	convertVCD(sys.argv[1], sys.argv[2], sys.argv[3])	
 	
 def convertVCD(input_file, output_file, matching_file):
-	replacements = matching_file_to_dict(matching_file)
+	replacements = matching_file_to_dict(matching_file, True)
 	
 		
 	replacing = False;

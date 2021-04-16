@@ -1,0 +1,82 @@
+{
+    "genblk1\\[9\\]\\.bx4": [
+        "genblk1[8].bx4:z",
+        "z",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[8\\]\\.bx4": [
+        "genblk1[7].bx4:z",
+        "genblk1[8].bx4:z",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[7\\]\\.bx4": [
+        "genblk1[6].bx4:z",
+        "genblk1[7].bx4:z",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[6\\]\\.bx4": [
+        "genblk1[5].bx4:z",
+        "genblk1[6].bx4:z",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[5\\]\\.bx4": [
+        "genblk1[4].bx4:z",
+        "genblk1[5].bx4:z",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[4\\]\\.bx4": [
+        "genblk1[3].bx4:z",
+        "genblk1[4].bx4:z",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[3\\]\\.bx4": [
+        "genblk1[2].bx4:z",
+        "genblk1[3].bx4:z",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[2\\]\\.bx4": [
+        "genblk1[1].bx4:z",
+        "genblk1[2].bx4:z",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[1\\]\\.bx4": [
+        "genblk1[0].bx4:z",
+        "genblk1[1].bx4:z",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[0\\]\\.bx4": [
+        "i",
+        "genblk1[0].bx4:z",
+        -1,
+        -1,
+        0,
+        0
+    ]
+}

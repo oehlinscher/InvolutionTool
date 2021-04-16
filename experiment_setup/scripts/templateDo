@@ -26,6 +26,8 @@ vlib work
 set mode ##name##
 
 vcom -work work -2008 -novopt ./vhdl/p_channel_base.vhd
+
+# IDM Channels
 vcom -work work -2008 -novopt ./vhdl/p_exp_channel.vhd
 vcom -work work -2008 -novopt ./vhdl/ea_exp_channel.vhd
 vcom -work work -2008 -novopt ./vhdl/p_hill_channel.vhd
@@ -34,6 +36,14 @@ vcom -work work -2008 -novopt ./vhdl/p_sumexp_channel.vhd
 vcom -work work -2008 -novopt ./vhdl/ea_sumexp_channel.vhd
 vcom -work work -2008 -novopt ./vhdl/p_puredelay_channel.vhd
 vcom -work work -2008 -novopt ./vhdl/ea_puredelay_channel.vhd
+
+# GIDM Channels
+vcom -work work -2008 -novopt ./vhdl/p_gidm_exp_channel.vhd
+vcom -work work -2008 -novopt ./vhdl/ea_gidm_exp_channel.vhd
+vcom -work work -2008 -novopt ./vhdl/p_gidm_hill_channel.vhd
+vcom -work work -2008 -novopt ./vhdl/ea_gidm_hill_channel.vhd
+vcom -work work -2008 -novopt ./vhdl/p_gidm_sumexp_channel.vhd
+vcom -work work -2008 -novopt ./vhdl/ea_gidm_sumexp_channel.vhd
 
 if {$mode eq {involution}} {
 	vcom -work work -2008 -novopt ##gateDirs##
@@ -44,9 +54,17 @@ if {$mode eq {involution}} {
 # define which type to use, VHDL causes no SDF annotation problems,
 # but for large design converting is not feasible
 if {{##circuitFileType##} eq {verilog}} {
-	vlog -work work -novopt -stats=none ##topDir####circuitFile##
+	if {({##useGIDM##} eq {True} || {##generateGatePerInstance##} eq {True}) && $mode eq {involution}} {
+		vlog -work work -novopt -stats=none ##topDir####circuitFileGIDM##
+	} else {
+		vlog -work work -novopt -stats=none ##topDir####circuitFile##
+	}
 } else {
-	vcom -work work -2008 -novopt ##topDir####circuitFile##
+	if {({##useGIDM##} eq {True} || {##generateGatePerInstance##} eq {True}) && $mode eq {involution}} {
+		vcom -work work -2008 -novopt ##topDir####circuitFileGIDM##
+	} else {
+		vcom -work work -2008 -novopt ##topDir####circuitFile##
+	}
 }
 
 
@@ -66,13 +84,15 @@ if {$mode eq {involution}} {
 #vsim work.circuit_TB -t fs -novopt +mindelays -sdfnoerror -GVectorsDir=##vectorsDir## 
 
 if {$mode eq {involution}} {
-	# circuit_config is the name of the configuratin that should be used (configuration is placed in the circuit.vhd (testbench))
-	#vsim work.circuit_TB -t fs -novopt -sdfnoerror -sdfmin ##unitName##=##topDir####sdfFile## -GVectorsDir=##vectorsDir## -GV_DD=##channelVDD## -GV_TH=##channelVTH## circuit_config
-	vsim work.circuit_TB -t fs -novopt -sdfnoerror -sdfmin ##unitName##=##topDir####sdfFile## -GVectorsDir=##vectorsDir## -GV_DD=##channelVDD## -GV_TH=##channelVTH##
+	
+	if {({##useGIDM##} eq {True} || {##generateGatePerInstance##} eq {True})} {
+		vsim work.circuit_TB -t fs -novopt -sdfnoerror -sdfmin ##unitName##=##topDir####sdfFileGIDM## -GVectorsDir=##vectorsDir## -GV_DD=##channelVDD## -GV_TH=##channelVTH##
+	} else {
+		vsim work.circuit_TB -t fs -novopt -sdfnoerror -sdfmin ##unitName##=##topDir####sdfFile## -GVectorsDir=##vectorsDir## -GV_DD=##channelVDD## -GV_TH=##channelVTH##
+	}
 } else {
 	vsim work.circuit_TB -t fs -novopt -sdfnoerror -sdfmin ##unitName##=##topDir####sdfFile## -GVectorsDir=##vectorsDir## ##vsimOptions##  
 }
-#vsim work.circuit_TB -t fs -voptargs=+acc=full -sdfnoerror -sdfmax ##unitName##=##topDir####sdfFile##
 
 # uncomment this if run in ModelSim
 #add wave /circuit_tb/input

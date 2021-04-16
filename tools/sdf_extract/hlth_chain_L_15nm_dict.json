@@ -1,0 +1,82 @@
+{
+    "genblk2\\[9\\]\\.ix8": [
+        "genblk2[8].ix8:zn",
+        "z",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk2\\[8\\]\\.ix8": [
+        "genblk2[7].ix8:zn",
+        "genblk2[8].ix8:zn",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk2\\[7\\]\\.ix8": [
+        "ix12:zn",
+        "genblk2[7].ix8:zn",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "ix12": [
+        "genblk1[4].ix16:zn",
+        "ix12:zn",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[4\\]\\.ix16": [
+        "genblk1[4].ix12:zn",
+        "genblk1[4].ix16:zn",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[4\\]\\.ix12": [
+        "genblk1[2].ix16:zn",
+        "genblk1[4].ix12:zn",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[2\\]\\.ix16": [
+        "genblk1[2].ix12:zn",
+        "genblk1[2].ix16:zn",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[2\\]\\.ix12": [
+        "genblk1[0].ix16:zn",
+        "genblk1[2].ix12:zn",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[0\\]\\.ix16": [
+        "genblk1[0].ix12:zn",
+        "genblk1[0].ix16:zn",
+        -1,
+        -1,
+        0,
+        0
+    ],
+    "genblk1\\[0\\]\\.ix12": [
+        "i",
+        "genblk1[0].ix12:zn",
+        -1,
+        -1,
+        0,
+        0
+    ]
+}
