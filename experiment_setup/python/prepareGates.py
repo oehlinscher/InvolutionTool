@@ -20,9 +20,9 @@
 """
 
 import sys
-from readGateCfg import *
-from helper import *
-from parserHelper import *
+from readGateCfg import read_gate_config
+from helper import my_print, EscCodes
+from parserHelper import replace_special_chars
 
 def main():
 	if len(sys.argv) != 6:
@@ -54,7 +54,7 @@ def prepate_gates(default_config_file, circuit_config_file, template_gate_config
 		
 
 		
-		file_content = gate_config_template.replace("%##ENTITY_NAME##%", replace_special_chars(gate.entity_name)).replace("%##CHANNEL_TYPE##%", replace_special_chars(gate.channel_type)).replace("%##EXP_CHANNEL_LOCATION##%", replace_special_chars(gate.channel_location)).replace("%##CHANNEL_LOCATION##%", gate.channel_location).replace("%##T_P##%", str(gate.T_P)).replace("%##FUNCTION##%", gate.function).replace("%##INPUTS##%", ", ".join(gate.inputs)).replace("%##OUTPUTS##%", ", ".join(gate.outputs)).replace("%##CHANNEL_PARAMETERS##%", channel_parameters)
+		file_content = gate_config_template.replace("%##ENTITY_NAME##%", replace_special_chars(gate.entity_name)).replace("%##CHANNEL_TYPE##%", replace_special_chars(str(gate.channel_type))).replace("%##EXP_CHANNEL_LOCATION##%", replace_special_chars(str(gate.channel_location))).replace("%##CHANNEL_LOCATION##%", str(gate.channel_location)).replace("%##T_P##%", str(gate.T_P)).replace("%##FUNCTION##%", gate.function).replace("%##INPUTS##%", ", ".join(gate.inputs)).replace("%##OUTPUTS##%", ", ".join(gate.outputs)).replace("%##CHANNEL_PARAMETERS##%", channel_parameters)
 		
 		
 	

@@ -1,0 +1,143 @@
+{
+    "replacements": {
+        "io": "io x y",
+        "cellName": "cellName x",
+        "vth_in": "vth_in x",
+        "vth_out": "vth_out x"
+    },
+    "simulations": [
+        {
+            "params": {
+                "io": "io 6 7",
+                "cellName": "cellName genblk14IX2",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out -1"
+            },
+            "results": {
+                "vth_in": 0.7415771484375001
+            }
+        },
+        {
+            "params": {
+                "io": "io 4 5",
+                "cellName": "cellName genblk12IX2",
+                "vth_in": "vth_in 0.4",
+                "vth_out": "vth_out -1"
+            },
+            "results": {
+                "vth_in": 0.344140625,
+                "vth_out": 0.349609375
+            }
+        },
+        {
+            "params": {
+                "io": "io 5 6",
+                "cellName": "cellName genblk13IX2",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out -1"
+            },
+            "results": {
+                "vth_in": 0.349609375,
+                "vth_out": 0.7415771484375001
+            }
+        },
+        {},
+        {
+            "params": {
+                "io": "io 10 11",
+                "cellName": "cellName genblk18IX2",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out -1"
+            }
+        },
+        {
+            "params": {
+                "io": "io 8 9",
+                "cellName": "cellName genblk16IX2",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out -1"
+            }
+        },
+        {
+            "params": {
+                "io": "io 11 2",
+                "cellName": "cellName genblk19IX2",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out -1"
+            }
+        },
+        {},
+        {
+            "params": {
+                "io": "io 9 10",
+                "cellName": "cellName genblk17IX2",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out -1"
+            }
+        },
+        {
+            "params": {
+                "io": "io 7 8",
+                "cellName": "cellName genblk15IX2",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out -1"
+            }
+        }
+    ],
+    "dependency_tree": {
+        "name": "Top",
+        "children": [
+            {
+                "name": 1,
+                "children": [
+                    {
+                        "name": 2,
+                        "children": [
+                            {
+                                "name": 0,
+                                "children": [
+                                    {
+                                        "name": 9,
+                                        "children": [
+                                            {
+                                                "name": 5,
+                                                "children": [
+                                                    {
+                                                        "name": 8,
+                                                        "children": [
+                                                            {
+                                                                "name": 4,
+                                                                "children": [
+                                                                    {
+                                                                        "name": 6
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "signal_mapping": {
+        "1": "I",
+        "2": "Z",
+        "3": "genblk10IX2:ZN",
+        "4": "genblk11IX2:ZN",
+        "5": "genblk12IX2:ZN",
+        "6": "genblk13IX2:ZN",
+        "7": "genblk14IX2:ZN",
+        "8": "genblk15IX2:ZN",
+        "9": "genblk16IX2:ZN",
+        "10": "genblk17IX2:ZN",
+        "11": "genblk18IX2:ZN"
+    }
+}

@@ -3,54 +3,54 @@
   "keep_waveform": true,
   "waveform_generation": [
     {
-      "N": 20,
+      "N": 500,
+      "calc_next_transition_mode": "LOCAL",
+      "mue": 0.005,
+      "sigma": 0.002
+    },
+    {
+      "N": 500,
+      "calc_next_transition_mode": "LOCAL",
+      "mue": 0.007,
+      "sigma": 0.050
+    },
+    {
+      "N": 500,
       "calc_next_transition_mode": "LOCAL",
       "mue": 0.015,
-      "sigma": 0.001
+      "sigma": 0.010
     },
     {
-      "N": 20,
+      "N": 500,
       "calc_next_transition_mode": "LOCAL",
       "mue": 0.025,
-      "sigma": 0.003
+      "sigma": 0.015
     },
     {
-      "N": 20,
+      "N": 500,
       "calc_next_transition_mode": "LOCAL",
-      "mue": 0.045,
-      "sigma": 0.007
-    },
-    {
-      "N": 20,
-      "calc_next_transition_mode": "LOCAL",
-      "mue": 0.100,
-      "sigma": 0.020
-    },
-    {
-      "N": 10,
-      "calc_next_transition_mode": "LOCAL",
-      "mue": 0.500,
-      "sigma": 0.200
+      "mue": 5.000,
+      "sigma": 0.050
     }
   ],
   "involution_properties": [
     {
-      "USE_GIDM": "True",
-      "STRUCTURE_FILE": "structure.fix.json",
-      "SDF_FILE": "hlth_L_custom.sdf",
-      "SDF_FILE_GIDM": "hlth_L_fitting_gidm.sdf"
-      },
-    {
       "USE_GIDM": "False",
-	  "STRUCTURE_FILE": "structure.fix.json",
-    "SDF_FILE": "hlth_L_custom.sdf",
-	  "SDF_FILE_GIDM": "hlth_L_fitting_idm_fix.sdf"
+      "STRUCTURE_FILE": "structure.idm_star_bwd.json",
+      "SDF_FILE": "inv_x2_chain.idm_star_bwd.sdf",
+      "SDF_FILE_GIDM": "inv_x2_chain.idm_star_bwd.sdf"
     },
     {
-	  "USE_GIDM": "False",	  
-	  "STRUCTURE_FILE": "structure.prop.json",
-    "SDF_FILE": "hlth_L_custom.sdf",
-	  "SDF_FILE_GIDM": "hlth_L_fitting_idm_prop.sdf"
+      "USE_GIDM": "True",
+      "STRUCTURE_FILE": "structure.cidm.json",
+      "SDF_FILE": "inv_x2_chain.cidm.sdf",
+      "SDF_FILE_GIDM": "inv_x2_chain.cidm.sdf"
+    },    
+    {
+      "USE_GIDM": "False",
+      "STRUCTURE_FILE": "structure.idm_plus_bwd.json",
+      "SDF_FILE": "inv_x2_chain.idm_plus_bwd.sdf",
+      "SDF_FILE_GIDM": "inv_x2_chain.idm_plus_bwd.sdf"
     }
   ]
 }

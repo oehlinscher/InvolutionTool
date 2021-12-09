@@ -1,0 +1,34 @@
+{
+    "cells": [
+        {
+            "cell_type": "NOR2_X2", 
+            "instance": "NOR1", 
+            "pure_delay": "25.0 ps", 
+            "pure_delay_down": "25.0 ps", 
+            "pure_delay_up": "25.0 ps"
+        }
+    ], 
+    "init": {
+        "NOR1": "1"
+    }, 
+    "interconnects": [
+        {
+            "from_instance": "A1_wire", 
+            "from_port": "", 
+            "to_instance": "NOR1", 
+            "to_port": "A1"
+        }, 
+        {
+            "from_instance": "A2_wire", 
+            "from_port": "", 
+            "to_instance": "NOR1", 
+            "to_port": "A2"
+        }, 
+        {
+            "from_instance": "NOR1", 
+            "from_port": "ZN", 
+            "to_instance": "Z_wire", 
+            "to_port": ""
+        }
+    ]
+}

@@ -1,0 +1,44 @@
+{
+    "cells": [
+        {
+            "cell_type": "NOR2_X2", 
+            "instance": "NOR1", 
+            "pure_delay": "0.5 ps", 
+            "pure_delay_down": "0.5 ps", 
+            "pure_delay_up": "0.5 ps",
+            "hybrid_channel_params" : {
+                "r_1" : 30055.535019024464, 
+                "r_2" : 63745.46109202402, 
+                "r_3" : 49804.860177608774, 
+                "r_4" : 56469.03476891575, 
+                "c_int" : 7.280417792788806e-17,
+                "c_out" : 5.38515734545255e-16,
+                "scale_1" : 1.0,
+                "pure_delay" : "18000 fs"
+            }
+        }
+    ], 
+    "init": {
+        "NOR1": "1"
+    }, 
+    "interconnects": [
+        {
+            "from_instance": "A1_wire", 
+            "from_port": "", 
+            "to_instance": "NOR1", 
+            "to_port": "A1"
+        }, 
+        {
+            "from_instance": "A2_wire", 
+            "from_port": "", 
+            "to_instance": "NOR1", 
+            "to_port": "A2"
+        }, 
+        {
+            "from_instance": "NOR1", 
+            "from_port": "ZN", 
+            "to_instance": "Z_wire", 
+            "to_port": ""
+        }
+    ]
+}

@@ -1,0 +1,195 @@
+{
+    "replacements": {
+        "io": "io x y",
+        "cellName": "cellName x",
+        "vth_in": "vth_in x",
+        "vth_out": "vth_out x"
+    },
+    "simulations": [
+        {
+            "params": {
+                "io": "io 7 8",
+                "cellName": "cellName genblk15BX4",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out -1"
+            },
+            "results": {
+                "vth_out": 0.38291246809643553,
+                "vth_in": 0.3924985588622292
+            }
+        },
+        {
+            "params": {
+                "io": "io 8 9",
+                "cellName": "cellName genblk16BX4",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out -1"
+            },
+            "results": {
+                "vth_out": 0.4022737190855139,
+                "vth_in": 0.38291246809643553
+            }
+        },
+        {
+            "params": {
+                "io": "io 10 11",
+                "cellName": "cellName genblk18BX4",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out -1"
+            },
+            "results": {
+                "vth_out": 0.657466289889598,
+                "vth_in": 0.3399083785207182
+            }
+        },
+        {
+            "params": {
+                "io": "io 3 4",
+                "cellName": "cellName genblk11BX4",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out -1"
+            },
+            "results": {
+                "vth_out": 0.39117341445454556,
+                "vth_in": 0.3913431253233579
+            }
+        },
+        {
+            "params": {
+                "io": "io 9 10",
+                "cellName": "cellName genblk17BX4",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out -1"
+            },
+            "results": {
+                "vth_out": 0.3399083785207182,
+                "vth_in": 0.4022737190855139
+            }
+        },
+        {
+            "params": {
+                "io": "io 5 6",
+                "cellName": "cellName genblk13BX4",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out -1"
+            },
+            "results": {
+                "vth_out": 0.390524559535379,
+                "vth_in": 0.3892124354188695
+            }
+        },
+        {
+            "params": {
+                "io": "io 4 5",
+                "cellName": "cellName genblk12BX4",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out -1"
+            },
+            "results": {
+                "vth_out": 0.3892124354188695,
+                "vth_in": 0.39117341445454556
+            }
+        },
+        {
+            "params": {
+                "io": "io 6 7",
+                "cellName": "cellName genblk14BX4",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out -1"
+            },
+            "results": {
+                "vth_out": 0.3924985588622292,
+                "vth_in": 0.390524559535379
+            }
+        },
+        {
+            "params": {
+                "io": "io 1 3",
+                "cellName": "cellName genblk10BX4",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out -1"
+            },
+            "results": {
+                "vth_out": 0.3913431253233579,
+                "vth_in": 0.3935485144530182
+            }
+        },
+        {
+            "params": {
+                "io": "io 11 2",
+                "cellName": "cellName genblk19BX4",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out 0.4"
+            },
+            "results": {
+                "vth_in": 0.657466289889598
+            }
+        }
+    ],
+    "dependency_tree": {
+        "name": "Top",
+        "children": [
+            {
+                "name": 8,
+                "children": [
+                    {
+                        "name": 3,
+                        "children": [
+                            {
+                                "name": 6,
+                                "children": [
+                                    {
+                                        "name": 5,
+                                        "children": [
+                                            {
+                                                "name": 7,
+                                                "children": [
+                                                    {
+                                                        "name": 0,
+                                                        "children": [
+                                                            {
+                                                                "name": 1,
+                                                                "children": [
+                                                                    {
+                                                                        "name": 4,
+                                                                        "children": [
+                                                                            {
+                                                                                "name": 2,
+                                                                                "children": [
+                                                                                    {
+                                                                                        "name": 9
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "signal_mapping": {
+        "1": "I",
+        "2": "Z",
+        "3": "genblk10BX4:Z",
+        "4": "genblk11BX4:Z",
+        "5": "genblk12BX4:Z",
+        "6": "genblk13BX4:Z",
+        "7": "genblk14BX4:Z",
+        "8": "genblk15BX4:Z",
+        "9": "genblk16BX4:Z",
+        "10": "genblk17BX4:Z",
+        "11": "genblk18BX4:Z"
+    }
+}

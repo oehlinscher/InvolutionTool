@@ -1,0 +1,9 @@
+/** 
+@dir tools/characterization
+
+@author Daniel OEHLINGER <d.oehlinger@outlook.com>
+@date 2021
+
+@brief Scripts for IDM / CIDM parametrization of circuits
+
+*/

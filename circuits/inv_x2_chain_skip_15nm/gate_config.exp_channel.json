@@ -1,0 +1,64 @@
+{
+  "INV_X1": {
+    "T_P": 1,
+    "channel_location": "OUTPUT",
+    "channel_type": "EXP_CHANNEL",
+    "entity_name": "INV_X1",
+    "function": "not",
+    "inputs": ["I"],
+    "outputs": ["ZN"],
+    "implementation_type": "python"
+  },
+  "INV_X2": {
+    "T_P": 1,
+    "channel_location": "OUTPUT",
+    "channel_type": "EXP_CHANNEL",
+    "entity_name": "INV_X2",
+    "function": "not",
+    "inputs": ["I"],
+    "outputs": ["ZN"],
+    "implementation_type": "python"
+  },
+  "INV_X4": {
+    "T_P": 1,
+    "channel_location": "OUTPUT",
+    "channel_type": "EXP_CHANNEL",
+    "entity_name": "INV_X4",
+    "function": "not",
+    "inputs": ["I"],
+    "outputs": ["ZN"],
+    "implementation_type": "python"
+  },
+  "INV_X8": {
+    "T_P": 1,
+    "channel_location": "OUTPUT",
+    "channel_type": "EXP_CHANNEL",
+    "entity_name": "INV_X8",
+    "function": "not",
+    "inputs": ["I"],
+    "outputs": ["ZN"],
+    "implementation_type": "python"
+  },
+  "INV_X12": {
+    "T_P": 1,
+    "channel_location": "OUTPUT",
+    "channel_type": "EXP_CHANNEL",
+
+    "entity_name": "INV_X12",
+    "function": "not",
+    "inputs": ["I"],
+    "outputs": ["ZN"],
+    "implementation_type": "python"
+  },
+  "INV_X16": {
+    "T_P": 1,
+    "channel_location": "OUTPUT",
+    "channel_type": "EXP_CHANNEL",
+
+    "entity_name": "INV_X16",
+    "function": "not",
+    "inputs": ["I"],
+    "outputs": ["ZN"],
+    "implementation_type": "python"
+  }
+}

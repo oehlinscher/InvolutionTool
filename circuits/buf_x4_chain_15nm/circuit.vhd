@@ -2,6 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.math_real.all;
 use work.exp_channel_pkg.all;
+use work.python_channel_pkg.all;
 USE std.textio.ALL;
 
 entity circuit_TB is
@@ -16,6 +17,10 @@ architecture TB of circuit_TB is
 
   signal I : std_logic;
   signal Z : std_logic;
+
+  
+  signal initialized : std_logic := '0';
+  signal I_done : std_logic;
 
   component buf_x4_chain is
     port ( I: in std_logic;

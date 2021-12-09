@@ -39,4 +39,4 @@ def load_folder_mapping():
 	
 def load_swapped_folder_mapping():
 	mapping = load_folder_mapping()	
-	return dict([ (v, k) for k, v in mapping.iteritems( ) ])
+	return dict([ (v, k) for k, v in mapping.items( ) ])

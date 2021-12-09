@@ -1,0 +1,11 @@
+{
+    "NOR1ZN": "Zwire", 
+    "BUFZ1I": "Zwire", 
+    "BUFA21I": "A2", 
+    "BUFA11Z": "A1wire2", 
+    "NOR1A2": "A2wire2", 
+    "NOR1A1": "A1wire2", 
+    "BUFZ1Z": "Z", 
+    "BUFA21Z": "A2wire2", 
+    "BUFA11I": "A1"
+}

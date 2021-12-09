@@ -1,0 +1,15 @@
+{
+    "BUF_X4": {
+      "T_P": 1, 
+      "channel_location" : "OUTPUT",
+      "channel_type" : "EXP_CHANNEL",	
+      "entity_name": "BUF_X4", 
+      "function": "", 
+      "inputs": [
+        "A"
+      ], 
+      "outputs": [
+        "Z"
+      ]
+    }
+  }

@@ -1,0 +1,17 @@
+1. Determine MIS delays for falling and rising output 
+    a. Determine MIS delays for falling outputs
+        * Run generateStimuli.py for falling output transitions
+        * Copy input stimuli to spice file
+        * Adjust <STOPTIME> in spice file
+        * Run make crossings
+        * Copy crossings.json file to folder hm_fitting in the circuit folder and rename to crossings_falling_output.json
+    b. Repeat the same steps to determine MIS delays for rising output transitions and rename crossings.json to crossings_rising_output.json
+
+2. Plot spice figures by running plotSpiceFig.py
+
+3. Based on the delays from the previous step, run the parameter fitting script (parameterFitting.py)
+
+4. Based on the parameters, execute the simulation script to get the MIS delays for falling and rising output (simulate.py)
+
+5. Compare SPICE and ODE (compareFigs.py)
+    

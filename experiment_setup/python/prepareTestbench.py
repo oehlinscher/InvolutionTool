@@ -21,8 +21,8 @@
 
 import sys
 import os 
-from helper import *
-from readGateCfg import *
+from helper import my_print, EscCodes
+from readGateCfg import read_gate_config
 
 def main():
 	if len(sys.argv) == 8:
@@ -61,12 +61,7 @@ def prepare_testbench(circuit_file_in, circuit_file_out, process_template_file, 
 	
 	if len(input_list) != len(vector_list):
 		my_print("input_names and vector_names have a different length, this should not happen!", EscCode.FAIL)
-		return
-	
-	#print input_list
-	#print vector_list
-	#print process_template
-	
+		return	
 	
 	input_process_content = ""
 	for x in range(0, len(input_list)):
@@ -78,8 +73,32 @@ def prepare_testbench(circuit_file_in, circuit_file_out, process_template_file, 
 		additional_generics = ""
 		for key, value in gate.channel_parameters.items():
 			additional_generics = ",\n\t\t\t" + str(key) + " => " + str(value)
-		circuit_configuration = circuit_configuration.replace("##GATE_ARCHITECTURE_" + name + "##", gate.channel_type + "_" + gate.channel_location).replace("##T_P_" + name + "##", str(gate.T_P) + " ps").replace("##CHANNEL_SPECIFIC_GENERICS_" + name + "##", additional_generics)
+		circuit_configuration = circuit_configuration.replace("##GATE_ARCHITECTURE_" + name + "##", str(gate.channel_type) + "_" + str(gate.channel_location)).replace("##T_P_" + name + "##", str(gate.T_P) + " ps").replace("##CHANNEL_SPECIFIC_GENERICS_" + name + "##", additional_generics)
 	
+	input_process_content = """
+		init_proc : PROCESS
+		BEGIN
+			init_wrapper;
+			initialized <= '1';
+			WAIT;
+		END PROCESS;
+
+
+		""".format() + input_process_content
+
+	all_inputs_done = " AND ".join(["{input}_done = '1'".format(input = input) for input in input_list])
+	input_process_content = input_process_content + """
+
+
+		clean_process : PROCESS
+		BEGIN
+			WAIT UNTIL {all_done};
+			WAIT for 10 sec; -- This is to ensure that clean_wrapper is definitely called after all transitions have been handled
+			clean_wrapper;
+			WAIT;
+		END PROCESS;
+		""".format(all_done = all_inputs_done)
+
 	content_to_write = circuit_content.replace("##INPUT_PROCESS##", input_process_content).replace("##CIRCUIT_CONFIGURATION##", circuit_configuration)
 	
 	with open(circuit_file_out, 'w') as outfile:

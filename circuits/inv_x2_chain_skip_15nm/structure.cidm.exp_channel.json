@@ -1,0 +1,134 @@
+{
+    "cells": [
+        {
+            "cell_type": "INV_X2",
+            "hybrid_channel_params": {},
+            "instance": "genblk11IX2",
+            "pure_delay": "0.042 ps",
+            "pure_delay_down": "-0.082 ps",
+            "pure_delay_up": "0.157 ps"
+        },
+        {
+            "cell_type": "INV_X2",
+            "hybrid_channel_params": {},
+            "instance": "genblk12IX2",
+            "pure_delay": "0.126 ps",
+            "pure_delay_down": "0.040 ps",
+            "pure_delay_up": "0.216 ps"
+        },
+        {
+            "cell_type": "INV_X2",
+            "hybrid_channel_params": {},
+            "instance": "genblk13IX2",
+            "pure_delay": "0.167 ps",
+            "pure_delay_down": "0.114 ps",
+            "pure_delay_up": "0.218 ps"
+        },
+        {
+            "cell_type": "INV_X2",
+            "hybrid_channel_params": {},
+            "instance": "genblk14IX2",
+            "pure_delay": "0.174 ps",
+            "pure_delay_down": "0.141 ps",
+            "pure_delay_up": "0.206 ps"
+        },
+        {
+            "cell_type": "INV_X2",
+            "hybrid_channel_params": {},
+            "instance": "genblk15IX2",
+            "pure_delay": "0.208 ps",
+            "pure_delay_down": "0.173 ps",
+            "pure_delay_up": "0.242 ps"
+        },
+        {
+            "cell_type": "INV_X2",
+            "hybrid_channel_params": {},
+            "instance": "genblk16IX2",
+            "pure_delay": "0.171 ps",
+            "pure_delay_down": "0.129 ps",
+            "pure_delay_up": "0.211 ps"
+        },
+        {
+            "cell_type": "INV_X2",
+            "hybrid_channel_params": {},
+            "instance": "genblk17IX2",
+            "pure_delay": "0.153 ps",
+            "pure_delay_down": "0.112 ps",
+            "pure_delay_up": "0.193 ps"
+        },
+        {
+            "cell_type": "INV_X2",
+            "hybrid_channel_params": {},
+            "instance": "genblk18IX2",
+            "pure_delay": "14.704 ps",
+            "pure_delay_down": "14.071 ps",
+            "pure_delay_up": "15.547 ps"
+        }
+    ],
+    "init": {
+        "genblk11IX2": "1",
+        "genblk12IX2": "0",
+        "genblk13IX2": "1",
+        "genblk14IX2": "0",
+        "genblk15IX2": "1",
+        "genblk16IX2": "0",
+        "genblk17IX2": "1",
+        "genblk18IX2": "0"
+    },
+    "interconnects": [
+        {
+            "from_instance": "genblk18IX2",
+            "from_port": "ZN",
+            "to_instance": "Z",
+            "to_port": ""
+        },
+        {
+            "from_instance": "genblk17IX2",
+            "from_port": "ZN",
+            "to_instance": "genblk18IX2",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk16IX2",
+            "from_port": "ZN",
+            "to_instance": "genblk17IX2",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk15IX2",
+            "from_port": "ZN",
+            "to_instance": "genblk16IX2",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk14IX2",
+            "from_port": "ZN",
+            "to_instance": "genblk15IX2",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk13IX2",
+            "from_port": "ZN",
+            "to_instance": "genblk14IX2",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk12IX2",
+            "from_port": "ZN",
+            "to_instance": "genblk13IX2",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk11IX2",
+            "from_port": "ZN",
+            "to_instance": "genblk12IX2",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "I",
+            "from_port": "",
+            "to_instance": "genblk11IX2",
+            "to_port": "I"
+        }
+    ]
+}

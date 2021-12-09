@@ -1,0 +1,137 @@
+{
+    "cells": [
+        {
+            "cell_type": "INV_X2",
+            "hybrid_channel_params": {},
+            "instance": "genblk11IX2",
+            "pure_delay": "0.5 ps",
+            "pure_delay_down": "0.5 ps",
+            "pure_delay_up": "0.5 ps"
+        },
+        {
+            "cell_type": "INV_X2",
+            "hybrid_channel_params": {},
+            "instance": "genblk12IX2",
+            "pure_delay": "0.5 ps",
+            "pure_delay_down": "0.5 ps",
+            "pure_delay_up": "0.5 ps"
+        },
+        {
+            "cell_type": "INV_X2",
+            "hybrid_channel_params": {},
+            "instance": "genblk13IX2",
+            "pure_delay": "0.5 ps",
+            "pure_delay_down": "0.5 ps",
+            "pure_delay_up": "0.5 ps"
+        },
+        {
+            "cell_type": "INV_X2",
+            "hybrid_channel_params": {},
+            "instance": "genblk14IX2",
+            "pure_delay": "0.5 ps",
+            "pure_delay_down": "0.5 ps",
+            "pure_delay_up": "0.5 ps"
+        },
+        {
+            "cell_type": "INV_X2",
+            "hybrid_channel_params": {},
+            "instance": "genblk15IX2",
+            "pure_delay": "0.5 ps",
+            "pure_delay_down": "0.5 ps",
+            "pure_delay_up": "0.5 ps"
+        },
+        {
+            "cell_type": "INV_X2",
+            "hybrid_channel_params": {},
+            "instance": "genblk16IX2",
+            "pure_delay": "0.5 ps",
+            "pure_delay_down": "0.5 ps",
+            "pure_delay_up": "0.5 ps"
+        },
+        {
+            "cell_type": "INV_X2",
+            "hybrid_channel_params": {},
+            "instance": "genblk17IX2",
+            "pure_delay": "0.5 ps",
+            "pure_delay_down": "0.5 ps",
+            "pure_delay_up": "0.5 ps"
+        },
+        {
+            "cell_type": "INV_X2",
+            "hybrid_channel_params": {},
+            "instance": "genblk18IX2",
+            "pure_delay": "0.5 ps",
+            "pure_delay_down": "0.5 ps",
+            "pure_delay_up": "0.5 ps"
+        }
+    ],
+    "init": {},
+    "interconnects": [
+        {
+            "from_instance": "I",
+            "from_port": "",
+            "to_instance": "genblk10IX2",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk19IX2",
+            "from_port": "ZN",
+            "to_instance": "Z",
+            "to_port": ""
+        },
+        {
+            "from_instance": "genblk18IX2",
+            "from_port": "ZN",
+            "to_instance": "genblk19IX2",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk17IX2",
+            "from_port": "ZN",
+            "to_instance": "genblk18IX2",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk16IX2",
+            "from_port": "ZN",
+            "to_instance": "genblk17IX2",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk15IX2",
+            "from_port": "ZN",
+            "to_instance": "genblk16IX2",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk14IX2",
+            "from_port": "ZN",
+            "to_instance": "genblk15IX2",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk13IX2",
+            "from_port": "ZN",
+            "to_instance": "genblk14IX2",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk12IX2",
+            "from_port": "ZN",
+            "to_instance": "genblk13IX2",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk11IX2",
+            "from_port": "ZN",
+            "to_instance": "genblk12IX2",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk10IX2",
+            "from_port": "ZN",
+            "to_instance": "genblk11IX2",
+            "to_port": "I"
+        }
+    ]
+}

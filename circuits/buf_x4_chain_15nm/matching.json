@@ -1,13 +1,13 @@
 {
     "I": "I",
-    "genblk1[0].bx4:z": "B [1]",
-    "genblk1[1].bx4:z": "B [2]",
-    "genblk1[2].bx4:z": "B [3]",
-    "genblk1[3].bx4:z": "B [4]",
-    "genblk1[4].bx4:z": "B [5]",
-    "genblk1[5].bx4:z": "B [6]",
-    "genblk1[6].bx4:z": "B [7]",
-    "genblk1[7].bx4:z": "B [8]",
-    "genblk1[8].bx4:z": "B [9]",
+    "genblk10bx4:z": "B [1]",
+    "genblk11bx4:z": "B [2]",
+    "genblk12bx4:z": "B [3]",
+    "genblk13bx4:z": "B [4]",
+    "genblk14bx4:z": "B [5]",
+    "genblk15bx4:z": "B [6]",
+    "genblk16bx4:z": "B [7]",
+    "genblk17bx4:z": "B [8]",
+    "genblk18bx4:z": "B [9]",
     "Z": "Z"
 }

@@ -4,37 +4,43 @@
             "cell_type": "NAND2_X2", 
             "instance": "inst5", 
             "pure_delay_down": "1 ps", 
-            "pure_delay_up": "1 ps"
+            "pure_delay_up": "1 ps", 
+            "pure_delay": "1 ps"
         }, 
         {
             "cell_type": "NAND2_X2", 
             "instance": "inst2", 
             "pure_delay_down": "1 ps", 
-            "pure_delay_up": "1 ps"
+            "pure_delay_up": "1 ps", 
+            "pure_delay": "1 ps"
         }, 
         {
             "cell_type": "NAND2_X2", 
             "instance": "inst1", 
             "pure_delay_down": "1 ps", 
-            "pure_delay_up": "1 ps"
+            "pure_delay_up": "1 ps", 
+            "pure_delay": "1 ps"
         }, 
         {
             "cell_type": "NAND2_X2", 
             "instance": "inst4", 
             "pure_delay_down": "1 ps", 
-            "pure_delay_up": "1 ps"
+            "pure_delay_up": "1 ps", 
+            "pure_delay": "1 ps"
         }, 
         {
             "cell_type": "NAND2_X2", 
             "instance": "inst3", 
             "pure_delay_down": "1 ps", 
-            "pure_delay_up": "1 ps"
+            "pure_delay_up": "1 ps", 
+            "pure_delay": "1 ps"
         }, 
         {
             "cell_type": "NAND2_X2", 
             "instance": "inst0", 
             "pure_delay_down": "1 ps", 
-            "pure_delay_up": "1 ps"
+            "pure_delay_up": "1 ps", 
+            "pure_delay": "1 ps"
         }
     ], 
     "interconnects": [

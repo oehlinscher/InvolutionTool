@@ -1,0 +1,19 @@
+# configuration file for a buffer chain
+c 11 
+io x y
+vth_out x 
+vth_in x 
+o v(i) v(ix12:zn) v(z) v(genblk1[0].ix16:zn) v(genblk1[2].ix12:zn) v(genblk1[2].ix16:zn) v(genblk1[4].ix12:zn) v(ix12:i) v(genblk2[7].ix8:zn) v(genblk2[8].ix8:zn)
+d time vi vix12zn vz vgenblk10ix16zn vgenblk12ix12zn vgenblk12ix16zn vgenblk14ix12zn ix12i vgenblk27ix8zn vgenblk28ix8zn
+color red blue green darkturquoise magenta black orange sienna olive purple dodgerblue darkgoldenrod lightseagreen slategrey crimson
+tool spectre
+cellName x
+min 0
+max 12000000000
+stop 600000000
+maxaccuracyout 0.001
+maxaccuracyin 0.001
+calcinvolution True
+# folderName templateName startName startVal stopVal stepVal
+../../circuits/hlth_chain_L_skip_15nm/characterization/circuit hlth_inv_chain_L_15nm.sp hlth_inv_chain_L_15nm_u 0 80000001 10000000
+../../circuits/hlth_chain_L_skip_15nm/characterization/circuit hlth_inv_chain_L_15nm.sp hlth_inv_chain_L_15nm_d 0 80000001 10000000

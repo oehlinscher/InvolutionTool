@@ -23,16 +23,15 @@ import sys
 import os
 import json
 import sys
-import shutil
 import subprocess
 import time
 import copy
 import re
 sys.path.append('../../experiment_setup/python')
-from readGateCfg import *
+from readGateCfg import read_gate_config, ParameterMode
 from parserHelper import *
-from readGenerateCfg import *
-from helper import *
+from readGenerateCfg import read_generate_cfg 
+from helper import EscCodes, my_print, ObjectEncoder, PrintLevel, get_print_level
 
 override_print_env_flag = True
 
@@ -43,27 +42,18 @@ def main():
 		
 	multi_exec_sim(sys.argv[1])
 
-def multi_exec_sim(config_file):						
-	# 1. "Copy" the config files which will be adapted to the temp folder
+def multi_exec_sim(config_file):	
 	temp_folder_name = 'temp'
-	gate_config_name = 'gate_config.json'
-	gate_default_config_file = os.path.join(os.environ["GENERAL_GATE_CONFIG_DIR"], gate_config_name)
-	gate_circuit_config_file = os.path.join(os.environ["CIRCUIT_GATE_CONFIG_DIR"], gate_config_name)
-	gates = read_gate_config(gate_default_config_file, gate_circuit_config_file)
-	
-	
 	if not os.path.exists(temp_folder_name):
 		os.makedirs(temp_folder_name)
-	
-	with open(os.path.join(temp_folder_name, gate_config_name), "w") as gate_cfg_file:
-		gate_cfg_file.write(json.dumps(gates, cls=ObjectEncoder, indent=2, sort_keys=True))
 	
 	waveform_file_name = 'generate.json'
 	waveform_generation = read_generate_cfg(os.path.join(os.environ["WAVEFORM_GENERATION_CONFIG_DIR"], waveform_file_name))
 	with open(os.path.join(temp_folder_name, waveform_file_name), "w") as waveform_cfg_file:
 		waveform_cfg_file.write(json.dumps(waveform_generation, cls=ObjectEncoder, indent=2, sort_keys=True))
+	os.environ["WAVEFORM_GENERATION_CONFIG_DIR"] = os.path.join(os.getcwd(), temp_folder_name) 
 	
-	# 2. Read the multi_exec config file
+	# Read the multi_exec config file
 	multi_exec = MultiExec()
 	with open(config_file, "r") as cfg_file:
 		jsonobject = json.load(cfg_file)	
@@ -71,28 +61,20 @@ def multi_exec_sim(config_file):
 			if key.lower() == "waveform_generation":
 				for elem in value:				
 					cfg = copy.deepcopy(waveform_generation) # Required, because we want the default values from the default config file
-					cfg.__dict__.update(elem);
-					multi_exec.waveform_generation.append(cfg);
+					cfg.__dict__.update(elem)
+					multi_exec.waveform_generation.append(cfg)
 			elif key.lower() == "gate_generation":
 				multi_exec.gate_generation.__dict__.update(value)
 			else:
 				multi_exec.__dict__[key] = value;	
-					
-	# 3. update the environemt variables to the new generated config files (valid for this process and all child process)	
-	os.environ["GENERAL_GATE_CONFIG_DIR"] = os.path.join(os.getcwd(), temp_folder_name)
-	os.environ["CIRCUIT_GATE_CONFIG_DIR"] = os.path.join(os.getcwd(), temp_folder_name)
-	os.environ["WAVEFORM_GENERATION_CONFIG_DIR"] = os.path.join(os.getcwd(), temp_folder_name) 
 	
 	if get_print_level() > PrintLevel.INFORMATION:
 		os.environ["MAKEFILE_PRINT_INFO"] = "False"
-		
-	# 3.a. set report folder (relative from $RESULT_OUTPUT_DIR), so that all generated reports for this run are in the same folder
-	# done in a config file which is called by the Makefile
-	#os.environ["ME_REPORT_FOLDER"] = "multi_exec_" + time.strftime("%Y%m%d_%H%M%S")
 			
 	# innermost loops (keep waveform!) must have lower numbers than than properties where a new waveform has to be created
-	KEY_WAVEFORM = 7
-	KEY_SPICE_PROPERTIES = 6 # we can keep the waveform, but need to re-execute the Spice Simulation for these properties
+	KEY_WAVEFORM = 8
+	KEY_SPICE_PROPERTIES = 7 # we can keep the waveform, but need to re-execute the Spice Simulation for these properties
+	KEY_CROSSING_PROPERTIES = 6
 	KEY_DIGSIM_PROPERTIES = 5 # no need to re-execute SPICE, but we need to re-run our digital (ModelSim) simulation. ==> For example if only the sdf / spef File is changed
 	KEY_INVOLUTION_PROPERTIES = 4 # we need to reexectue make sim_involution, since for example the SDF has changed (only allowed if we use a different SDF file for (G)IDM and Standard Delay Model, or if USE_GIDM flag is changed) 
 	KEY_CHANNEL_LOCATION = 3
@@ -117,6 +99,9 @@ def multi_exec_sim(config_file):
 	if len(multi_exec.spice_properties) > 0:
 		property_dict[KEY_SPICE_PROPERTIES] = 0
 		total_sim_num = total_sim_num * len(multi_exec.spice_properties)
+	if len(multi_exec.crossing_properties) > 0:
+		property_dict[KEY_CROSSING_PROPERTIES] = 0
+		total_sim_num = total_sim_num * len(multi_exec.crossing_properties)
 	if len(multi_exec.digsim_properties) > 0:
 		property_dict[KEY_DIGSIM_PROPERTIES] = 0
 		total_sim_num = total_sim_num * len(multi_exec.digsim_properties)
@@ -126,7 +111,8 @@ def multi_exec_sim(config_file):
 		
 	
 	last_key_to_keep_waveform = KEY_SPICE_PROPERTIES
-	last_key_to_keep_spice = KEY_DIGSIM_PROPERTIES
+	last_key_to_keep_crossings = KEY_DIGSIM_PROPERTIES
+	last_key_to_keep_spice = KEY_CROSSING_PROPERTIES
 	last_key_to_keep_stddigsim = KEY_INVOLUTION_PROPERTIES
 	
 	last_key_to_keep_group_count = KEY_T_P
@@ -135,6 +121,7 @@ def multi_exec_sim(config_file):
 	length_dict = dict()
 	length_dict[KEY_WAVEFORM] = len(multi_exec.waveform_generation)
 	length_dict[KEY_SPICE_PROPERTIES] = len(multi_exec.spice_properties)
+	length_dict[KEY_CROSSING_PROPERTIES] = len(multi_exec.crossing_properties)
 	length_dict[KEY_DIGSIM_PROPERTIES] = len(multi_exec.digsim_properties)
 	length_dict[KEY_INVOLUTION_PROPERTIES] = len(multi_exec.involution_properties)
 	length_dict[KEY_CHANNEL_LOCATION] = len(multi_exec.gate_generation.channel_location_list)	
@@ -149,6 +136,7 @@ def multi_exec_sim(config_file):
 		keep_waveform_local = False # we ALWAYS want a new waveform in a new iteration
 		keep_std_digsim = False
 		keep_spice = False
+		keep_crossings = False
 				
 		curr_sim_num = 1
 		config_num = 0	
@@ -171,7 +159,29 @@ def multi_exec_sim(config_file):
 				os.environ["INPUT_WAVEFORM"] = waveform_file
 		
 			my_print("Iteration: " + str(iteraterion + 1) + " / " + str(multi_exec.N)+ ", Simulation: " + str(curr_sim_num) + " / " + str(total_sim_num), EscCodes.OKBLUE, override_print_env_flag)			
+
+			
+			# set the current spice_properties (if we have some). Note that these properties need to be checked with ifndef PROP_NAME before they are exported in the default *.cfg files
+			set_config_property_list(multi_exec.spice_properties, property_dict, KEY_SPICE_PROPERTIES)
+			set_config_property_list(multi_exec.crossing_properties, property_dict, KEY_CROSSING_PROPERTIES)
+			set_config_property_list(multi_exec.digsim_properties, property_dict, KEY_DIGSIM_PROPERTIES)
+			set_config_property_list(multi_exec.involution_properties, property_dict, KEY_INVOLUTION_PROPERTIES)
+
 						
+			# "Copy" the config files which will be adapted to the temp folder
+			gate_config_name = 'gate_config.json'
+			gate_default_config_file = os.environ["GENERAL_GATE_CONFIG"]
+			gate_circuit_config_file = os.environ["CIRCUIT_GATE_CONFIG"]
+
+			gates = read_gate_config(gate_default_config_file, gate_circuit_config_file)
+						
+			with open(os.path.join(temp_folder_name, gate_config_name), "w") as gate_cfg_file:
+				gate_cfg_file.write(json.dumps(gates, cls=ObjectEncoder, indent=2, sort_keys=True))
+	
+			# update the environment variables to the new generated config files (valid for this process and all child process)	
+			os.environ["GENERAL_GATE_CONFIG"] = os.path.join(os.getcwd(), temp_folder_name, gate_config_name)
+			os.environ["CIRCUIT_GATE_CONFIG"] = os.path.join(os.getcwd(), temp_folder_name, gate_config_name)
+
 			# Deepcopy required if we set one property in the previous simulation, but not in th current one
 			# --> we want to have the value of the default config file
 			new_gates = copy.deepcopy(gates)
@@ -230,6 +240,9 @@ def multi_exec_sim(config_file):
 				elif key == KEY_SPICE_PROPERTIES:
 					# nothing to do?
 					pass
+				elif key == KEY_CROSSING_PROPERTIES:
+					# nothing to do?
+					pass
 				elif key == KEY_DIGSIM_PROPERTIES:
 					# nothing to do?
 					pass
@@ -255,19 +268,17 @@ def multi_exec_sim(config_file):
 			# set the path for the (single-)report
 			os.environ["TARGET_FOLDER"] = os.path.join(os.environ["RESULT_OUTPUT_DIR"], os.environ["ME_REPORT_FOLDER"], time.strftime("%Y%m%d_%H%M%S"))
 			my_print("target folder: " + str(os.environ["TARGET_FOLDER"]))
-			
-			# set the current spice_properties (if we have some). Note that these properties need to be checked with ifndef PROP_NAME before they are exported in the default *.cfg files
-			set_config_property_list(multi_exec.spice_properties, property_dict, KEY_SPICE_PROPERTIES)
-			set_config_property_list(multi_exec.digsim_properties, property_dict, KEY_DIGSIM_PROPERTIES)
-			set_config_property_list(multi_exec.involution_properties, property_dict, KEY_INVOLUTION_PROPERTIES)
-			
+						
 			# always check for the keep_waveform setting from the json file ==> If disabled, we always rerun the complete simulation
 			if multi_exec.keep_waveform and keep_std_digsim:			
 				my_print("Keep DIGSIM!", EscCodes.OKBLUE, override_print_env_flag)
-				execute_make_cmd("make me_involution")		
+				execute_make_cmd("make me_involution")			
+			elif multi_exec.keep_waveform and keep_crossings:
+				my_print("Keep CROSSINGS!", EscCodes.OKBLUE, override_print_env_flag)
+				execute_make_cmd("make me_digsim")		
 			elif multi_exec.keep_waveform and keep_spice:
 				my_print("Keep SPICE!", EscCodes.OKBLUE, override_print_env_flag)
-				execute_make_cmd("make me_digsim")		
+				execute_make_cmd("make me_crossings")	
 			elif multi_exec.keep_waveform and keep_waveform_local:
 				my_print("Keep Waveform!", EscCodes.OKBLUE, override_print_env_flag)
 				execute_make_cmd("make clean")
@@ -301,12 +312,14 @@ def multi_exec_sim(config_file):
 					
 
 					keep_std_digsim = calc_keep_property(key, last_key_to_keep_stddigsim, True)
+					keep_crossings = calc_keep_property(key, last_key_to_keep_crossings, True)
 					keep_spice = calc_keep_property(key, last_key_to_keep_spice, True)
 					keep_waveform_local = calc_keep_property(key, last_key_to_keep_waveform, True)
 					keep_group_count = calc_keep_property(key, last_key_to_keep_group_count, True)
 					keep_reference_group_count = calc_keep_property(key, last_key_to_keep_reference_count, True)
 				else:
 					keep_std_digsim = calc_keep_property(key, last_key_to_keep_stddigsim, False)
+					keep_crossings = calc_keep_property(key, last_key_to_keep_crossings, False)
 					keep_spice = calc_keep_property(key, last_key_to_keep_spice, False)
 					keep_waveform_local = calc_keep_property(key, last_key_to_keep_waveform, False)
 					keep_group_count = calc_keep_property(key, last_key_to_keep_group_count, False)
@@ -361,6 +374,17 @@ def set_config_property_list(lst, property_dict, key):
 	if len(lst) > 0:				
 		props = lst[property_dict[key]]
 		for key_prop, value_prop in props.items():
+			# We need to replace potential environment variables here
+			regex = r"\$\((.*)\).*"
+
+			matches = re.finditer(regex, value_prop, re.MULTILINE)
+
+			for _, match in enumerate(matches, start=1):				
+				for group_num in range(0, len(match.groups())):
+					group_num = group_num + 1
+					var = match.group(group_num)
+					value_prop = value_prop.replace("$({var})".format(var = var), os.environ[var])
+
 			os.environ[key_prop] = value_prop
 			
 def calc_keep_property(key, last_key, overflow):
@@ -380,6 +404,7 @@ class MultiExec:
 		self.N = 1
 		self.waveform_generation = list()
 		self.spice_properties = list()
+		self.crossing_properties = list()
 		self.digsim_properties = list()
 		self.involution_properties = list()
 		self.gate_generation = GateGeneration()

@@ -3,7 +3,7 @@
 	Involution Tool
 	File: parserHelper.py
 	
-    Copyright (C) 2018-2019  Daniel OEHLINGER <d.oehlinger@outlook.com>
+    Copyright (C) 2018-2021  Daniel OEHLINGER <d.oehlinger@outlook.com>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 import re
 import os
 import json
-from helper import *
+from helper import EscCodes, my_print
 
 def parse_power_report(input_file, prefix):
 	report_state = 0
@@ -32,7 +32,7 @@ def parse_power_report(input_file, prefix):
 			# Check if we are in the "Report" section
 			if report_state == 0 and line.startswith("***"):
 				report_state = 1
-				continue;
+				continue
 				
 			if report_state == 1:
 				if line.startswith('Report') and 'power' in line.lower():
@@ -68,9 +68,6 @@ def parse_design(input_file, prefix):
 	header_indices_mapping = dict()
 	with open(input_file, 'r') as f:
 		for line in f:
-			#if "design" in line.lower():
-			#	print line.lower()
-			#print line
 			# Check if we are in the "Design" section for the DC report
 			if design_state == 0 and "design" in line.lower() and "library" in line.lower() and "wire load model" in line.lower():
 				design_state = 1
@@ -85,11 +82,10 @@ def parse_design(input_file, prefix):
 					results[prefix + "Design"] = words[0].strip(' \t\n\r')
 					results[prefix + "Wire Load Model"] = words[1].strip(' \t\n\r')
 					results[prefix + "Library"] = words[2].strip(' \t\n\r')
-					design_state = 2
-					break; # done
+					break # We are completely done with this section
 			
-			# Check uf we are in the "Design" section for the PT report
-			if design_state == 0 and "design" in line.lower() and "library" in line.lower() and "wire_model":
+			# Check if we are in the "Design" section for the PT report
+			if design_state == 0 and "design" in line.lower() and "library" in line.lower() and "wire" in line.lower() and "model" in line.lower():
 				design_state = 11
 				# less than two subsequent whitespaces in the name of the property											
 				line_header_values = [(prefix + x).strip(" \r\n\t") for x in line.split("  ") if x.strip()]
@@ -99,26 +95,42 @@ def parse_design(input_file, prefix):
 				for idx, val in enumerate(line_header_values):
 					header_indices_mapping[line_header_indices[idx]] = val
 					
-				#print header_indices_mapping
 				continue
 			
 			if design_state == 11:
 				if line.startswith("---"): 
 					continue
 								
-				if line.strip():				
-					# assume no more than one whitespaces between a "property", but at least two between different properties
-					values = [x.strip(" \r\n\t") for x in line.split("  ") if x.strip()]
-					indices = [m.start() for m in re.finditer(r'([\S]+[\s]?)+', line)] 
+				if line.strip():	
+					# print("Header indices mapping: ", header_indices_mapping)		
+					split_indices = []
+					for index in header_indices_mapping.keys():
+						# print("Idx:", index, len(line))
+						if (index > 0 and index-1 < len(line)-1 and line[index-1] == " "):
+							# print("YEAH")
+							split_indices.append(index)
 					
+					split_indices = sorted(split_indices)
+
+					indices = split_indices
+					indices.extend([m.start() for m in re.finditer(r'([\S]+[\s]?)+', line)] )
+					indices = sorted(list(set(indices)))
+
+					if len(indices) > 0:
+						values = [line[i:j].strip() for i,j in zip(indices, indices[1:]+[None])]
+					else:
+						values = [line]
+
 					for idx, key in enumerate(indices):
+						if (not values[idx].strip()):
+							continue
 						if key in header_indices_mapping:
 							results[header_indices_mapping[key]] = values[idx]
 						else:
 							my_print("Problem during parsing the design information of the file: " + input_file, EscCodes.WARNING)
 				else:
-					# we are done					
-					break;
+					# we are done			
+					break
 							
 	return results		
 					
@@ -134,7 +146,7 @@ def parse_unit_information(input_file, prefix):
 			if unit_information_state == 1:
 				if not line.strip():
 					unit_information_state = 2
-					break;
+					break
 				
 				
 				elems = line.split('=', 1)
@@ -320,7 +332,7 @@ def prefix_to_power(prefix):
 		return float(1e12)
 	
 	my_print("Prefix " + prefix + " not recognized!", EscCodes.WARNING)
-	return float(1);
+	return float(1)
 
 		
 def power_to_si_prefix(power):
@@ -359,7 +371,7 @@ def extend_results(output_file, results):
 		json.dump(current_dict, outfile)
 		
 def read_results(output_file):
-	current_dict = dict();	
+	current_dict = dict()	
 	if os.path.isfile(output_file):
 		with open(output_file, 'r') as infile:
 			current_dict = json.load(infile)
@@ -368,13 +380,13 @@ def read_results(output_file):
 special_chars = ["&", "%", "$", "#", "_", "{", "}", "~"]	
 def replace_special_chars(value):		
 	for c in special_chars:
-		value = str(value).replace(c, "\\" + c);	
+		value = str(value).replace(c, "\\" + c)	
 		
-	return value;
+	return value
 	
 def remove_special_chars(value):
 	for c in special_chars:
-		value = str(value).replace(c, "");	
+		value = str(value).replace(c, "")	
 		
-	return value;
+	return value
 	

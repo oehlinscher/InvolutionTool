@@ -1,0 +1,12 @@
+{
+  "NOR2_X2": {
+    "T_P": 1,
+    "channel_location": "OUTPUT",
+    "channel_type": "HYBRID_CHANNEL",
+    "entity_name": "NOR2_X2",
+    "function": "nor",
+    "inputs": ["A1", "A2"],
+    "outputs": ["ZN"],
+    "implementation_type": "python"
+  }
+}

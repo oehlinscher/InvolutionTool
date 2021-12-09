@@ -25,12 +25,12 @@ import json
 import matplotlib
 import math
 import csv
-from helper import *
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
-from parserHelper import *
-from vcdParser import *
+from helper import my_print, EscCodes, matching_file_to_list, to_bool, dict_key_to_lower_case
+from parserHelper import extend_results, replace_special_chars
+from vcdParser import read_modelsim
 
 
 def main():
@@ -38,7 +38,6 @@ def main():
 		my_print("usage: python prepareFigureData.py start_out_name crossings_file involution_vcd modelsim_vcd matching_file fig_dir tex_template_file results_file line_template", EscCodes.FAIL)
 		sys.exit(1)
 	prepareFigureData(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9])
-
 
 
 vdd = 1.0
@@ -823,7 +822,7 @@ def get_deviation_trace(tr0, tr1, export_dev_trace_info, fig_folder, signal_name
 
 		
 	if export_dev_trace_info:
-		with open(os.path.join(fig_folder, signal_name.replace("/", "_") + '.csv'), 'wb') as f:	
+		with open(os.path.join(fig_folder, signal_name.replace("/", "_") + '.csv'), 'w') as f:	
 			writer = csv.writer(f, delimiter=';', quoting=csv.QUOTE_ALL)
 			writer.writerows(csv_data)
 	

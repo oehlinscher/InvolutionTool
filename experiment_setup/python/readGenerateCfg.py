@@ -3,7 +3,7 @@
 	Involution Tool
 	File: readGenerateCfg.py
 	
-    Copyright (C) 2018-2019  Daniel OEHLINGER <d.oehlinger@outlook.com>
+    Copyright (C) 2018-2021  Daniel OEHLINGER <d.oehlinger@outlook.com>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,8 +20,7 @@
 """
 
 import json
-import inspect
-from helper import *
+# from helper import *
 
 def read_generate_cfg(config_file):
 	cfg = GenerateCfg()
@@ -49,6 +48,9 @@ class GenerateCfg:
 		self.calc_next_transition_mode = CalcNextTransitionMode.GLOBAL
 		self.signals = list()
 		self.groups = list()
+
+	def __str__(self):
+		return "N: {N}, mue: {mue}, sigma: {sigma}, rise_time: {rise_time}, bound: {bound}, calc_next_transition_mode: {calc_next_transition_mode}, signals: {signals}, groups: {groups}".format(N=self.N, mue=self.mue, sigma=self.sigma, rise_time=self.rise_time, bound=self.bound, calc_next_transition_mode=self.calc_next_transition_mode, signals=self.signals, groups=self.groups)
 		
 class Group:
 	def __init__(self):
@@ -62,6 +64,3 @@ class Group:
 class CalcNextTransitionMode:
 	GLOBAL = "GLOBAL"
 	LOCAL = "LOCAL"
-
-if __name__ == "__main__":
-    main()

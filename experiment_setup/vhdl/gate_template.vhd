@@ -3,7 +3,7 @@
 --	Involution Tool
 --	File: gate_template.vhd
 --	
---  Copyright (C) 2018-2019  Daniel OEHLINGER <d.oehlinger@outlook.com>
+--  Copyright (C) 2018-2021  Daniel OEHLINGER <d.oehlinger@outlook.com>
 --
 --  This source file may be used and distributed without restriction provided
 --  that this copyright statement is not removed from the file and that any
@@ -37,6 +37,7 @@ use work.puredelay_channel_pkg.all;
 use work.gidm_exp_channel_pkg.all;
 use work.gidm_hill_channel_pkg.all;
 use work.gidm_sumexp_channel_pkg.all;
+use work.python_channel_pkg.all;
 USE std.textio.all;
 
 ENTITY ##ENTITY_NAME## IS

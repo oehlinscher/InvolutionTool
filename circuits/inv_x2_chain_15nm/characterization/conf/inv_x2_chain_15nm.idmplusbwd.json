@@ -1,0 +1,143 @@
+{
+    "replacements": {
+        "io": "io x y",
+        "cellName": "cellName x",
+        "vth_in": "vth_in x",
+        "vth_out": "vth_out x"
+    },
+    "simulations": [
+        {
+            "params": {
+                "io": "io 10 11",
+                "cellName": "cellName genblk18IX2",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out 0.4"
+            }
+        },
+        {
+            "params": {
+                "io": "io 3 4",
+                "cellName": "cellName genblk11IX2",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out 0.4"
+            }
+        },
+        {
+            "params": {
+                "io": "io 8 9",
+                "cellName": "cellName genblk16IX2",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out 0.4"
+            }
+        },
+        {
+            "params": {
+                "io": "io 9 10",
+                "cellName": "cellName genblk17IX2",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out 0.4"
+            }
+        },
+        {
+            "params": {
+                "io": "io 4 5",
+                "cellName": "cellName genblk12IX2",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out 0.4"
+            }
+        },
+        {
+            "params": {
+                "io": "io 1 3",
+                "cellName": "cellName genblk10IX2",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out 0.4"
+            }
+        },
+        {
+            "params": {
+                "io": "io 11 2",
+                "cellName": "cellName genblk19IX2",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out 0.4"
+            }
+        },
+        {
+            "params": {
+                "io": "io 7 8",
+                "cellName": "cellName genblk15IX2",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out 0.4"
+            }
+        },
+        {
+            "params": {
+                "io": "io 6 7",
+                "cellName": "cellName genblk14IX2",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out 0.4"
+            }
+        },
+        {
+            "params": {
+                "io": "io 5 6",
+                "cellName": "cellName genblk13IX2",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out 0.4"
+            }
+        }
+    ],
+    "dependency_tree": {
+        "name": "Top",
+        "children": [
+            {
+                "name": 5,
+                "children": [
+                    {
+                        "name": 1,
+                        "children": [
+                            {
+                                "name": 4,
+                                "children": [
+                                    {
+                                        "name": 9,
+                                        "children": [
+                                            {
+                                                "name": 8,
+                                                "children": [
+                                                    {
+                                                        "name": 7,
+                                                        "children": [
+                                                            {
+                                                                "name": 2,
+                                                                "children": [
+                                                                    {
+                                                                        "name": 3,
+                                                                        "children": [
+                                                                            {
+                                                                                "name": 0,
+                                                                                "children": [
+                                                                                    {
+                                                                                        "name": 6
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

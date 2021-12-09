@@ -5,6 +5,7 @@ generate_##SIGNALNAME## : PROCESS
   VARIABLE r : INTEGER;
   VARIABLE good_number : BOOLEAN;
 BEGIN
+  WAIT UNTIL initialized = '1';
   file_open(vector_file, VectorsDir & "##VECTORNAME##", READ_MODE);
   WHILE NOT endfile(vector_file) LOOP
     readline(vector_file, l);
@@ -37,5 +38,6 @@ BEGIN
   END LOOP;
   REPORT "Test complete";
   file_close(vector_file);
+  ##SIGNALNAME##_done <= '1';
   WAIT;
 END PROCESS;

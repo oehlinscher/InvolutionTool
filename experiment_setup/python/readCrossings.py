@@ -22,17 +22,17 @@
 import sys
 import os
 import json
-from helper import *
+from helper import my_print, EscCodes, matching_file_to_dict, dict_key_to_lower_case
 
 outFileNameStart = 'vectors_'
 
 def main():
-	if len(sys.argv) < 4:
-		my_print("usage: python readCrossings.py input_dir out_put_dir {input_names}", EscCodes.FAIL)
+	if len(sys.argv) < 5:
+		my_print("usage: python readCrossings.py input_dir out_put_dir matching_file {input_names}", EscCodes.FAIL)
 		sys.exit(1)
-	read_crossings(sys.argv[1], sys.argv[2], sys.argv[3:])	
+	read_crossings(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4:])	
 
-def read_crossings(input_dir, output_dir, names ):
+def read_crossings(input_dir, output_dir, matching_file, names):
 	in_filename = os.path.join(input_dir, 'crossings.json') 
 
 	with open(in_filename, 'r') as f:
@@ -41,20 +41,35 @@ def read_crossings(input_dir, output_dir, names ):
 	# check if output folder exists
 	if not os.path.exists(output_dir):
 		os.makedirs(output_dir)
+	
+	matching_dict = matching_file_to_dict(matching_file)
+	matching_dict = dict_key_to_lower_case(matching_dict)
+
+	data['initial_values'] = dict_key_to_lower_case(data['initial_values'])
+	data['crossing_times'] = dict_key_to_lower_case(data['crossing_times'])
 
 	for name in names:
-		outFileName = os.path.join(output_dir, outFileNameStart+name)
+		out_file_name = os.path.join(output_dir, outFileNameStart+name)
 
-		value=data['initial_values'][name]
+		# We need to find the key corresponding to the name
+		name_spice = None
+		for k, v in matching_dict.items():
+			if v.lower() == name.lower():
+				assert (not name_spice) # not set yet
+				name_spice = k
 
-		f = open(outFileName, 'w')
+		assert (name_spice) # set yet
+
+		value=data['initial_values'][name_spice]
+
+		f = open(out_file_name, 'w')
 
 		f.write('# Input values for involution tool\n')
 		f.write('# time [fs] \t value\n')
 
 		f.write(str(int(0)) + '\t' + str(value) + '\n')
 
-		for i in data['crossing_times'][name]:
+		for i in data['crossing_times'][name_spice]:
 
 			if value == 0 :
 				value=1
@@ -67,7 +82,7 @@ def read_crossings(input_dir, output_dir, names ):
 
 		f.close()
 
-		my_print("File '" + outFileName + "' sucessfully generated")
+		my_print("File '" + out_file_name + "' sucessfully generated")
 	
 if __name__ == "__main__":
     main()

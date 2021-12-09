@@ -1,0 +1,143 @@
+{
+    "cells": [
+        {
+            "cell_type": "BUF_X4",
+            "instance": "genblk10BX4",
+            "pure_delay": "16.671 ps",
+            "pure_delay_down": "17.692 ps",
+            "pure_delay_up": "15.523 ps"
+        },
+        {
+            "cell_type": "BUF_X4",
+            "instance": "genblk11BX4",
+            "pure_delay": "1.288 ps",
+            "pure_delay_down": "1.748 ps",
+            "pure_delay_up": "0.837 ps"
+        },
+        {
+            "cell_type": "BUF_X4",
+            "instance": "genblk12BX4",
+            "pure_delay": "1.051 ps",
+            "pure_delay_down": "1.085 ps",
+            "pure_delay_up": "1.017 ps"
+        },
+        {
+            "cell_type": "BUF_X4",
+            "instance": "genblk13BX4",
+            "pure_delay": "0.965 ps",
+            "pure_delay_down": "0.992 ps",
+            "pure_delay_up": "0.937 ps"
+        },
+        {
+            "cell_type": "BUF_X4",
+            "instance": "genblk14BX4",
+            "pure_delay": "0.986 ps",
+            "pure_delay_down": "1.017 ps",
+            "pure_delay_up": "0.956 ps"
+        },
+        {
+            "cell_type": "BUF_X4",
+            "instance": "genblk15BX4",
+            "pure_delay": "0.969 ps",
+            "pure_delay_down": "0.984 ps",
+            "pure_delay_up": "0.955 ps"
+        },
+        {
+            "cell_type": "BUF_X4",
+            "instance": "genblk16BX4",
+            "pure_delay": "0.980 ps",
+            "pure_delay_down": "0.997 ps",
+            "pure_delay_up": "0.963 ps"
+        },
+        {
+            "cell_type": "BUF_X4",
+            "instance": "genblk17BX4",
+            "pure_delay": "0.975 ps",
+            "pure_delay_down": "0.987 ps",
+            "pure_delay_up": "0.963 ps"
+        },
+        {
+            "cell_type": "BUF_X4",
+            "instance": "genblk18BX4",
+            "pure_delay": "0.944 ps",
+            "pure_delay_down": "0.965 ps",
+            "pure_delay_up": "0.924 ps"
+        },
+        {
+            "cell_type": "BUF_X4",
+            "instance": "genblk19BX4",
+            "pure_delay": "15.958 ps",
+            "pure_delay_down": "15.401 ps",
+            "pure_delay_up": "16.520 ps"
+        }
+    ],
+    "init": {},
+    "interconnects": [
+        {
+            "from_instance": "I",
+            "from_port": "",
+            "to_instance": "genblk10BX4",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk19BX4",
+            "from_port": "Z",
+            "to_instance": "Z",
+            "to_port": ""
+        },
+        {
+            "from_instance": "genblk18BX4",
+            "from_port": "Z",
+            "to_instance": "genblk19BX4",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk17BX4",
+            "from_port": "Z",
+            "to_instance": "genblk18BX4",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk16BX4",
+            "from_port": "Z",
+            "to_instance": "genblk17BX4",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk15BX4",
+            "from_port": "Z",
+            "to_instance": "genblk16BX4",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk14BX4",
+            "from_port": "Z",
+            "to_instance": "genblk15BX4",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk13BX4",
+            "from_port": "Z",
+            "to_instance": "genblk14BX4",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk12BX4",
+            "from_port": "Z",
+            "to_instance": "genblk13BX4",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk11BX4",
+            "from_port": "Z",
+            "to_instance": "genblk12BX4",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk10BX4",
+            "from_port": "Z",
+            "to_instance": "genblk11BX4",
+            "to_port": "I"
+        }
+    ]
+}

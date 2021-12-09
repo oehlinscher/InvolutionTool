@@ -33,11 +33,14 @@ import re
 #	if check_print(override_print_env_flag): 
 #		print EscCodes.ENDC
 #	
-def my_print(string, esc_sequences = None, override_print_env_flag = False):	
+def my_print(string, esc_sequences = None, override_print_env_flag = False, print_esc=True):	
 	if check_print(override_print_env_flag, esc_sequences):
-		total_string = print_esc_sequences(esc_sequences)
+		total_string = ""
+		if print_esc:
+			total_string = print_esc_sequences(esc_sequences)		
 		total_string += str(string)
-		total_string += EscCodes.ENDC
+		if print_esc:
+			total_string += EscCodes.ENDC
 		print(total_string)
 
 def print_esc_sequences(esc_sequences):
@@ -108,7 +111,7 @@ def apply_regex_to_list(list, regex_string):
 	
 def to_bool(bool_str):
 	my_print("Parse the string and return the boolean value encoded or raise an exception")
-	if isinstance(bool_str, basestring) and bool_str: 
+	if isinstance(bool_str, str) and bool_str: 
 		if bool_str.lower() in ['true', 't', '1']: return True
 		elif bool_str.lower() in ['false', 'f', '0']: return False
 
@@ -123,7 +126,7 @@ def replace_ci(str,old,new,count=0):
 		
 def dict_key_to_lower_case(dictionary):
 	temp_dict = dict()
-	for key, value in dictionary.iteritems():
+	for key, value in dictionary.items():
 		temp_dict[key.lower()] = value
 	dictionary = temp_dict
 	return dictionary

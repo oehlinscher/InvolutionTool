@@ -1,0 +1,11 @@
+{
+  "N": 100, 
+  "calc_next_transition_mode": "GLOBAL", 
+  "groups": [], 
+  "mue": 15.00, 
+  "sigma": 0.100, 
+  "signals": [
+    "A1", 
+    "A2"
+  ]
+} 

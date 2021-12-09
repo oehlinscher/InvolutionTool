@@ -20,9 +20,9 @@
 """
 
 import sys
-from helper import *
-from readGateCfg import *
-from parserHelper import *
+from helper import my_print, EscCodes
+from readGateCfg import read_gate_config
+from parserHelper import extend_results
 
 def main():
 	if len(sys.argv) != 5: 
@@ -33,7 +33,7 @@ def main():
 def print_to_results(gate_config_file, required_gates, results_file, prefix):	
 	gates = read_gate_config(gate_config_file, None)
 	
-	generate_all = required_gates is None or required_gates is "" or "ALL" in required_gates
+	generate_all = required_gates is None or required_gates == "" or "ALL" in required_gates
 	
 	t_p_list = []
 	t_p_percent_list = []

@@ -2,6 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.math_real.all;
 use work.exp_channel_pkg.all;
+use work.python_channel_pkg.all;
 USE std.textio.ALL;
 
 entity circuit_TB is
@@ -16,6 +17,9 @@ architecture TB of circuit_TB is
 
   signal din : std_logic;
   signal dout1, dout2, dout3, dout4 : std_logic;
+
+  signal initialized : std_logic := '0';
+  signal din_done : std_logic;
 
   component inv_tree is
     port ( din: in std_logic;

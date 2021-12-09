@@ -36,11 +36,16 @@ def prepare_deviation(results_file):
 
 	deviation_dict = dict()
 
-	sim_types = ["DC", "PT_AVG", "PT_TIM"]
+	sim_types = set(["DC", "PT_AVG", "PT_TIM"])
 	if "ENABLE_PRIMETIME" in os.environ:
 		if not to_bool(os.environ["ENABLE_PRIMETIME"]):
-			sim_types = ["DC"]
+			sim_types.remove("PT_AVG")
+			sim_types.remove("PT_TIM")
 
+	
+	if "ENABLE_DC" in os.environ:
+		if not to_bool(os.environ["ENABLE_DC"]):
+			sim_types.remove("DC")
 	
 	for ref in ["spice", "column"]:
 		for delay_model in ["SPICE", "MODELSIM", "INVOLUTION"]:

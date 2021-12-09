@@ -20,8 +20,9 @@
 """
 
 import sys
-from helper import *
-from readGateCfg import *
+import json
+from helper import my_print, EscCodes, ObjectEncoder
+from readGateCfg import read_gate_config
 
 def main():
 	# required_gates is optional, if not set, all gates are generated

@@ -1,0 +1,81 @@
+{
+    "cells": [
+        {
+            "cell_type": "BUF_X4", 
+            "instance": "BUFA11", 
+            "pure_delay": "0.5 ps", 
+            "pure_delay_down": "0.5 ps", 
+            "pure_delay_up": "0.5 ps"
+        }, 
+        {
+            "cell_type": "BUF_X4", 
+            "instance": "BUFA21", 
+            "pure_delay": "0.5 ps", 
+            "pure_delay_down": "0.5 ps", 
+            "pure_delay_up": "0.5 ps"
+        }, 
+        {
+            "cell_type": "BUF_X4", 
+            "instance": "BUFZ1", 
+            "pure_delay": "0.5 ps", 
+            "pure_delay_down": "0.5 ps", 
+            "pure_delay_up": "0.5 ps"
+        }, 
+        {
+            "cell_type": "NOR2_X2", 
+            "instance": "NOR1", 
+            "pure_delay": "0.5 ps", 
+            "pure_delay_down": "0.5 ps", 
+            "pure_delay_up": "0.5 ps",
+            "hybrid_channel_params" : {
+                "r_1" : 21922.222153308456, 
+                "r_2" : 54517.369109122, 
+                "r_3" : 51195.47017893454, 
+                "r_4" : 56377.63680703231, 
+                "c_int" : 1.0000000000565588e-16,
+                "c_out" : 1.0000000000146778e-15,
+                "scale_1" : 1.0
+            }
+        }
+    ], 
+    "hybrid_channel_params": {}, 
+    "init": {}, 
+    "interconnects": [
+        {
+            "from_instance": "A1", 
+            "from_port": "", 
+            "to_instance": "BUFA11", 
+            "to_port": "I"
+        }, 
+        {
+            "from_instance": "A2", 
+            "from_port": "", 
+            "to_instance": "BUFA21", 
+            "to_port": "I"
+        }, 
+        {
+            "from_instance": "BUFZ1", 
+            "from_port": "Z", 
+            "to_instance": "Z", 
+            "to_port": ""
+        }, 
+        {
+            "from_instance": "BUFA11", 
+            "from_port": "Z", 
+            "to_instance": "NOR1", 
+            "to_port": "A1"
+        }, 
+        {
+            "from_instance": "BUFA21", 
+            "from_port": "Z", 
+            "to_instance": "NOR1", 
+            "to_port": "A2"
+        }, 
+        {
+            "from_instance": "NOR1", 
+            "from_port": "ZN", 
+            "to_instance": "BUFZ1", 
+            "to_port": "I"
+        }
+    ]
+}

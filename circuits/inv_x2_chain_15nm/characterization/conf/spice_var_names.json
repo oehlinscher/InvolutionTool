@@ -1,0 +1,17 @@
+{
+  "var_names": [
+    "time",
+    "v(I)",
+		"v(Z)",
+		"v(genblk10ix2:zn)",
+		"v(genblk11ix2:zn)",
+		"v(genblk12ix2:zn)",
+		"v(genblk13ix2:zn)",
+		"v(genblk14ix2:zn)",
+		"v(genblk15ix2:zn)",
+		"v(genblk16ix2:zn)",
+		"v(genblk17ix2:zn)",
+		"v(genblk18ix2:zn)",
+		"v(genblk19ix2:zn)"
+  ]
+}

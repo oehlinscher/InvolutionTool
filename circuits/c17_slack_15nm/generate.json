@@ -1,5 +1,5 @@
 {
-  "N": 500, 
+  "N": 1000, 
   "calc_next_transition_mode": "LOCAL", 
   "groups": [], 
   "mue": 0.015, 

@@ -42,7 +42,7 @@ def generate_report_vars(input_file, output_file):
 		
 	# create a dictionary with the "modified" keys
 	modified_dict = dict()
-	for key, value in current_dict.iteritems(): 	
+	for key, value in current_dict.items(): 	
 		# replace special chars in the key
 		k = key.replace(" ", "").replace("_", "").replace("[", "").replace("]", "").lower().lower()
 									
@@ -66,12 +66,12 @@ def generate_report_vars(input_file, output_file):
 				my_print("Found key '" + k + "' already in the dictionary (different value)", EscCodes.WARNING)
 		else:
 			# not in the dict, just add
-			modified_dict[k] = value;
+			modified_dict[k] = value
 	
 		
 	with open(output_file, 'w') as outfile:			
 		# now iterate over the dictionary, and write line for line
-		for key, value in modified_dict.iteritems(): 			
+		for key, value in modified_dict.items(): 			
 			outfile.write("\\newcommand{\%s}{%s}\n" % (key, value))
 			
 def convert_char(c):

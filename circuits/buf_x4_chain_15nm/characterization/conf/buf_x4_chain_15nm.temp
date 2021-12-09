@@ -1,0 +1,17 @@
+# configuration file
+c 12
+io x y
+vth_out x 
+vth_in x 
+o v(i) v(z) v(genblk10bx4:z) v(genblk11bx4:z) v(genblk12bx4:z) v(genblk13bx4:z) v(genblk14bx4:z) v(genblk15bx4:z) v(genblk16bx4:z) v(genblk17bx4:z) v(genblk18bx4:z)
+d time vi vz vgenblk10bx4z vgenblk11bx4z vgenblk12bx4z vgenblk13bx4z vgenblk14bx4z vgenblk15bx4z vgenblk16bx4z vgenblk17bx4z vgenblk18bx4z
+color red blue green darkturquoise magenta black orange sienna olive purple dodgerblue darkgoldenrod lightseagreen slategrey crimson
+tool spectre
+cellName x
+min 0
+max 6000000000
+stop 500000000
+calcinvolution False
+# folderName templateName startName startVal stopVal stepVal
+../../circuits/buf_x4_chain_15nm/characterization/circuit buf_x4_chain_15nm.sp buf_x4_chain_15nm_u 0 80000001 10000000
+../../circuits/buf_x4_chain_15nm/characterization/circuit buf_x4_chain_15nm.sp buf_x4_chain_15nm_d 0 80000001 10000000

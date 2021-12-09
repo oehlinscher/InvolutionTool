@@ -1,0 +1,11 @@
+{
+  "N": 50, 
+  "calc_next_transition_mode": "LOCAL", 
+  "groups": [], 
+  "mue": 0.200, 
+  "sigma": 0.100, 
+  "signals": [
+    "A1", 
+    "A2"
+  ]
+}  

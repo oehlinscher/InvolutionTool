@@ -45,6 +45,9 @@ vcom -work work -2008 -novopt ./vhdl/ea_gidm_hill_channel.vhd
 vcom -work work -2008 -novopt ./vhdl/p_gidm_sumexp_channel.vhd
 vcom -work work -2008 -novopt ./vhdl/ea_gidm_sumexp_channel.vhd
 
+# Python Chnanels
+vcom -work work -2008 -novopt ./vhdl/p_python_channel.vhd
+
 if {$mode eq {involution}} {
 	vcom -work work -2008 -novopt ##gateDirs##
 } else {

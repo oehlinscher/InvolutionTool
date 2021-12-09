@@ -361,6 +361,10 @@ BEGIN
 			END IF;
 		END IF;
 
+		
+		-- report "input transition at " & time'IMAGE(now) & ", last output at " & time'IMAGE(last_output_time) & ", T = " & time'IMAGE(T) & ", delay: " & time'IMAGE(delay) & ", tt_level" & std_logic'image(tt_level) & ", transition: " & time'image(now + delay);	
+
+
 		last_output_time := now + delay;
 
 		write(tt_line, integer'image(integer((now + delay) / 1 fs)));

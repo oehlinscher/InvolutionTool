@@ -6,6 +6,7 @@
 
 		VARIABLE tt_time : TIME;
 		VARIABLE tt_level : STD_ULOGIC;
+		VARIABLE last_tt_level : STD_ULOGIC;
 
 		VARIABLE last_transition : time := -1 sec;
 		VARIABLE delay : time := -1 sec;
@@ -38,17 +39,23 @@
 			##PURE_DELAY_CALC##
 
 			if tt_time + pure_delay < now then
+				-- REPORT "Delay cap 1. " & time'image(now) & ", last_transition: " & time'image(last_transition) & ", tt_time + pure_delay: " & time'image(tt_time + pure_delay) & ", tt_time: " & time'image(tt_time) & ", pure_delay: " & time'image(pure_delay) & ", tt_level: " & std_ulogic'image(tt_level)  & ", last_tt_level: " & std_ulogic'image(last_tt_level);
 				-- In this case we possibly need to cap the delay.
 				-- However, we first check if there is no acausal behaviour happening
 				if last_transition < now then
-					REPORT "Acausal behaviour. This should never happen!" severity failure;
+					REPORT "Acausal behaviour. This should never happen! now: " & time'image(now) & ", last_transition: " & time'image(last_transition) & ", tt_time + pure_delay: " & time'image(tt_time + pure_delay) & ", tt_time: " & time'image(tt_time) & ", pure_delay: " & time'image(pure_delay) & ", tt_level: " & std_ulogic'image(tt_level)  & ", last_tt_level: " & std_ulogic'image(last_tt_level) severity failure;
 				end if;				
 				##INPUT##AfterDelta <= tt_level; -- Cap the delay
 				last_transition := now; -- Update the time of the last transition
+				-- REPORT "Delay cap 2. " & time'image(now) & ", last_transition: " & time'image(last_transition) & ", tt_time + pure_delay: " & time'image(tt_time + pure_delay) & ", tt_time: " & time'image(tt_time) & ", pure_delay: " & time'image(pure_delay) & ", tt_level: " & std_ulogic'image(tt_level)  & ", last_tt_level: " & std_ulogic'image(last_tt_level);
 			else
+				-- REPORT "Standard delay 1. " & time'image(now) & ", last_transition: " & time'image(last_transition) & ", tt_time + pure_delay: " & time'image(tt_time + pure_delay) & ", tt_time: " & time'image(tt_time) & ", pure_delay: " & time'image(pure_delay) & ", tt_level: " & std_ulogic'image(tt_level)  & ", last_tt_level: " & std_ulogic'image(last_tt_level); 			
 				##INPUT##AfterDelta <= TRANSPORT tt_level AFTER tt_time + pure_delay - now;	
-				last_transition := tt_time + pure_delay; -- Update the time of the last transition			
+				last_transition := tt_time + pure_delay; -- Update the time of the last transition
+				-- REPORT "Standard delay 2. " & time'image(now) & ", last_transition: " & time'image(last_transition) & ", tt_time + pure_delay: " & time'image(tt_time + pure_delay) & ", tt_time: " & time'image(tt_time) & ", pure_delay: " & time'image(pure_delay) & ", tt_level: " & std_ulogic'image(tt_level)  & ", last_tt_level: " & std_ulogic'image(last_tt_level);		
 			end if;
+
+			last_tt_level := tt_level; 
 
 		END IF;
     END PROCESS;

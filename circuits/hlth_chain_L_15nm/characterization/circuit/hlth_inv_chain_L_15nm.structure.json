@@ -1,0 +1,153 @@
+{
+    "cells": [
+        {
+            "cell_type": "INV_X12", 
+            "hybrid_channel_params": {}, 
+            "instance": "IX12", 
+            "pure_delay": "0.5 ps", 
+            "pure_delay_down": "0.5 ps", 
+            "pure_delay_up": "0.5 ps"
+        }, 
+        {
+            "cell_type": "INV_X12", 
+            "hybrid_channel_params": {}, 
+            "instance": "genblk10IX12", 
+            "pure_delay": "0.5 ps", 
+            "pure_delay_down": "0.5 ps", 
+            "pure_delay_up": "0.5 ps"
+        }, 
+        {
+            "cell_type": "INV_X16", 
+            "hybrid_channel_params": {}, 
+            "instance": "genblk10IX16", 
+            "pure_delay": "0.5 ps", 
+            "pure_delay_down": "0.5 ps", 
+            "pure_delay_up": "0.5 ps"
+        }, 
+        {
+            "cell_type": "INV_X12", 
+            "hybrid_channel_params": {}, 
+            "instance": "genblk12IX12", 
+            "pure_delay": "0.5 ps", 
+            "pure_delay_down": "0.5 ps", 
+            "pure_delay_up": "0.5 ps"
+        }, 
+        {
+            "cell_type": "INV_X16", 
+            "hybrid_channel_params": {}, 
+            "instance": "genblk12IX16", 
+            "pure_delay": "0.5 ps", 
+            "pure_delay_down": "0.5 ps", 
+            "pure_delay_up": "0.5 ps"
+        }, 
+        {
+            "cell_type": "INV_X12", 
+            "hybrid_channel_params": {}, 
+            "instance": "genblk14IX12", 
+            "pure_delay": "0.5 ps", 
+            "pure_delay_down": "0.5 ps", 
+            "pure_delay_up": "0.5 ps"
+        }, 
+        {
+            "cell_type": "INV_X16", 
+            "hybrid_channel_params": {}, 
+            "instance": "genblk14IX16", 
+            "pure_delay": "0.5 ps", 
+            "pure_delay_down": "0.5 ps", 
+            "pure_delay_up": "0.5 ps"
+        }, 
+        {
+            "cell_type": "INV_X8", 
+            "hybrid_channel_params": {}, 
+            "instance": "genblk27IX8", 
+            "pure_delay": "0.5 ps", 
+            "pure_delay_down": "0.5 ps", 
+            "pure_delay_up": "0.5 ps"
+        }, 
+        {
+            "cell_type": "INV_X8", 
+            "hybrid_channel_params": {}, 
+            "instance": "genblk28IX8", 
+            "pure_delay": "0.5 ps", 
+            "pure_delay_down": "0.5 ps", 
+            "pure_delay_up": "0.5 ps"
+        }, 
+        {
+            "cell_type": "INV_X8", 
+            "hybrid_channel_params": {}, 
+            "instance": "genblk29IX8", 
+            "pure_delay": "0.5 ps", 
+            "pure_delay_down": "0.5 ps", 
+            "pure_delay_up": "0.5 ps"
+        }
+    ], 
+    "init": {}, 
+    "interconnects": [
+        {
+            "from_instance": "I", 
+            "from_port": "", 
+            "to_instance": "genblk10IX12", 
+            "to_port": "I"
+        }, 
+        {
+            "from_instance": "genblk29IX8", 
+            "from_port": "ZN", 
+            "to_instance": "Z", 
+            "to_port": ""
+        }, 
+        {
+            "from_instance": "genblk28IX8", 
+            "from_port": "ZN", 
+            "to_instance": "genblk29IX8", 
+            "to_port": "I"
+        }, 
+        {
+            "from_instance": "genblk27IX8", 
+            "from_port": "ZN", 
+            "to_instance": "genblk28IX8", 
+            "to_port": "I"
+        }, 
+        {
+            "from_instance": "IX12", 
+            "from_port": "ZN", 
+            "to_instance": "genblk27IX8", 
+            "to_port": "I"
+        }, 
+        {
+            "from_instance": "genblk14IX16", 
+            "from_port": "ZN", 
+            "to_instance": "IX12", 
+            "to_port": "I"
+        }, 
+        {
+            "from_instance": "genblk14IX12", 
+            "from_port": "ZN", 
+            "to_instance": "genblk14IX16", 
+            "to_port": "I"
+        }, 
+        {
+            "from_instance": "genblk12IX16", 
+            "from_port": "ZN", 
+            "to_instance": "genblk14IX12", 
+            "to_port": "I"
+        }, 
+        {
+            "from_instance": "genblk12IX12", 
+            "from_port": "ZN", 
+            "to_instance": "genblk12IX16", 
+            "to_port": "I"
+        }, 
+        {
+            "from_instance": "genblk10IX16", 
+            "from_port": "ZN", 
+            "to_instance": "genblk12IX12", 
+            "to_port": "I"
+        }, 
+        {
+            "from_instance": "genblk10IX12", 
+            "from_port": "ZN", 
+            "to_instance": "genblk10IX16", 
+            "to_port": "I"
+        }
+    ]
+}

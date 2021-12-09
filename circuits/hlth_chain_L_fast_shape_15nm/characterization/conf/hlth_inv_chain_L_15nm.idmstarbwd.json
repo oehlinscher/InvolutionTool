@@ -1,0 +1,163 @@
+{
+    "replacements": {
+        "io": "io x y",
+        "cellName": "cellName x",
+        "vth_in": "vth_in x",
+        "vth_out": "vth_out x"
+    },
+    "simulations": [
+        {
+            "params": {
+                "io": "io 5 6",
+                "cellName": "cellName genblk12IX12",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out -1"
+            },
+            "results": {
+                "vth_out": 0.4586860204921006,
+                "vth_in": 0.31621706229663804
+            }
+        },
+        {
+            "params": {
+                "io": "io 6 7",
+                "cellName": "cellName genblk12IX16",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out -1"
+            },
+            "results": {
+                "vth_out": 0.31085048503311796,
+                "vth_in": 0.4586860204921006
+            }
+        },
+        {
+            "params": {
+                "io": "io 10 11",
+                "cellName": "cellName genblk28IX8",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out 0.4"
+            },
+            "results": {
+                "vth_in": 0.39224337109806484
+            }
+        },
+        {
+            "params": {
+                "io": "io 8 9",
+                "cellName": "cellName genblk14IX16",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out -1"
+            },
+            "results": {
+                "vth_out": 0.32715496050517956,
+                "vth_in": 0.46520896340848594
+            }
+        },
+        {
+            "params": {
+                "io": "io 7 8",
+                "cellName": "cellName genblk14IX12",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out -1"
+            },
+            "results": {
+                "vth_out": 0.46520896340848594,
+                "vth_in": 0.31085048503311796
+            }
+        },
+        {
+            "params": {
+                "io": "io 9 2",
+                "cellName": "cellName IX12",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out -1"
+            },
+            "results": {
+                "vth_out": 0.39050109628725416,
+                "vth_in": 0.32715496050517956
+            }
+        },
+        {},
+        {},
+        {
+            "params": {
+                "io": "io 4 5",
+                "cellName": "cellName genblk10IX16",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out -1"
+            },
+            "results": {
+                "vth_out": 0.31621706229663804,
+                "vth_in": 0.4661534765642701
+            }
+        },
+        {
+            "params": {
+                "io": "io 2 10",
+                "cellName": "cellName genblk27IX8",
+                "vth_in": "vth_in -1",
+                "vth_out": "vth_out -1"
+            },
+            "results": {
+                "vth_out": 0.39224337109806484,
+                "vth_in": 0.39050109628725416
+            }
+        }
+    ],
+    "dependency_tree": {
+        "name": "Top",
+        "children": [
+            {
+                "name": 8,
+                "children": [
+                    {
+                        "name": 0,
+                        "children": [
+                            {
+                                "name": 1,
+                                "children": [
+                                    {
+                                        "name": 4,
+                                        "children": [
+                                            {
+                                                "name": 3,
+                                                "children": [
+                                                    {
+                                                        "name": 5,
+                                                        "children": [
+                                                            {
+                                                                "name": 9,
+                                                                "children": [
+                                                                    {
+                                                                        "name": 2
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "signal_mapping": {
+        "1": "I",
+        "2": "IX12:ZN",
+        "3": "Z",
+        "4": "genblk10IX12:ZN",
+        "5": "genblk10IX16:ZN",
+        "6": "genblk12IX12:ZN",
+        "7": "genblk12IX16:ZN",
+        "8": "genblk14IX12:ZN",
+        "9": "IX12:I",
+        "10": "genblk27IX8:ZN",
+        "11": "genblk28IX8:ZN"
+    }
+}

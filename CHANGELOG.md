@@ -1,5 +1,14 @@
 # Change Log
-  
+
+## [2.3] - 2021-12-09
+
+### Added
+
+- Python implementation for Exp and SumExp Channel, for IDM and CIDM
+- Implementation for simple hybrid delay model for two-input NOR gate
+- Tool for IDM+, IDM* and CIDM characterization of circuits  
+- Started introducing Doxygen for documentation
+
 ## [2.2] - 2021-04-16
    
 ### Added

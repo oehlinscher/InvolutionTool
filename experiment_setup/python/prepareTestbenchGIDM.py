@@ -64,6 +64,32 @@ def prepare_testbench_gidm(circuit_template_file_path, circuit_out_file_path, pr
         input_process_content += process_template.replace(
             "##SIGNALNAME##", input_sig).replace("##VECTORNAME##", "vectors_" + input_sig).replace("##TT_FILE_PATH##", tt_file_path_complete)
         input_process_content += "\n\n\n"
+    
+
+    input_process_content = """
+		init_proc : PROCESS
+		BEGIN
+			init_wrapper;
+			initialized <= '1';
+			WAIT;
+		END PROCESS;
+
+
+        """.format() + input_process_content
+
+    all_inputs_done = " AND ".join(["{input}_done = '1'".format(input = input) for input in input_list])
+
+    input_process_content = input_process_content + """
+
+
+		clean_process : PROCESS
+		BEGIN
+			WAIT UNTIL {all_done};
+			WAIT for 10 sec; -- This is to ensure that clean_wrapper is definitely called after all transitions have been handled
+			clean_wrapper;
+			WAIT;
+		END PROCESS;
+		""".format(all_done = all_inputs_done)
 
 
 

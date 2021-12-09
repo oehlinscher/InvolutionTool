@@ -13,7 +13,7 @@ The ultimate goal is to support and improve the theoretical model.
 Clone the repository to your local machine.
 
 ### Prerequisites
-* *python2.6* and *python3.6* (we are working on a version which only uses Python >= 3)
+* *python3.6*
 * *HSPICE* or *Spectre* (or any other SPICE software like Ngspice, LTspice)
 * *ModelSim* (or any other HDL simulator like Vivado)
 * *DesignCompiler* and *PrimeTime* for power estimation (one tool is already sufficient, multiple tools increase the meaningfulness of the results)

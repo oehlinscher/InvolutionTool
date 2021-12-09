@@ -1,0 +1,190 @@
+{
+    "cells": [
+        {
+            "cell_type": "INV_X16",
+            "instance": "genblk10IX16",
+            "pure_delay": "0.246 ps",
+            "pure_delay_down": "1.556 ps",
+            "pure_delay_up": "-0.914 ps",
+            "channel_params": {
+                "TAU_1_DO": "30 fs",
+                "TAU_1_UP": "30 fs",
+                "TAU_2_DO": "11870 fs",
+                "TAU_2_UP": "11870 fs",
+                "X_1_DO": 0.4763918298716736,
+                "X_1_UP": 0.4763918298716736
+            }
+        },
+        {
+            "cell_type": "INV_X12",
+            "instance": "genblk12IX12",
+            "pure_delay": "0.554 ps",
+            "pure_delay_down": "-0.343 ps",
+            "pure_delay_up": "1.993 ps",
+            "channel_params": {
+                "TAU_1_DO": "30 fs",
+                "TAU_1_UP": "30 fs",
+                "TAU_2_DO": "2514 fs",
+                "TAU_2_UP": "2514 fs",
+                "X_1_DO": 0.35981586817147004,
+                "X_1_UP": 0.35981586817147004
+            }
+        },
+        {
+            "cell_type": "INV_X16",
+            "instance": "genblk12IX16",
+            "pure_delay": "0.545 ps",
+            "pure_delay_down": "1.292 ps",
+            "pure_delay_up": "0.339 ps",
+            "channel_params": {
+                "TAU_1_DO": "30 fs",
+                "TAU_1_UP": "30 fs",
+                "TAU_2_DO": "29999 fs",
+                "TAU_2_UP": "29999 fs",
+                "X_1_DO": 0.26780603082002485,
+                "X_1_UP": 0.26780603082002485
+            }
+        },
+        {
+            "cell_type": "INV_X12",
+            "instance": "genblk14IX12",
+            "pure_delay": "0.771 ps",
+            "pure_delay_down": "0.338 ps",
+            "pure_delay_up": "2.347 ps",
+            "channel_params": {
+                "TAU_1_DO": "30 fs",
+                "TAU_1_UP": "30 fs",
+                "TAU_2_DO": "29999 fs",
+                "TAU_2_UP": "29999 fs",
+                "X_1_DO": 0.47972479465474616,
+                "X_1_UP": 0.47972479465474616
+            }
+        },
+        {
+            "cell_type": "INV_X16",
+            "instance": "genblk14IX16",
+            "pure_delay": "0.829 ps",
+            "pure_delay_down": "1.837 ps",
+            "pure_delay_up": "0.560 ps",
+            "channel_params": {
+                "TAU_1_DO": "30 fs",
+                "TAU_1_UP": "30 fs",
+                "TAU_2_DO": "6714 fs",
+                "TAU_2_UP": "6714 fs",
+                "X_1_DO": 0.21245362571574644,
+                "X_1_UP": 0.21245362571574644
+            }
+        },
+        {
+            "cell_type": "INV_X12",
+            "instance": "IX12",
+            "pure_delay": "0.001 ps",
+            "pure_delay_down": "-2.335 ps",
+            "pure_delay_up": "5.391 ps",
+            "channel_params": {
+                "TAU_1_DO": "30 fs",
+                "TAU_1_UP": "30 fs",
+                "TAU_2_DO": "11369 fs",
+                "TAU_2_UP": "11369 fs",
+                "X_1_DO": 2.4424906541753444e-15,
+                "X_1_UP": 2.4424906541753444e-15
+            }
+        },
+        {
+            "cell_type": "INV_X8",
+            "instance": "genblk27IX8",
+            "pure_delay": "0.001 ps",
+            "pure_delay_down": "-1.532 ps",
+            "pure_delay_up": "0.364 ps",
+            "channel_params": {
+                "TAU_1_DO": "30 fs",
+                "TAU_1_UP": "30 fs",
+                "TAU_2_DO": "29907 fs",
+                "TAU_2_UP": "29907 fs",
+                "X_1_DO": 7.721956407635844e-11,
+                "X_1_UP": 7.721956407635844e-11
+            }
+        },
+        {
+            "cell_type": "INV_X8",
+            "instance": "genblk28IX8",
+            "pure_delay": "0.226 ps",
+            "pure_delay_down": "0.111 ps",
+            "pure_delay_up": "0.543 ps",
+            "channel_params": {
+                "TAU_1_DO": "30 fs",
+                "TAU_1_UP": "30 fs",
+                "TAU_2_DO": "29999 fs",
+                "TAU_2_UP": "29999 fs",
+                "X_1_DO": 0.2580560590025819,
+                "X_1_UP": 0.2580560590025819
+            }
+        }
+    ],
+    "init": {
+        "IX12": "0",
+        "genblk10IX16": "1",
+        "genblk12IX12": "0",
+        "genblk12IX16": "1",
+        "genblk14IX12": "0",
+        "genblk14IX16": "1",
+        "genblk27IX8": "1",
+        "genblk28IX8": "0"
+    },
+    "interconnects": [
+        {
+            "from_instance": "I",
+            "from_port": "",
+            "to_instance": "genblk10IX16",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk28IX8",
+            "from_port": "ZN",
+            "to_instance": "Z",
+            "to_port": ""
+        },
+        {
+            "from_instance": "genblk27IX8",
+            "from_port": "ZN",
+            "to_instance": "genblk28IX8",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "IX12",
+            "from_port": "ZN",
+            "to_instance": "genblk27IX8",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk14IX16",
+            "from_port": "ZN",
+            "to_instance": "IX12",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk14IX12",
+            "from_port": "ZN",
+            "to_instance": "genblk14IX16",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk12IX16",
+            "from_port": "ZN",
+            "to_instance": "genblk14IX12",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk12IX12",
+            "from_port": "ZN",
+            "to_instance": "genblk12IX16",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk10IX16",
+            "from_port": "ZN",
+            "to_instance": "genblk12IX12",
+            "to_port": "I"
+        }
+    ]
+}

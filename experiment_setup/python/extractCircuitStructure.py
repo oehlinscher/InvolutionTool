@@ -20,11 +20,10 @@
 """
 
 import sys
-import os
 import re
 import json
 from json import JSONEncoder
-from helper import *
+from helper import my_print, EscCodes, convert_instance_name, convert_port_name
 
 def main():
 	if len(sys.argv) == 3: 
@@ -79,26 +78,30 @@ def extract_circuit_structure(sdf_file_path, structure_file_path):
 
     # Now we read all the cells from the sdf file    
     last_celltype = ""
-    instance_pattern = re.compile(r".*\(INSTANCE\s*(.+)\).*")
 
     for line in lines:
         
         matches = re.finditer(r".*\(CELLTYPE  \"(.*)\"\).*", line, re.MULTILINE)        
-        for matchNum, match in enumerate(matches, start=1):            
+        for _, match in enumerate(matches, start=1):            
             last_celltype = match.group(1) 
             break   
 
         matches = re.finditer(r".*\(INSTANCE\s*(.+)\).*", line, re.MULTILINE)
-        for matchNum, match in enumerate(matches, start=1):
+        for _, match in enumerate(matches, start=1):
             cell = Cell()
             cell.instance = convert_instance_name(match.group(1))
             cell.cell_type = last_celltype
             structure.cells.append(cell)
 
             break   
+    
+    save_circuit_structure(structure_file_path, structure)
 
+def save_circuit_structure(structure_file_path, structure):    
     with open(structure_file_path, 'w') as structure_file:
         json.dump(structure.__dict__, structure_file,  sort_keys=True, indent=4, cls=CircuitStructureEncoder)
+
+
 
 def split_interconnect_name(interconnect_name, interconnect, prefix):
     if "/" in interconnect_name:
@@ -116,17 +119,30 @@ class CircuitStructure:
         self.cells = list()
         self.init = dict()
 
+    def __str__(self):
+        return "interconnects: {interconnects}, cells: {cells}, init: {init}".format(interconnects = self.interconnects, cells = self.cells, init = self.init)
+
+
 class CircuitStructureEncoder(JSONEncoder):
-        def default(self, o):
-            return o.__dict__
+    def default(self, o):
+        return o.__dict__
 
 class Interconnect:
-    def __init__(self):
-        self.from_instance = ""
-        self.from_port = ""
-        self.to_instance = ""
-        self.to_port = ""
-    # TODO: Add the timing information
+        
+    def __init__(self, from_instance = "", from_port = "", to_instance = "", to_port = ""):
+        self.from_instance = from_instance
+        self.from_port = from_port
+        self.to_instance = to_instance
+        self.to_port = to_port
+
+    def __eq__(self, interconnect2):
+        return (self.from_instance, self.from_port, self.to_instance, self.to_port) == (interconnect2.from_instance, interconnect2.from_port, interconnect2.to_instance, interconnect2.to_port) 
+
+    def __gt__(self, interconnect2):
+        return (self.from_instance, self.from_port, self.to_instance, self.to_port) > (interconnect2.from_instance, interconnect2.from_port, interconnect2.to_instance, interconnect2.to_port) 
+        
+    def __str__(self):
+        return "from_instance: {from_instance}, from_port: {from_port}, to_instance: {to_instance}, to_port: {to_port}".format(from_instance = self.from_instance, from_port = self.from_port, to_instance = self.to_instance, to_port = self.to_port)
 
 class Cell:
     def __init__(self):
@@ -137,6 +153,17 @@ class Cell:
         self.pure_delay_up = "0.5 ps"
         self.pure_delay_down = "0.5 ps"
         self.pure_delay = "0.5 ps"
-	
+        self.channel_params = dict()
+        self.hybrid_channel_params = dict()
+
+    
+    def __str__(self):
+        return "instance: {instance}, cell_type: {cell_type}, pure_delay_up: {pure_delay_up}, pure_delay_down: {pure_delay_down}, pure_delay: {pure_delay}".format(instance = self.instance, cell_type = self.cell_type, pure_delay_up = get_property_fallback(self, 'pure_delay_up'), pure_delay_down = get_property_fallback(self, 'pure_delay_down'), pure_delay = get_property_fallback(self, 'pure_delay'))
+
+def get_property_fallback(obj, prop):
+    if hasattr(obj, prop):
+        return obj.__dict__[prop]
+    return None
+
 if __name__ == "__main__":
     main()

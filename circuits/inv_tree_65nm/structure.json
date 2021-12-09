@@ -3,70 +3,82 @@
         {
             "cell_type": "CKINVM1N", 
             "instance": "g10", 
-            "pure_delay_down": "1 ps", 
-            "pure_delay_up": "1 ps"
+            "pure_delay": "0.5 ps", 
+            "pure_delay_down": "0.5 ps", 
+            "pure_delay_up": "0.5 ps"
         }, 
         {
             "cell_type": "CKINVM1N", 
             "instance": "g11", 
-            "pure_delay_down": "1 ps", 
-            "pure_delay_up": "1 ps"
+            "pure_delay": "0.5 ps", 
+            "pure_delay_down": "0.5 ps", 
+            "pure_delay_up": "0.5 ps"
         }, 
         {
             "cell_type": "CKINVM1N", 
             "instance": "g12", 
-            "pure_delay_down": "1 ps", 
-            "pure_delay_up": "1 ps"
+            "pure_delay": "0.5 ps", 
+            "pure_delay_down": "0.5 ps", 
+            "pure_delay_up": "0.5 ps"
         }, 
         {
             "cell_type": "CKINVM1N", 
             "instance": "g13", 
-            "pure_delay_down": "1 ps", 
-            "pure_delay_up": "1 ps"
+            "pure_delay": "0.5 ps", 
+            "pure_delay_down": "0.5 ps", 
+            "pure_delay_up": "0.5 ps"
         }, 
         {
             "cell_type": "CKINVM1N", 
             "instance": "g14", 
-            "pure_delay_down": "1 ps", 
-            "pure_delay_up": "1 ps"
+            "pure_delay": "0.5 ps", 
+            "pure_delay_down": "0.5 ps", 
+            "pure_delay_up": "0.5 ps"
         }, 
         {
             "cell_type": "CKINVM1N", 
             "instance": "g15", 
-            "pure_delay_down": "1 ps", 
-            "pure_delay_up": "1 ps"
+            "pure_delay": "0.5 ps", 
+            "pure_delay_down": "0.5 ps", 
+            "pure_delay_up": "0.5 ps"
         }, 
         {
             "cell_type": "CKINVM1N", 
             "instance": "g16", 
-            "pure_delay_down": "1 ps", 
-            "pure_delay_up": "1 ps"
+            "pure_delay": "0.5 ps", 
+            "pure_delay_down": "0.5 ps", 
+            "pure_delay_up": "0.5 ps"
         }, 
         {
             "cell_type": "CKINVM1N", 
             "instance": "g17", 
-            "pure_delay_down": "1 ps", 
-            "pure_delay_up": "1 ps"
+            "pure_delay": "0.5 ps", 
+            "pure_delay_down": "0.5 ps", 
+            "pure_delay_up": "0.5 ps"
         }, 
         {
             "cell_type": "CKINVM1N", 
             "instance": "g18", 
-            "pure_delay_down": "1 ps", 
-            "pure_delay_up": "1 ps"
+            "pure_delay": "0.5 ps", 
+            "pure_delay_down": "0.5 ps", 
+            "pure_delay_up": "0.5 ps"
         }, 
         {
             "cell_type": "CKINVM1N", 
             "instance": "g19", 
-            "pure_delay_down": "1 ps", 
-            "pure_delay_up": "1 ps"
+            "pure_delay": "0.5 ps", 
+            "pure_delay_down": "0.5 ps", 
+            "pure_delay_up": "0.5 ps"
         }, 
         {
             "cell_type": "CKINVM1N", 
             "instance": "g20", 
-            "pure_delay_down": "1 ps", 
-            "pure_delay_up": "1 ps"
+            "pure_delay": "0.5 ps", 
+            "pure_delay_down": "0.5 ps", 
+            "pure_delay_up": "0.5 ps"
         }
     ], 
+    "init": {}, 
     "interconnects": [
         {
             "from_instance": "din", 

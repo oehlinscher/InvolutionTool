@@ -1,0 +1,126 @@
+{
+    "cells": [
+        {
+            "cell_type": "INV_X16",
+            "instance": "genblk10IX16",
+            "pure_delay": "0.063 ps",
+            "pure_delay_down": "4.598 ps",
+            "pure_delay_up": "-4.364 ps"
+        },
+        {
+            "cell_type": "INV_X12",
+            "instance": "genblk12IX12",
+            "pure_delay": "0.668 ps",
+            "pure_delay_down": "-2.122 ps",
+            "pure_delay_up": "3.414 ps"
+        },
+        {
+            "cell_type": "INV_X16",
+            "instance": "genblk12IX16",
+            "pure_delay": "0.352 ps",
+            "pure_delay_down": "2.271 ps",
+            "pure_delay_up": "-0.941 ps"
+        },
+        {
+            "cell_type": "INV_X12",
+            "instance": "genblk14IX12",
+            "pure_delay": "0.884 ps",
+            "pure_delay_down": "0.258 ps",
+            "pure_delay_up": "2.647 ps"
+        },
+        {
+            "cell_type": "INV_X16",
+            "instance": "genblk14IX16",
+            "pure_delay": "0.861 ps",
+            "pure_delay_down": "1.951 ps",
+            "pure_delay_up": "0.576 ps"
+        },
+        {
+            "cell_type": "INV_X12",
+            "instance": "IX12",
+            "pure_delay": "0.001 ps",
+            "pure_delay_down": "-2.355 ps",
+            "pure_delay_up": "5.410 ps"
+        },
+        {
+            "cell_type": "INV_X8",
+            "instance": "genblk27IX8",
+            "pure_delay": "0.001 ps",
+            "pure_delay_down": "-1.609 ps",
+            "pure_delay_up": "0.362 ps"
+        },
+        {
+            "cell_type": "INV_X8",
+            "instance": "genblk28IX8",
+            "pure_delay": "0.191 ps",
+            "pure_delay_down": "0.067 ps",
+            "pure_delay_up": "0.531 ps"
+        }
+    ],
+    "init": {
+        "IX12": "1",
+        "genblk10IX16": "0",
+        "genblk12IX12": "1",
+        "genblk12IX16": "0",
+        "genblk14IX12": "1",
+        "genblk14IX16": "0",
+        "genblk27IX8": "0",
+        "genblk28IX8": "1"
+    },
+    "interconnects": [
+        {
+            "from_instance": "I",
+            "from_port": "",
+            "to_instance": "genblk10IX16",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk28IX8",
+            "from_port": "ZN",
+            "to_instance": "Z",
+            "to_port": ""
+        },
+        {
+            "from_instance": "genblk27IX8",
+            "from_port": "ZN",
+            "to_instance": "genblk28IX8",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "IX12",
+            "from_port": "ZN",
+            "to_instance": "genblk27IX8",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk14IX16",
+            "from_port": "ZN",
+            "to_instance": "IX12",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk14IX12",
+            "from_port": "ZN",
+            "to_instance": "genblk14IX16",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk12IX16",
+            "from_port": "ZN",
+            "to_instance": "genblk14IX12",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk12IX12",
+            "from_port": "ZN",
+            "to_instance": "genblk12IX16",
+            "to_port": "I"
+        },
+        {
+            "from_instance": "genblk10IX16",
+            "from_port": "ZN",
+            "to_instance": "genblk12IX12",
+            "to_port": "I"
+        }
+    ]
+}

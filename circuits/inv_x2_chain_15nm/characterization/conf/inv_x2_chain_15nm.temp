@@ -1,0 +1,19 @@
+# configuration file
+c 12
+io x y
+vth_out x 
+vth_in x 
+o v(i) v(z) v(genblk10ix2:zn) v(genblk11ix2:zn) v(genblk12ix2:zn) v(genblk13ix2:zn) v(genblk14ix2:zn) v(genblk15ix2:zn) v(genblk16ix2:zn) v(genblk17ix2:zn) v(genblk18ix2:zn)
+d time vi vz vgenblk10ix2zn vgenblk11ix2zn vgenblk12ix2zn vgenblk13ix2zn vgenblk14ix2zn vgenblk15ix2zn vgenblk16ix2zn vgenblk17ix2zn vgenblk18ix2zn
+color red blue green darkturquoise magenta black orange sienna olive purple dodgerblue darkgoldenrod lightseagreen slategrey crimson
+tool spectre
+cellName x
+min 0
+max 6000000000
+stop 500000000
+maxaccuracyout 0.00001
+maxaccuracyin 0.00001
+calcinvolution False
+# folderName templateName startName startVal stopVal stepVal
+../../circuits/inv_x2_chain_15nm/characterization/circuit inv_x2_chain_15nm.sp inv_x2_chain_15nm_u 0 80000001 10000000
+../../circuits/inv_x2_chain_15nm/characterization/circuit inv_x2_chain_15nm.sp inv_x2_chain_15nm_d 0 80000001 10000000

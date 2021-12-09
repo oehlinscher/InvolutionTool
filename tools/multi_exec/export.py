@@ -99,7 +99,7 @@ def export():
 	csv_data.extend(zip(*value_list))	
 	
 	multi_report_folder = os.path.join(report_folder, "multi_report")	
-	with open(os.path.join(multi_report_folder, 'values.csv'), 'wb') as f:	
+	with open(os.path.join(multi_report_folder, 'values.csv'), 'w') as f:	
 		writer = csv.writer(f, delimiter=';', quoting=csv.QUOTE_ALL)
 		writer.writerows(csv_data)
 	

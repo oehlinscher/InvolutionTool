@@ -3,7 +3,7 @@
 	Involution Tool
 	File: generateWaveform.py
 	
-    Copyright (C) 2018-2019  Daniel OEHLINGER <d.oehlinger@outlook.com>
+    Copyright (C) 2018-2021  Daniel OEHLINGER <d.oehlinger@outlook.com>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -44,15 +44,14 @@ def generate(input_dir, output_dir, config_dir, vdd, vth, temp, spice_lib, spice
 			
 			
 	generate_cfg = read_generate_cfg(config_filename)
+
+	# print(generate_cfg)
 			
 	signal_crossings_dict = dict()
 	signal_spice_dict = dict()
-	# TODO 15 nm process
-	#tran_time_ns = 0.1 # ns
-	tran_time_ns = generate_cfg.rise_time # 0.001ns	
-	round_digits = 9;
+	tran_time_ns = generate_cfg.rise_time
 	subsequent_crossings_diff = 1e-9	
-	signal_VDD = float(vdd)
+	signal_vdd = float(vdd)
 	current_time = 1.0 # start each signal after 1ns
 	
 			
@@ -76,14 +75,14 @@ def generate(input_dir, output_dir, config_dir, vdd, vth, temp, spice_lib, spice
 			# randomly select the signal which should have the next transition
 			next_sig = random.choice(generate_cfg.signals)
 			
-			difference = generate_sample(generate_cfg.mue, generate_cfg.sigma, generate_cfg.bound, round_digits)
+			difference = generate_sample(generate_cfg.mue, generate_cfg.sigma, generate_cfg.bound)
 			
 			next_transition_time = 0
 			last_local_trans_time = signal_crossings_dict[next_sig][-1]
 			if generate_cfg.calc_next_transition_mode == CalcNextTransitionMode.GLOBAL: # global			
-				next_transition_time = current_time + difference;
+				next_transition_time = current_time + difference
 			elif generate_cfg.calc_next_transition_mode == CalcNextTransitionMode.LOCAL: # local
-				next_transition_time = last_local_trans_time + difference;
+				next_transition_time = last_local_trans_time + difference
 			else:
 				my_print("Unspecified calc_next_transition_mode: " + str(generate_cfg.calc_next_transition_mode), EscCodes.WARNING)
 				
@@ -93,15 +92,17 @@ def generate(input_dir, output_dir, config_dir, vdd, vth, temp, spice_lib, spice
 				
 			# current_time is only valid when calc_next_transition_mode = 0
 			current_time = next_transition_time		
+
+			# print("Next sig: ", next_sig, "Next trans time: ", next_transition_time, "Current time: ", current_time, "Difference:", difference)
 					
 			signal_crossings_dict[next_sig] += [next_transition_time]
 		
-			i = i + 1;
-			max_diff = 0;
+			i = i + 1
+			max_diff = 0
 			for g in generate_cfg.groups:
 				if next_sig not in g.signals:
 					# nothing to do for this group
-					continue;
+					continue
 					
 				for sig in g.signals:
 					if sig == next_sig:
@@ -120,7 +121,7 @@ def generate(input_dir, output_dir, config_dir, vdd, vth, temp, spice_lib, spice
 					rand_val = random.random()
 					my_print("Correlation possibility: " + str(g.correlation_possibility) + ", rand_val: " + str(rand_val))
 					if rand_val < g.correlation_possibility: 		
-						difference = generate_sample(g.mue, g.sigma, g.bound, round_digits) # abs(...)? -> not necessary, but if the difference is negative it can happen that the "causing" transition is after the "caused" 			
+						difference = generate_sample(g.mue, g.sigma, g.bound) # abs(...)? -> not necessary, but if the difference is negative it can happen that the "causing" transition is after the "caused" 			
 						last_local_trans_time = signal_crossings_dict[sig][-1]
 										
 						my_print("Adding transition to signal " + sig + ", which is in a pair with " + next_sig)
@@ -137,7 +138,7 @@ def generate(input_dir, output_dir, config_dir, vdd, vth, temp, spice_lib, spice
 						signal_crossings_dict[sig] += [next_transition_time + difference]
 						if difference > max_diff:
 							max_diff = difference
-						i = i + 1;
+						i = i + 1
 						if i >= generate_cfg.N:
 							# break inner loop if we have enough transitions
 							break
@@ -169,20 +170,19 @@ def generate(input_dir, output_dir, config_dir, vdd, vth, temp, spice_lib, spice
 	# (over-)write "old" waveform.json file (required because we want to copy this file into the report folder (so that we can simulate again with the same waveform if necessary))
 	with open(os.path.join(output_dir, "waveform.json"), "w") as wave_file:
 		json.dump(signal_crossings_dict, wave_file)
-		
-	
-	time_max = 0;
+
+	time_max = 0
 	for sig in generate_cfg.signals:
 		value = 0
 		time1 = 0
-		signal_spice_dict[sig] = "%sns %s" % (time1, value * signal_VDD,) # set starting value to 0	
+		signal_spice_dict[sig] = "{time:.9f}ns {value}".format(time = time1, value = value * signal_vdd,) # set starting value to 0	
 		for timesegment_ns in signal_crossings_dict[sig][1:]: 
 			#[1:] because we want to ignore the first point at 1.0, otherwise this violates our waveform generation configuration
 			#Nevertheless we need to set first to 1.0, because we do not want to genererate signal before.
 			time1 = timesegment_ns
-			signal_spice_dict[sig] += " %sns %s" % (round(time1 - tran_time_ns/2.0,round_digits), value * signal_VDD,)
+			signal_spice_dict[sig] += " {time:.9f}ns {value}".format(time = time1 - tran_time_ns/2.0, value = value * signal_vdd)
 			value = 1 - value
-			signal_spice_dict[sig] += " %sns %s" % (round(time1 + tran_time_ns/2.0,round_digits), value * signal_VDD,)
+			signal_spice_dict[sig] += " {time:.9f}ns {value}".format(time = time1 + tran_time_ns/2.0, value = value * signal_vdd)
 		if time1 > time_max:
 			time_max = time1
 
@@ -198,16 +198,16 @@ def generate(input_dir, output_dir, config_dir, vdd, vth, temp, spice_lib, spice
 		os.makedirs(output_dir)
 
 	with open(in_filename) as infile:
-	  with open(out_filename, 'w') as outfile:
-		for line in infile:
-			for src, target in replacements.items():
-				line = line.replace(src, target)
-			outfile.write(line)
+		with open(out_filename, 'w') as outfile:
+			for line in infile:
+				for src, target in replacements.items():
+					line = line.replace(src, target)
+				outfile.write(line)
 
-def generate_sample(mu, sigma, bound, round_digits):
+def generate_sample(mu, sigma, bound):
 	while True:
 		# generate until we find a difference in ou bound
-		difference = round(random.gauss(mu, sigma),round_digits)
+		difference = random.gauss(mu, sigma)
 		if bound is None or abs(mu - difference) < bound * sigma:
 			#print('Sample: {0}'.format(difference))
 			return difference

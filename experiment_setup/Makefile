@@ -37,8 +37,12 @@ all:
 # do not call manually, unless you know what you are doing!
 me_involution:
 	$(eval TIME_INVOLUTION := $(shell date +%s%3N))
-	$(MAKE) sim_involution
-	$(MAKE) power_dc_involution		
+	$(MAKE) sim_involution	
+ifeq ($(ENABLE_DC),True)
+	$(MAKE) power_dc_involution	
+else
+	echo "DesignCompiler disabled"
+endif	
 ifeq ($(ENABLE_PRIMETIME),True)
 	$(MAKE) power_pt_involution	
 else
@@ -53,6 +57,16 @@ me_digsim:
 	$(MAKE) power	
 	# not ideal to directly call reporting, but otherwise performance meassurement does not work properly
 	./scripts/reporting.sh ${TIME_DIGSIM}
+
+me_crossings:
+	$(eval TIME_ME_CROSSINGS:= $(shell date +%s%3N))	
+	rm -f ${CROSSINGS_OUTPUT_DIR}/crossings.json	
+	$(MAKE) crossings
+	$(MAKE) sim
+	$(MAKE) power	
+	# not ideal to directly call reporting, but otherwise performance meassurement does not work properly
+	./scripts/reporting.sh ${TIME_ME_CROSSINGS}
+
 	
 
 
@@ -67,7 +81,7 @@ ${GEN_OUTPUT_DIR}/main_new_exp.sp: ./python/generateWaveform.py
 	mkdir -p ${GEN_INPUT_DIR}
 	mkdir -p ${GEN_OUTPUT_DIR}
 	$(MAKE) -B clean # we always want to clean before a new waveform is generated (to make sure no old files are "flying" around), also required because we copy the generated waveform into the report folder afterwards and we have to be sure to take the "correct" one
-	python2 ./python/generateWaveform.py ${GEN_INPUT_DIR} ${GEN_OUTPUT_DIR} ${WAVEFORM_GENERATION_CONFIG_DIR} ${VDD} ${VTH} ${TEMPERATURE} ${SPICE_LIB} ${SPICE_CIR} ${INPUT_WAVEFORM}
+	python3 ./python/generateWaveform.py ${GEN_INPUT_DIR} ${GEN_OUTPUT_DIR} ${WAVEFORM_GENERATION_CONFIG_DIR} ${VDD} ${VTH} ${TEMPERATURE} ${SPICE_LIB} ${SPICE_CIR} ${INPUT_WAVEFORM}
                                                                                          
 spice: 
 	$(eval TIME_SPICE := $(shell date +%s%3N))
@@ -97,10 +111,10 @@ crossings:
 
 ifeq ($(ANALOG_SIMULATION_TOOL),HSPICE)	
 ${CROSSINGS_OUTPUT_DIR}/crossings.json: ${SPICE_OUTPUT_DIR}/main_new_exp.tr0 ./python/digitizeTr0.py
-	python2 ./python/digitizeTr0.py ${SPICE_OUTPUT_DIR}/main_new_exp.tr0 ${SPICE_OUTPUT_DIR}/main_new_exp.vcd0 ${CROSSINGS_OUTPUT_DIR}/crossings.json ${VTH} ${TOP_DIR}/${MATCHING_FILE}
+	python3 ./python/digitizeTr0.py ${SPICE_OUTPUT_DIR}/main_new_exp.tr0 ${SPICE_OUTPUT_DIR}/main_new_exp.vcd0 ${CROSSINGS_OUTPUT_DIR}/crossings.json ${VTH} ${TOP_DIR}/${MATCHING_FILE} ${TOP_DIR}/${DISCRETIZATION_THRESHOLDS_FILE}
 else
 ${CROSSINGS_OUTPUT_DIR}/crossings.json: ${SPICE_OUTPUT_DIR}/main_new_exp.raw ./python/digitizeRaw.py
-	python3 ./python/digitizeRaw.py ${SPICE_OUTPUT_DIR}/main_new_exp.raw ${SPICE_OUTPUT_DIR}/main_new_exp.vcd0 ${CROSSINGS_OUTPUT_DIR}/crossings.json ${VTH} ${TOP_DIR}/${MATCHING_FILE}
+	python3 ./python/digitizeRaw.py ${SPICE_OUTPUT_DIR}/main_new_exp.raw ${SPICE_OUTPUT_DIR}/main_new_exp.vcd0 ${CROSSINGS_OUTPUT_DIR}/crossings.json ${VTH} ${TOP_DIR}/${MATCHING_FILE} ${TOP_DIR}/${DISCRETIZATION_THRESHOLDS_FILE}
 endif
 	
 #### READ   ###############################################################
@@ -113,7 +127,7 @@ read:
 # DO NOT SWAP the following two rules, otherwise we have an endless recursion	
 ${VECTOR_OUTPUT_DIR}/vectors_%: ${CROSSINGS_OUTPUT_DIR}/crossings.json ./python/readCrossings.py
 	mkdir -p ${VECTOR_OUTPUT_DIR}
-	python2 ./python/readCrossings.py ${VECTOR_INPUT_DIR} ${VECTOR_OUTPUT_DIR} $*
+	python3 ./python/readCrossings.py ${VECTOR_INPUT_DIR} ${VECTOR_OUTPUT_DIR} ${TOP_DIR}/${MATCHING_FILE} $*
 
 vectors_%: 
 	$(MAKE) ${VECTOR_OUTPUT_DIR}/$@ 
@@ -125,10 +139,13 @@ gates:
 	$(MAKE) $(patsubst %, ${GATES_DIR}/%.vhd, ${REQUIRED_GATES})
 	./scripts/timing.sh $@ ${TIME_GATES} 
 	
-$(patsubst %, ${GATES_DIR}/%.vhd, ${REQUIRED_GATES}): ${VECTOR_NAMES} ./python/generateGates.py ${GENERAL_GATE_CONFIG_DIR}/gate_config.json ${CIRCUIT_GATE_CONFIG_DIR}/gate_config.json ${GATES_DIR} ./vhdl/gate_template.vhd ./vhdl/gate_input_process_template.vhd
+$(patsubst %, ${GATES_DIR}/%.vhd, ${REQUIRED_GATES}): ${VECTOR_NAMES} ./python/generateGates.py ${GENERAL_GATE_CONFIG} ${CIRCUIT_GATE_CONFIG} ${GATES_DIR} ./vhdl/gate_template.vhd ./vhdl/gate_input_process_template.vhd
 	#python $^ "${REQUIRED_GATES}"
 	mkdir -p ${GATES_DIR}
-	python2 ./python/generateGates.py ${GENERAL_GATE_CONFIG_DIR}/gate_config.json ${CIRCUIT_GATE_CONFIG_DIR}/gate_config.json ${GATES_DIR} ./vhdl/gate_template.vhd ./vhdl/gate_input_process_template.vhd  $(USE_GIDM) ${TOP_DIR}/${STRUCTURE_FILE} ${TT_OUTPUT_DIR} ${GENERATE_GATE_PER_INSTANCE} ${VECTOR_OUTPUT_DIR} "${REQUIRED_GATES}"
+	cd ./vhdl/python_channel/ && $(MAKE) all 
+	# cp ./vhdl/python_channel/python_channel.so ${GATES_DIR}
+	# cp ./vhdl/python_channel/python_channel.so .
+	python3 ./python/generateGates.py ${GENERAL_GATE_CONFIG} ${CIRCUIT_GATE_CONFIG} ${GATES_DIR} ./vhdl/gate_template.vhd ./vhdl/gate_input_process_template.vhd  $(USE_GIDM) ${TOP_DIR}/${STRUCTURE_FILE} ${TT_OUTPUT_DIR} ${GENERATE_GATE_PER_INSTANCE} ${VECTOR_OUTPUT_DIR} "${REQUIRED_GATES}"
 	
 #### SIM    ###############################################################
 
@@ -163,20 +180,20 @@ sim_modelsim:
 
 ${CIRCUIT_DIR}/circuit_involution.vhd: ${TOP_DIR}/circuit.vhd ./vhdl/input_process.vhd ./vhdl/input_process_gidm.vhd ./python/prepareTestbench.py
 ifeq ($(USE_GIDM),True)
-	python2 ./python/prepareTestbenchGIDM.py ${TOP_DIR}/circuit.vhd $@ ./vhdl/input_process_gidm.vhd "${INPUT_NAMES}" ${TOP_DIR}/${STRUCTURE_FILE} ${TT_OUTPUT_DIR}
+	python3 ./python/prepareTestbenchGIDM.py ${TOP_DIR}/circuit.vhd $@ ./vhdl/input_process_gidm.vhd "${INPUT_NAMES}" ${TOP_DIR}/${STRUCTURE_FILE} ${TT_OUTPUT_DIR}
 else
-	python2 ./python/prepareTestbench.py ${TOP_DIR}/circuit.vhd $@ ./vhdl/input_process.vhd "${INPUT_NAMES}" "${VECTOR_NAMES}" ${GENERAL_GATE_CONFIG_DIR}/gate_config.json ${CIRCUIT_GATE_CONFIG_DIR}/gate_config.json ${TOP_DIR}/circuit_configuration.vhd
+	python3 ./python/prepareTestbench.py ${TOP_DIR}/circuit.vhd $@ ./vhdl/input_process.vhd "${INPUT_NAMES}" "${VECTOR_NAMES}" ${GENERAL_GATE_CONFIG} ${CIRCUIT_GATE_CONFIG} ${TOP_DIR}/circuit_configuration.vhd
 endif	
 
 ${CIRCUIT_DIR}/circuit_modelsim.vhd: ${TOP_DIR}/circuit.vhd ./vhdl/input_process.vhd ./python/prepareTestbench.py
-	python2 ./python/prepareTestbench.py ${TOP_DIR}/circuit.vhd $@ ./vhdl/input_process.vhd "${INPUT_NAMES}" "${VECTOR_NAMES}" ${GENERAL_GATE_CONFIG_DIR}/gate_config.json ${CIRCUIT_GATE_CONFIG_DIR}/gate_config.json
+	python3 ./python/prepareTestbench.py ${TOP_DIR}/circuit.vhd $@ ./vhdl/input_process.vhd "${INPUT_NAMES}" "${VECTOR_NAMES}" ${GENERAL_GATE_CONFIG} ${CIRCUIT_GATE_CONFIG}
 
 ${MODELSIM_OUTPUT_DIR}/involution.vcd: ${MODELSIM_OUTPUT_DIR}/involution.do ${VECTOR_NAMES}
 	rm -rf ${TT_OUTPUT_DIR}/*
 	vsim -c -do $< > ${MODELSIM_OUTPUT_DIR}/involution_sim.log
 ifeq ($(USE_GIDM),True)
 	mv -f involution.vcd ${MODELSIM_OUTPUT_DIR}/involution_indicators.vcd
-	python2 ./python/fixGIDMVCD.py ${MODELSIM_OUTPUT_DIR}/involution_indicators.vcd ${MODELSIM_OUTPUT_DIR}/involution.vcd ${TT_OUTPUT_DIR} ${TOP_DIR}/port_to_signal_matching.json ${TOP_DIR}/${STRUCTURE_FILE}
+	python3 ./python/fixGIDMVCD.py ${MODELSIM_OUTPUT_DIR}/involution_indicators.vcd ${MODELSIM_OUTPUT_DIR}/involution.vcd ${TT_OUTPUT_DIR} ${TOP_DIR}/port_to_signal_matching.json ${TOP_DIR}/${STRUCTURE_FILE}
 else
 	mv -f involution.vcd ${MODELSIM_OUTPUT_DIR}/
 endif	
@@ -204,7 +221,11 @@ ${MODELSIM_OUTPUT_DIR}/localDoTemplate: $(patsubst %, ${GATES_DIR}/%.vhd, ${REQU
 power: 
 	$(eval TIME_POWER := $(shell date +%s%3N))
 	mkdir -p ${POWER_OUTPUT_DIR}
-	$(MAKE) power_dc 	
+ifeq ($(ENABLE_DC),True)
+	$(MAKE) power_dc
+else
+	echo "DesignCompiler disabled"
+endif	
 ifeq ($(ENABLE_PRIMETIME),True)
 	$(MAKE) power_pt 
 else
@@ -326,7 +347,11 @@ ${POWER_OUTPUT_DIR}/sim_%.saif: ${MODELSIM_OUTPUT_DIR}/%.vcd
 #SPICE Power
 power_spice: 
 	$(eval TIME_POWER_SPICE := $(shell date +%s%3N))
+ifeq ($(ENABLE_DC),True)
 	$(MAKE) power_spice_dc
+else
+	echo "DesignCompiler disabled"
+endif	
 ifeq ($(ENABLE_PRIMETIME),True)
 	$(MAKE) power_spice_pt_avg
 	$(MAKE) power_spice_pt_tim
@@ -404,7 +429,7 @@ ${POWER_OUTPUT_DIR}/spice.saif: ${POWER_OUTPUT_DIR}/main_new_exp.vcd0
 	
 ${POWER_OUTPUT_DIR}/main_new_exp.vcd0: ${SPICE_OUTPUT_DIR}/main_new_exp.vcd0
 	mkdir -p ${POWER_OUTPUT_DIR}
-	python2 ./python/convertVCD.py ${SPICE_OUTPUT_DIR}/main_new_exp.vcd0 $@ ${TOP_DIR}/${MATCHING_FILE}
+	python3 ./python/convertVCD.py ${SPICE_OUTPUT_DIR}/main_new_exp.vcd0 $@ ${TOP_DIR}/${MATCHING_FILE}
 	
 #### REPORT  #############################################################
 report: 
@@ -412,16 +437,19 @@ report:
 
 #### PREPARE GIDM  #######################################################
 prepare_gidm: 
-	python2 ./python/extractCircuitStructure.py ${TOP_DIR}/${SDF_FILE} ${TOP_DIR}/${STRUCTURE_FILE}
+	python3 ./python/extractCircuitStructure.py ${TOP_DIR}/${SDF_FILE} ${TOP_DIR}/${STRUCTURE_FILE}
 	# TOOD: We need to run extendVerilogCircuit (only rename the gates)
 	# TODO: We need to generate a matching between instance name and signal name for the post processing
 ifeq ($(CIRCUIT_FILE_TYPE),verilog)
-	python2 ./python/extendCircuitVerilog.py ${TOP_DIR}/${CIRCUIT_FILE} ${TOP_DIR}/${CIRCUIT_FILE_GIDM} "${REQUIRED_GATES}" "${INPUT_NAMES}" ${TOP_DIR}/${STRUCTURE_FILE} ${TOP_DIR}/port_to_signal_matching.json
+	python3 ./python/extendCircuitVerilog.py ${TOP_DIR}/${CIRCUIT_FILE} ${TOP_DIR}/${CIRCUIT_FILE_GIDM} "${REQUIRED_GATES}" "${INPUT_NAMES}" ${TOP_DIR}/${STRUCTURE_FILE} ${TOP_DIR}/port_to_signal_matching.json
 else
 	echo "Automatic extension of the circuit for VHDL not supported yet"
 endif
-	python2 ./python/convertSDFFileGIDM.py  ${TOP_DIR}/${SDF_FILE} ${TOP_DIR}/${SDF_FILE_GIDM} "${REQUIRED_GATES}"
-	
+	python3 ./python/convertSDFFileGIDM.py  ${TOP_DIR}/${SDF_FILE} ${TOP_DIR}/${SDF_FILE_GIDM} "${REQUIRED_GATES}"
+
+clear_results:
+	python3 ./python/clearResults.py ../circuits
+
   
 #### CLEAN  ###############################################################  
 clean: 
